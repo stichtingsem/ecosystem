@@ -52,6 +52,16 @@ This standard is developed by members from [Stichting SEM](www.stichtingsem.org)
 | Name | Organization | Role | Alias |
 |---|---|---|---|
 | Clifton Cunningham | Infinitas Learning | Initiator | @cliftonc |
-| Kees van Ginkel | Iddink Group | Editor | @mcginkel |
-| Henk Haarsma | Noordhoff Uitgevers | Editor | @hhaarsma |
-| Jorim van den Wijngaard | Topicus Education | Editor | @jorimvdw |
+| Carl Verhoest | Infinitas Learning | Member Technical Track | |
+| Danny Pronk | The Learning Network | Member Technical Track | @dpronk |
+| Elias Hassing | Infinitas Learning | Lead Functional Track | @eliashassing154 |
+| Edwin Verwoerd | Iddink Group | Member Technical Track | @edwinverwoerd |
+| Frank Aarts | ThiemeMeulenhoff | Member Technical Track | |
+| Henk Haarsma | Noordhoff Uitgevers | Member Technical Track | @hhaarsma |
+| Jan-Paul Mannee | Osingadejong | Member Technical Track | |
+| Jorim van den Wijngaard | Topicus Education | Member Technical Track | @jorimvdw |
+| Kees van Ginkel | Iddink Group | Member Technical Track | @mcginkel |
+| Koen Voermans | Stichting SEM | Project Manager and Lead Technical Track | @kvoer |
+| Luke Niesink | Topicus Education | Member Technical Track | @niesink |
+| Marc Wijma | Boom VO | Member Technical Track | |
+| Sieger Kuik | Stichting SEM | Lead Administrative Track | @kvoer |
