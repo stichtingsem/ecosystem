@@ -1,0 +1,115 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://example.stichtingsem.org/api'
+info:
+  version: 1.0.0
+  title: Generic Event Stream API
+  description: |-
+    The proposed architecture for the new ecosystem is based on an Event model, where each provider of data to the ecosystem provides a mechanism for other participants to securely subscribe to events that are of interest to them.
+
+    The Event API is the mechanism, in conjunction with the Webhook API, that enables this event based notification mechanism to function reliably.  It enables subscribers to request events from the provider, and paginate through to the last place that it received a message.
+
+    Notes:
+      - Pagination is essential - using start and limit semantics.
+      - Limits should be imposed on page size.
+      - Order should always be reverese chronological.
+      - Filtering is available by matching specific event type.
+      - Providers should ensure that this API is cacheable or able to be retrieved at minimal cost, as it may be accessed a lot by consumers who are 'catching up'
+      
+      > Note:  We may need to provide an API that creates a 'dummy' event list of all entities to enable an initial synchronisation of all data (e.g. a brand new LA that wants to do an initial synchronisation with data from the SIS) - this may be simpler than providing a GET requests for entities in the SIS itseelf (e.g. get students).
+  contact:
+    email: clifton@infinitaslearning.com
+  license:
+    name: MIT
+    url: 'https://opensource.org/licenses/MIT'
+tags:
+  - name: events
+    description: Operations related to event retrieval
+paths:
+  /events:
+    get:
+      description: Allows a subscriber to retrieve a list of past events.
+      tags:
+        - events
+      operationId: listEvents
+      parameters:
+        - in: query
+          name: type
+          description: 'Filter by a specific type of event, e.g. la.usage - specific to the service implementing the API.'
+          schema:
+            type: string
+            example: la.usage
+        - in: query
+          name: start
+          description: 'Start point for pagination of results, defaults to 0,'
+          schema:
+            type: integer
+          examples:
+            default:
+              value: 0
+              summary: The start point for pagination
+        - in: query
+          name: limit
+          description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
+          schema:
+            type: integer
+            maximum: 100
+          examples:
+            default:
+              value: 20
+              summary: The default value if none is provided
+            max:
+              value: 100
+              summary: The largest recommended page size
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/events'
+      summary: ''
+components:
+  schemas:
+    events:
+      type: array
+      items:
+        $ref: '#/components/schemas/event'
+      x-tags:
+        - events
+      description: 'A list of events - reverse chronologically ordered, provided to enable subscribers to ''catch up'' on events they may have missed.'
+      title: ''
+    event:
+      type: object
+      x-tags:
+        - events
+      description: |-
+        An event is a notification that something of interest has happened within a service, that, based on authorised scopes, a subscriber may then process.  This enables systems to communicate with each other in a loosely coupled way, where the event creator has no direct connection to any of the subscribing systems.
+
+        Typically an event will contain a basic data object that indicates what the state of the object is at the point at which the event is raised, but this is optional.  In the case that no data object exists it is intended that the subscribing system would call back to the provided API to retrieve the information.
+
+        By calling back at a future point you avoid a number of distributed system related issues:
+
+        - Ordering doesn't matter, as when you call back you always get the latest version.  The biggest risk is you call back twice and get the same information twice - but you always have correct data.
+        - Security can be checked again at the point of request, so even in the unlikely scenario that a subscriber authorization changes between an event being emitted and the call back occurring, the subscriber can only ever get data they are authorized to retrieve.
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        type:
+          type: string
+          example: la.usage
+        created:
+          type: number
+          example: 1530291411
+        data:
+          type: object
+        url:
+          type: string
+          description: |
+            The URL that can be called to get information about the event.
+      required:
+        - id
+        - type
+        - url
