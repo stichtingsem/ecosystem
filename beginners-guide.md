@@ -1,14 +1,14 @@
 # Beginner's Guide
 
 The beginner's guide gives you a high level overview of the scope and working of the SEM Ecosystem standard. This guide consists of the following paragraphs:
-1. [Four servivces in the SEM Ecosystem](##1.-four-services-in-the-sem-ecosystem)
-2. [Actors in the SEM Ecosystem](##2.-actors-in-the-sem-ecosystem)
-3. [Webhooks and events](##3.-webhooks-and-events)
-4. [Setup and consent](##4.-setup-and-consent)
-5. [Principles](##5.-principles)
+1. [Four servivces in the SEM Ecosystem](##1-four-services-in-the-sem-ecosystem)
+2. [Actors in the SEM Ecosystem](##2-actors-in-the-sem-ecosystem)
+3. [Webhooks and events](##3-webhooks-and-events)
+4. [Setup and consent](##4-setup-and-consent)
+5. [Principles](##5-principles)
 6. [Join the SEM Foundation and adopt the SEM Ecosystem standard](##6.-join-sem-foundation-and-adopt-the-sem-ecosystem-standard)
 
-## 1. Four services in the SEM Ecosystem
+## 1 Four services in the SEM Ecosystem
 
 Services are provided to enable the roles to carrying out the processes. The services communicate directly with each other, under the direction and control of the school (where appropriate). Note that schools can select multiple of these services, so multiple Learning Applications, multiple Learning Management Systems, multiple Marketplaces and even multiple School Information Systems. Next to that schools can also omit one or more of these services. In theory the smallest set might be a single Marketplace and a single Learning Application.
 
@@ -22,10 +22,6 @@ Services are provided to enable the roles to carrying out the processes. The ser
 | [School Information System (SIS)](services/school-information-system.md) | A service that allows an administrator to manage the core data that the school needs to operate:  students, teachers, subjects, streams and classes.  This data is then provided (at the minimum level required and under the control of the school) to other services to allow them to function efficiently.  The SIS is the source of the ECK-ID |
 | [Identity Provider (IdP)](services/identity-provider.md) | A service that provides Identity information about both students and teachers to the other services in the ecosystem.  This includes the ECK-ID as base for other associated data as needed (e.g. the students initials or class information). The IdP is not shown in the above diagram and not equal to the SIS service |
 
-Each of the API specifications here are connected to specific services:
-
-![services](diagrams/process-diagrams-Services.svg)
-
 The particular mapping of this specification is as follows:
 
 | API Definition                                                                                                           | Service Provider | Services Consuming |
@@ -38,7 +34,7 @@ The particular mapping of this specification is as follows:
 | [Usage](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/usage.v1.yaml)                         | LA               | MP, LMS            |
 | [Progress & Results](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/progress-results.v1.yaml) | LA               | MP, LMS            |
 
-## 2. Actors in the SEM Ecosystem
+## 2 Actors in the SEM Ecosystem
 
 | Role | Example Types | Description |
 |---|---|---|
@@ -54,7 +50,7 @@ The particular mapping of this specification is as follows:
 | [Fulfilment Agent](roles/fulfilment-agent.md) | Distributor<br>Publisher<br>EdTech Company<br>School | An organisation that takes responsibility for the fulfilment of Learning Material to an individual student or to a school, either through physical delivery or via delivery to the LMS in use within the school or directly to the individual (e.g. via email). Note a school can also provide material to its students. |
 | [SIS Provider](roles/sis-provider.md) | EdTech Company | is a management information system for education establishments to manage student data. Student information systems provide capabilities for registering students in courses; documenting grading, transcripts, results of student tests and other assessment scores; building student schedules; tracking student attendance; and managing many other student-related data needs in a school<br>This system is the source of the ECK-ID |
 
-## 3. Webhooks and events
+## 3 Webhooks and events
 
 Explain the architectural model and the usage of webhooks and events.
 
@@ -62,11 +58,11 @@ A simple overview of a generic exchange is as follows, note that while this may 
 
 ![architecture](diagrams/event-architecture.svg)
 
-## 4. Setup and consent
+## 4 Setup and consent
 
 Explains the setup and consent protocol 
 
-## 5. Principles
+## 5 Principles
 
 #### 1. No mandatory central services, participants exchange information directly. Note data for a given school under the direct control of the school where appropriate
     - Simplified eco-system focused around the needs of a specific school and under their control
@@ -106,6 +102,6 @@ Explains the setup and consent protocol
 #### 9. Need to be closed money goods flow
     - Usage of ‘goods’ means that money is/needs to be transferred to the one who is providing.
 
-## 6. Join the SEM Foundation and adopt the SEM Ecosystem standard
+## 6 Join the SEM Foundation and adopt the SEM Ecosystem standard
 
 All organisations offering products and/or services to Dutch schools are welcome to join the SEM Foundation and adopt the SEM Ecosystem standard. For more information about the implementation and the conformance certification read our [Implementation Guide](implementation-guide.md).
