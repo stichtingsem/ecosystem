@@ -1,7 +1,7 @@
 # SEM Ecosytem Standard
 
 Version 0.1
-Date issued: 1 December 2021
+Date issued: 2 December 2021
 Status: CONCEPT
 Author: @kvoer
 
@@ -17,19 +17,21 @@ Short summary of the scope and reason for this standard.
 
 A typical school uses a broad range of learning materials from several educational publishers or platform suppliers. The SEM Ecosystem sets a standard for the exchange of data between all parties that play a key role in the use of (digital) learning materials within schools.
 
-![scope](diagrams/scope-supply-and-usage-flows.svg)
+The SEM Ecosystem focuses on the minimal set of data required for:
 
-The SEM Ecosystem focuses on the minimal set of data required for two key processes within schools:
 1. Supply of learning materials including the activities:
-	a. Inform
-	b. Order
-	c. Deliver
-	d. Evaluate
+
+	- Inform
+	- Order
+	- Deliver
+	- Evaluate
+
 2. Usage of learning materials including the activities:
-	a. Authorize
-	b. Use
-	c. Report progress and result
-	d. Monitor
+
+	- Authorize
+	- Use
+	- Report progress and result
+	- Monitor
 
 ## Purpose of the SEM ecosystem
 
