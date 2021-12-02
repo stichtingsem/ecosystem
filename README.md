@@ -1,6 +1,7 @@
 # SEM Ecosytem Standard
 
 | Version | 0.1 |
+|---|---|
 | Date issued | 2 December 2021 |
 | Status | CONCEPT |
 | Author | @kvoer |
