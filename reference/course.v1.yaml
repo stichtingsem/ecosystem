@@ -1,21 +1,21 @@
 openapi: 3.0.0
 info:
-  title: 'Stream, Progress & Results API'
+  title: Course API
   version: '1.0'
   description: |-
-    This API enables a learning application to provide information about the specific activities available within the application that can be scheduled within an LMS.  This data is always exchanged in the context of a school, as not only can information vary by school (e.g. a learning application may allow material to be modified or configured specific to the needs of that organisation), but this API enables the sharing of progress and results - which is sensitive data and as such we must ensure that it is only shared after approval by the school to exchange this information between the LA and the LMS.
+    This API enables a learning application to provide information about the specific activities available within the application that can be scheduled within an LMS.  This data is always exchanged in the context of a school, as not only can information vary by school (e.g. a learning application may allow material to be modified or configured specific to the needs of that organisation), but this API enables the sharing of course details, which is the basis for progress and results - This is sensitive data and as such we must ensure that it is only shared after approval by the school to exchange this information between the LA and the LMS.
 
     ### Event Access
 
-    |Events|Event Data|Rationale|
-    |------|---------|
-    |la.result| // as per XAPI statements |To enable the LMS to receive XAPI statements after registering webhook for a specific school|
+    Events|Event Data|Rationale|
+    |------|---------|--|
+    |la.progress| // as per XAPI statements |To enable the LMS to receive XAPI statements after registering webhook for a specific school|
     |la.stream| // as per Course |To enable the LMS to receive updates to course information for a specific school|
 
     ## Scopes and Data
 
     - la.stream.school
-    - la.results.school
+    - la.progress.school
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
@@ -163,7 +163,7 @@ paths:
         examples:
           default:
             value: 2020-2021
-            summary: The default value if none is provided          
+            summary: The default value if none is provided
     get:
       summary: 'Get XAPI statements related to a specific course, newest statements first'
       tags: []
@@ -227,7 +227,7 @@ paths:
         examples:
           default:
             value: 2020-2021
-            summary: The default value if none is provided    
+            summary: The default value if none is provided
     get:
       summary: 'Get XAPI statements related to a specific student, newest statements first'
       tags: []
@@ -356,6 +356,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attachment'
+      x-examples:
+        example-1:
+          id: string
+          actor:
+            $ref: '#/components/schemas/Agent'
+          verb: {}
+          object:
+            $ref: '#/components/schemas/Activity'
+          result:
+            score:
+              scaled: 0
+              raw: 0
+              min: 0
+              max: 0
+            success: true
+            completion: true
+            response: string
+            duration: string
+            extensions: {}
+          context: {}
+          timestamp: string
+          stored: string
+          authority: {}
+          version: string
+          attachments:
+            - usageType: string
+              display: {}
+              description: {}
+              contentType: string
+              length: 0
+              sha2: string
+              fileUrl: string
     StatementResult:
       title: XAPI Statement Result
       type: object
@@ -595,4 +627,4 @@ components:
           refreshUrl: ''
           scopes:
             la.course.school: Access to available course information available to a school
-            la.results.school: Access to progress and results for a specific learner at a specific school'
+            la.progress.school: Access to progress for a specific learner at a specific school'
