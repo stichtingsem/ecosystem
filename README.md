@@ -58,7 +58,7 @@ This standard is developed by members from [Stichting SEM](www.stichtingsem.org)
 | Carl Verhoest | Infinitas Learning | Member Technical Track | |
 | Danny Pronk | The Learning Network | Member Technical Track | @dpronk |
 | Elias Hassing | Infinitas Learning | Lead Functional Track | @eliashassing154 |
-| Edwin Verwoerd | Iddink Group | Member Technical Track & Finance Track | @edwinverwoerd |
+| Edwin Verwoerd | Iddink Group | Member Technical Track & Administrative Track | @edwinverwoerd |
 | Frank Aarts | ThiemeMeulenhoff | Member Technical Track | |
 | Henk Haarsma | Noordhoff Uitgevers | Member Technical Track | @hhaarsma |
 | Jan-Paul Mannee | Osingadejong | Member Technical Track | |
