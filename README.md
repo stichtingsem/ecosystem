@@ -14,6 +14,9 @@ TLDR for fast reading.
 
 Short summary of the scope and reason for this standard.
 
+## API documentation
+https://stichtingsem.stoplight.io/
+
 ## Enable data exchange in the supply and usage flow of learning materials
 
 A typical school uses a broad range of learning materials from several educational publishers or platform suppliers. The SEM Ecosystem sets a standard for the exchange of data between all parties that play a key role in the use of (digital) learning materials within schools.
