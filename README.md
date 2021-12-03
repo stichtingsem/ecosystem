@@ -1,6 +1,8 @@
-# Legal status of this document
-All information in this repository is draft. No rigths can be claimed based on this information
-The standards can change without notice until they are finalised and approved
+# Note: Legal status of the specifications in this repository
+> All information in this repository is draft. No rigths can be claimed based on this information
+> The standards can change without notice until they are finalised and approved
+
+---
 
 # SEM Ecosytem Standard
 
