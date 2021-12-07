@@ -4,7 +4,7 @@ The beginner's guide gives you a high level overview of the scope and working of
 1. [Four servivces in the SEM Ecosystem](##four-services-in-the-sem-ecosystem)
 2. [Actors in the SEM Ecosystem](##actors-in-the-sem-ecosystem)
 3. [Processes and Use cases](##processes-and-use-cases)
-4. [Join the SEM Foundation and adopt the SEM Ecosystem standard](##6-join-sem-foundation-and-adopt-the-sem-ecosystem-standard)
+4. [Join the SEM Foundation and adopt the SEM Ecosystem standard](##join-sem-foundation-and-adopt-the-sem-ecosystem-standard)
 
 ## Four services in the SEM Ecosystem
 
