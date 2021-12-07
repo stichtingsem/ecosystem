@@ -1,39 +1,24 @@
 # Implementation Guide
 
-## Key technical principles
-
-## Architecture
-
-A working description of the architecture is contained in this [issue](https://github.com/stichtingsem/technology-prototype/issues/7).
-
-TODO: Finalize the discussion and describe the definite architecture in this paragraph
-
-## Security by design using open standards
-
-The security and data minimization approach is outlined here: [security](https://github.com/stichtingsem/technology-prototype/issues/18)
-
-TODO: Finalize the discussion and describe the definite security aspects in this paragraph
-
-## Other relevant standards
-
-TODO: Describe all relevant standards for parties that want to join the ecosystem.
-
-## Information model
-
-What is the underlying information model used within the ecosystem?
+TODO: Describe how to inmplement the SEM Ecosystem standard.
+TODO: Structure this implementation guide into a specific guides for each role: SIS, LMS, MP, and LA?
 
 ## Impact analysis
 
-What should a new party do to determine its impact of joining the ecosystem?
+TODO: What should a new party do to determine its impact of joining the ecosystem?
 
-## API implementation
+## API implementation and backoffice integration
 
-What should a new party do to implement the APIs and integrate the APIs with the backoffice systems?
+TODO: What should a new party do to implement the APIs and integrate the APIs with the backoffice systems?
 
 ## Test scenario's
 
-What use cases should a new party check in the unit, functional, and acceptance tests?
+TODO: What use cases should a new party check in the unit, functional, and acceptance tests?
 
 ## Conformance Certification Guide
 
-How does a new party gets accreditated to join the Ecosystem?
+TODO: How does a new party gets accreditated to join the Ecosystem?
+
+## Example implementations
+
+TODO: Describe sample implemenations for a small, medium sized and large organization

@@ -11,3 +11,5 @@
 | LML | Learning Material List (Leermiddelenlijst in Dutch), a composed list of learning materials intended for a specific course, group or class |
 | LMS / ELO | Learning Management System |
 | School Catalogue | Aggregated catalogue for a school created based on the contract that the school has signed with a Sales Agent. |
+| Usage | TO BE DEFINED |
+| Progress | TO BE DEFINED |
