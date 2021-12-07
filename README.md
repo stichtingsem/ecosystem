@@ -13,9 +13,9 @@ A typical school uses a broad range of learning materials from several education
 This repository consists of the following elements:
 - [Beginner's Guide](beginners-guide.md) which explains all the concepts within the ecosystem in more detail.
 - [Technical reference](technical-reference.md) with information about the architecture, used standards and links to the reference files.
-- [API documentation](https://stichtingsem.stoplight.io/) can be found on stoplight
+- [API documentation](https://stichtingsem.stoplight.io/) can be found on stoplight.
 - [Implementation Guide](implementation-guide.md) with practical advice for new parties.
-- [Glossary](glossary.md) describing all terms and definitions used within the ecosystem
+- [Glossary](glossary.md) describing all terms and definitions used within the ecosystem.
 
 This repository is an initiative of the Stichting Samenwerkende Educatieve Marktpartijen (SEM) and is based upon the principles defined in the working document [Moving from a chain to an ecosystem](documentation/documents/).
 
@@ -66,10 +66,10 @@ This standard is developed by members from [Stichting SEM](www.stichtingsem.org)
 | Edwin Verwoerd | Iddink Group | Member Technical & Administrative Track | [@edwinverwoerd](https://github.com/edwinverwoerd) |
 | Frank Aarts | ThiemeMeulenhoff | Member Technical Track | [@TM-Frank](https://github.com/tm-frank) |
 | Henk Haarsma | Noordhoff Uitgevers | Member Technical Track | [@hhaarsma](https://github.com/hhaarsma) |
-| Jan-Paul Mannee | Osingadejong | Member Technical Track | [@jpmannee]https://github.com/jpmannee|
+| Jan-Paul Mannee | Osingadejong | Member Technical Track | [@jpmannee](https://github.com/jpmannee) |
 | Jorim van den Wijngaard | Topicus Education | Member Technical Track | [@jorimvdw](https://github.com/jorimvdw) |
 | Kees van Ginkel | Iddink Group | Member Technical Track | [@mcginkel](https://github.com/mcginkel) |
 | Koen Voermans | Stichting SEM | Project Manager and Lead Technical Track | [@kvoer](https://github.com/kvoer) |
 | Luke Niesink | Topicus Education | Member Technical Track | [@niesink](https://github.com/niesink) |
-| Marc Wijma | Boom VO | Member Technical Track | [@mwijma]https://github.com/mwijma |
+| Marc Wijma | Boom VO | Member Technical Track | [@mwijma](https://github.com/mwijma) |
 | Sieger Kuik | Stichting SEM | Lead Administrative Track | [@SiegerKuik](https://github.com/siegerkuik) |
