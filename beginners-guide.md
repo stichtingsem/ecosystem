@@ -28,6 +28,7 @@ The particular mapping of this specification is as follows:
 | [Webhooks](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/events.v1.yaml)                     | all              | all                |
 | [SIS Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/sisdata.v1.yaml)                    | SIS              | MP, LA, LMS        |
 | [Catalogue Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/catalogue.v1.yaml)            | LA               | MP, LMS            |
+| [Course Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/coursee.v1.yaml)                 | LA               | LMS                |
 | [Entitlements](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/entitlement.v1.yaml)            | MP               | LMS, LA            |
 | [Usage](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/usage.v1.yaml)                         | LA               | MP, LMS            |
 | [Progress & Results](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/progress-results.v1.yaml) | LA               | MP, LMS            |
