@@ -31,9 +31,9 @@ TODO: Describe the technical principles
 #### 6. Data will always be provided from the source, and not passed between services. It is always clear who is responsible for the data and that it is provided in a transparent way
     - Services can rely on data being correct and timely to avoid manual administration by schools
     - Innovation can happen on top of services that schools have already invested in
-    - Data should be exchanged on “need to know basis”,  and binded to the purpose (goal binding/GDPR requirement or doelbinding/AVG eis)
     
 #### 7. Data will be exchanged based on minimum required for delivery of services and data privacy
+    - Data should be exchanged on “need to know basis”,  and binded to the purpose (goal binding/GDPR requirement or doelbinding/AVG eis)
 
 #### 8. Not have administration in the lead, always ensure access is possible
     - Ensure that users are always able to access material where they are entitled to.
