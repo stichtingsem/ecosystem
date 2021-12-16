@@ -26,6 +26,8 @@ SAAS Vendors will do the communication on behalf of a school after the school ha
 So in total we will have a limitted list of parties in one region. 
 The parties will know the other parties by the [SEM Directory](..\SEM-Party-Directory.md)
 
+##  Api authentication
+For more infoemation on authentication and authorization: See [API authentication](API-authentication.md)
 
 
 # More detailed
