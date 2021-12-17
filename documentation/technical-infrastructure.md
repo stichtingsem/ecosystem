@@ -8,7 +8,7 @@ Based on the technical principles described in [Technical principles](technical-
 # The big Picture
 
 All parties have direct communication with each other. 
-The parties that implement the API can be dived in 2 groups:
+The parties that implement the API can be divided in 2 groups:
 * parties that implement the API for their own business (like MP or LA)
 * a SAAS vendor that implement the API for a school (like SIS and LMS)
  
@@ -27,7 +27,7 @@ So in total we will have a limitted list of parties in one region.
 The parties will know the other parties by the [SEM Directory](../SEM-Party-Directory.md)
 
 ##  Api authentication
-For more infoemation on authentication and authorization: See [API authentication](API-authentication.md)
+For more information on authentication and authorization: See [API authentication](API-authentication.md)
 
 
 # More detailed

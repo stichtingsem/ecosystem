@@ -8,15 +8,15 @@ Please contact stichting SEM to be included in this directory.
 
 ## Region Netherlands
 
-|  Name | Product | Role | Endpoint URl | Contatc info |
-|--|--|--|--|--|
-| a good publisher | AllYouCanLearn | LA | https://magister-HUB.iddinkgroup.com/Sem | Joe.Doe@AllYouCanLearn.nl |
-| a good LMS | LMS4You | LMS | https://LMS4You.com/Sem | Joe.Doe@LMS4You.nl |
+|  Name | Product | Role | Endpoint URl | Auth Url | Contatc info |
+|--|--|--|--|--|--|
+| a good publisher | AllYouCanLearn | LA | https://api-HUB.AllYouCanLearn.com/Sem | https://auth.AllYouCanLearn.com/.well-known/openid-configuration | Joe.Doe@AllYouCanLearn.nl |
+| a good LMS | LMS4You | LMS | https://LMS4You.com/Sem | https://LMS4You.com/.well-known/openid-configuration | Joe.Doe@LMS4You.nl |
 |||||
-| Boom VO | Boom VO | LA | < tbd > | - | 
-| Iddink group | Magister | LMS | < tbd > | Edwin.verwoerd@iddinkgroup.nl |
-| Iddink group | Magister | SIS | < tbd > | Edwin.verwoerd@iddinkgroup.nl |
-| Iddink group | Leermiddelen | MP |  < tbd > | Edwin.verwoerd@iddinkgroup.nl |
+| Boom VO | Boom VO | LA | < tbd > | - | - | 
+| Iddink group | Magister | LMS | < tbd > | - | Edwin.verwoerd@iddinkgroup.nl |
+| Iddink group | Magister | SIS | < tbd > | - | Edwin.verwoerd@iddinkgroup.nl |
+| Iddink group | Leermiddelen | MP |  < tbd > | - | Edwin.verwoerd@iddinkgroup.nl |
 | Noordhoff | Noordhoff Uitgevers | LA |  < tbd > | - |
 | Osingadejong | Osingadejong | MP | < tbd >| - |
 | The Learning Network | TLN | MP | < tbd >| - 
