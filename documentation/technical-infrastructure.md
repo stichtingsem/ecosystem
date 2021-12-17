@@ -14,7 +14,7 @@ The parties that implement the API can be dived in 2 groups:
  
 SAAS Vendors will do the communication on behalf of a school after the school has given consent. They will not have an endpoint per school, but one endpoint as SAAS vendor.
 
-![architecture](diagrams\Saas_Vendor_Infrastructure-Direct_Communication.drawio.svg)
+![architecture](diagrams/Saas_Vendor_Infrastructure-Direct_Communication.drawio.svg)
 
 
 
@@ -24,14 +24,14 @@ SAAS Vendors will do the communication on behalf of a school after the school ha
 
 ## SEM Directory
 So in total we will have a limitted list of parties in one region. 
-The parties will know the other parties by the [SEM Directory](..\SEM-Party-Directory.md)
+The parties will know the other parties by the [SEM Directory](../SEM-Party-Directory.md)
 
 ##  Api authentication
 For more infoemation on authentication and authorization: See [API authentication](API-authentication.md)
 
 
 # More detailed
-![architecture](diagrams\Saas_Vendor_Infrastructure-Big_Picture_Gateways.drawio.svg)
+![architecture](diagrams/Saas_Vendor_Infrastructure-Big_Picture_Gateways.drawio.svg)
 
 # Detailed implementations
 If a party plays multiple roles (like LA and MP), the party must implement multiple API's 
@@ -40,19 +40,19 @@ If a party plays multiple roles (like LA and MP), the party must implement multi
 ## SIS Gateway
 The Learning Application will implement 1 API's and will send Events for these to other parties. As the SIS will not recieve events, the event hook api is not implemented
 
-![architecture](diagrams\Saas_Vendor_Infrastructure-SIS_Vendor_Gateway.drawio.svg)
+![architecture](diagrams/Saas_Vendor_Infrastructure-SIS_Vendor_Gateway.drawio.svg)
 
 ## MP Gateway
 The Learning Application will implement 2 API's (entitlements and eventhooks) and will  recieve Events for these to other parties for Students, Usage and Catalogue.
 
-![architecture](diagrams\Saas_Vendor_Infrastructure-MP_Gateway.drawio.svg)
+![architecture](diagrams/Saas_Vendor_Infrastructure-MP_Gateway.drawio.svg)
 
 ## LMS Gateway
 The LMS will implement no API's and will and will recieve Events from other parties for Students, Entitlements, Usage, Catalogue, Course 
 
-![architecture](diagrams\Saas_Vendor_Infrastructure-LMS_Vendor_Gateway.drawio.svg)
+![architecture](diagrams/Saas_Vendor_Infrastructure-LMS_Vendor_Gateway.drawio.svg)
 
 ## LA Gateway
 The Learning Application will implement 4 API's and will send Events for these to other parties. It will send events for usage
 
-![architecture](diagrams\Saas_Vendor_Infrastructure-LA_Gateway.drawio.svg)
+![architecture](diagrams/Saas_Vendor_Infrastructure-LA_Gateway.drawio.svg)

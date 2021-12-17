@@ -10,7 +10,7 @@ So before calling the API, the API client needs to call the authentication serve
 This is an industry standard (See https://oauth.net/2/) and is supported by many software languages and frameworks.
 
 
-![architecture](diagrams\API-Flows.drawio.svg)
+![architecture](diagrams/API-Flows.drawio.svg)
 
 For more details: see [API-authentication-token](API-authentication-token.md)
 
