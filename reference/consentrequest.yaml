@@ -1,0 +1,135 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://example.stichtingsem.org/api'
+info:
+  version: 1.0.0
+  title: Consent API
+  description: |-
+    Consent-flow for third party-consent (only applicable for the sharing of SIS-data):
+
+    __Introduction__
+    
+    When two parties agree to exchange data, they will define their roles and with this a list of applicable scopes will be defined and saved alongside the client credentials. This will allow for validation of applications if they may ask consent through an LMS (to access the third party data). Also an optional callbackurl is registered alongside the client, where an update-message about the consent-request can be sent. (declined or accepted)
+    
+    __Application initiated flow (optional)__
+    
+    An application (A) will ask for a token at the IDP (using the client_credentials flow) without a specific scope but for a specific digitalDeliveryId and can do an HTTP POST request to ask consent for a specific scope (#redirectToApiSpec). A UUID for this consent-request will be returned. This flow will be asynchronous, the application is done for now.
+    
+    
+    __Consent-request resource__
+    
+    Application (A) can check the status of their consent-request by doing an HTTP GET request with the consent-request-uuid as a queryparam. Status can be Pending, Accepted or Declined.
+    
+    __Consent resource__ 
+    
+    Application (A) can check which schools have given consent by doing an HTTP GET request to ask if a specific digitalDeliveryId has given consent. Or to retrieve a list of schools that have given consent. 
+    
+    In the other application (B) the currently open consent-requests will be made visible to users with the access role to allow data sharing (ie. security officer). The user allows the consent-request and a consent with requested scopes is created. If the user declines the consent-request no consent is created. In both cases an update-message is (optionally) sent to the registered callbackurl. 
+    The user can also create a consent without prior consent-request. Therefor the application needs to render all registered parties from the SEM ecosystem, for the user to select and create a consent with user selected scopes (subset of the oauthclients scopes). This consent will be available on the API described below.
+
+    __Token for digideliveryId__
+    
+    When requesting a token on the oauth2 token resource using the client_credentials a queryparameter 'digideliveryid' containing the identifier for the school. A tokenrequest for a token used for requesting consent for a new scope does not need to contain a requested scope.
+        
+  contact:
+    email: jorim.van.der.wijngaard@topicus.nl
+tags:
+  - name: consent
+    description: Operations related to data access consent
+  - name: consentrequest
+    description: Operations to request data access (consent)
+paths:
+  /consentrequest:
+    post:
+      description: Allows an application to request access to data of a new school (digideliveryid) and scope.
+      tags:
+        - consentrequest
+      operationId: requestConsent
+      requestBody:
+        description: 'ConsentRequest that contains list of requested scopes'
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/consentrequest"
+      responses:
+        '200':
+          description: OK, returned consentrequest will now contain a id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consentrequest'
+        '403':
+          description: FORBIDDEN, consent scope can not be requested with for this client
+      summary: ''
+  /consentrequest/{consentRequestId}:
+    get:
+      description: Resource to check status of requested consent
+      tags:
+        - consentrequest
+      operationId: requestConsentStatus
+      parameters:
+        - name: consentRequestId
+          in: path
+          description: id of the ConsentRequest posted
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: OK, returned consentrequest can be checked for status 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consentrequest'
+        '404':
+          description: NOT FOUND, consentrequest unavailable
+      summary: ''
+  /consent:
+    get:
+      description: Resource to check if a school (based on digideliveryid) has given consent to access data and to which scopes. This resource can be used to check if a school has given consent without a prior consentrequest from the application itself.
+      tags:
+        - consent
+      operationId: getConsent
+      responses:
+        '200':
+          description: OK, returned consentrequest can be checked for status 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consent'
+        '404':
+          description: NOT FOUND, consent unavailable
+      summary: ''
+components:
+  schemas:
+    consentrequest:
+      type: object
+      x-tags:
+        - consentrequest
+      description: TBD
+      properties:
+        id:
+          type: string
+          description: Field will be ignored in the post request and generated by backend
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        status: 
+          type: string
+          format: enum [PENDING, ACCEPTED, DECLINED]
+        scopes:
+          type: array
+          items: 
+            type: string
+          example: [sis.student-teacher-group]
+    consent:
+      type: object
+      x-tags:
+        - consent
+      description: TBD
+      properties:
+        scopes:
+          type: array
+          items: 
+            type: string
+          example: [sis.student-teacher-group]
