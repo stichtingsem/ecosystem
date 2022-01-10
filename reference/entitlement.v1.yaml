@@ -243,14 +243,14 @@ components:
         name:
           type: string
           description: The name for the school
-        group:
+        subjectChoices:
           type: array
           items:
-            $ref: '#/components/schemas/Group'
+            $ref: '#/components/schemas/subjectChoice'
         quantity:
           type: integer
           example: 100
-          description: 'Quantity available to the school, used if no group selected.'
+          description: 'Quantity available to the school, used if no subjectChoices selected.'
       required:
         - id
         - name
@@ -301,10 +301,10 @@ components:
         - name
       x-tags:
         - entitlements
-    Group:
-      title: Group
+    SubjectChoice:
+      title: SubjectChoice
       type: object
-      description: A sub-group within a school that the entitlement is applicable to - typically a subject and level. So every student in this group is entitled to the products in this entitlement
+      description: A subjectChoice within a school that the entitlement is applicable to - typically a subject and level. So every student who has this subjectchoice is entitled to the products in this entitlement. Todo: what is primary key and is this matchable on SIS data?
       properties:
         subjectCode:
           type: string
