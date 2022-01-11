@@ -1,6 +1,6 @@
 # API authentication token
 
-When requesting a token on the oauth2 token resource using the client_credentials a queryparameter ‘digideliveryid’ containing the identifier for the school. A scope to access data can optionally be requested and if consent has been given, will be added as a scope in the token defined below. A tokenrequest for a token used for requesting consent for a new scope does not need to contain a requested scope.
+When requesting a token on the oauth2 token resource using the client_credentials a queryparameter containing the identifier for the school. A scope to access data can optionally be requested and if consent has been given, will be added as a scope in the token defined below.
 
 Signed JWT with as minimum the following attributes:
 
