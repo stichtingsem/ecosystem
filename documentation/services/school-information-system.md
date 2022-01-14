@@ -18,15 +18,15 @@ deatiled definitions can be found in the openapi spec : [SIS Data](https://stich
 
 ### Student
 The student describes the student on a school in a particular schoolyear.
-![Student](..\diagrams\SIS-Entity-Diagram-Student.drawio.svg)
+![Student](../diagrams/SIS-Entity-Diagram-Student.drawio.svg)
 
 ### Teacher
 The Teacher describes the teacher on a school in a particular schoolyear.
-![Student](..\diagrams\SIS-Entity-Diagram-Teacher.drawio.svg)
+![Student](../diagrams/SIS-Entity-Diagram-Teacher.drawio.svg)
 
 ### Group
 The Group describes the groups (classes) on a school in a particular schoolyear.
-![Student](..\diagrams\SIS-Entity-Diagram-Group.drawio.svg)
+![Student](../diagrams/SIS-Entity-Diagram-Group.drawio.svg)
 
 ### Subject Choice
 The subject choice is a combination of a subject (match), on a certain educational offering (eg HAVO), in a level (HAVO-1). It also contains the official government code for the subject and the name of the subject as is is used in the school
