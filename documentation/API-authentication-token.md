@@ -8,8 +8,10 @@ client_id : identifier of application that has request this token (recipient)
 scopes : list of scopes that client_id wants to access
 
 optional (proposal):
-schoolidentifier: requested digideliveryid 
-parentidentifier: digideliveryid of parent organisation
+schoolidentifier*: requested digideliveryid 
+parentidentifier*: digideliveryid of parent organisation
+
+* names of these identifiers are still in draft as the naming is up for debate (in the functional track)
 
 All this should be signed as described in the JWS specification.
 
