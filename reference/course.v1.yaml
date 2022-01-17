@@ -3,19 +3,23 @@ info:
   title: Course API
   version: '1.0'
   description: |-
-    This API enables a learning application to provide information about the specific activities available within the application that can be scheduled within an LMS.  This data is always exchanged in the context of a school, as not only can information vary by school (e.g. a learning application may allow material to be modified or configured specific to the needs of that organisation), but this API enables the sharing of course details, which is the basis for progress and results - This is sensitive data and as such we must ensure that it is only shared after approval by the school to exchange this information between the LA and the LMS.
+    This API enables an LMS to get more information about the specific activities available within the course or learning application that can be scheduled for students.  In this the LMS can personalise the course per student.
+
+    The information is not the course itself, but meta information about the course. The meta information is also the basis for the progress API to report progress on the course.
+
+    the deatils of the course are exchaged in the xAPI cmi5 course format (https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/v1/CourseStructure.xsd)
+
 
     ### Event Access
 
     Events|Event Data|Rationale|
     |------|---------|--|
-    |la.progress| // as per XAPI statements |To enable the LMS to receive XAPI statements after registering webhook for a specific school|
     |la.course| // as per Course |To enable the LMS to receive updates to course information for a specific school|
 
     ## Scopes and Data
 
-    - la.course.school
-    - la.progress.school
+    - la.course.school // scope to get the course information specificly for one school
+    - la.course.lms  // a generic scope to get all information that is the same for each school
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
@@ -33,7 +37,7 @@ paths:
         - in: query
           name: searchterm
           description: |
-             a specific search term
+            a specific search term
           schema:
             type: string
             example: feniks
@@ -45,7 +49,7 @@ paths:
             format: int32
           examples:
             default:
-              value: 0d
+              value: 0
               summary: The start point for pagination
         - in: query
           name: limit
@@ -69,9 +73,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/CourseRef'
+                  $ref: '#/components/schemas/Course'
       operationId: get-courses
-      description: Get courses from the catalogue - either all or those matching specific criteria.
+      description: |-
+        Get courses from the catalogue - either all or those matching specific criteria.
+        searchterm is google like. Could be matching on part of courseid, or description or levelsubjects
+
+        Usually the course is found via the catalog, each product has a list of courses that is available for a student/teacher when that product is bought. 
   '/course/{id}':
     x-tags:
       - course
@@ -90,9 +98,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StreamCourse'
+                $ref: '#/components/schemas/Course'
       operationId: get-stream-course
-      description: Get a specific course by stream ID - returns basic metadata.
+      description: |-
+        Get a specific course by stream ID - returns basic metadata.
+        Usually the course is found via the catalog, each product has a list of courses that is available for a student/teacher when that product is bought. This call is used to get more infomation, can also be used to see if there are any new versions of this course published
   '/course/{id}/cmi5e-course':
     x-tags:
       - course
@@ -111,163 +121,118 @@ paths:
           content:
             application/xml:
               schema:
-                $ref: '#/components/schemas/CMI5.Course'
+                $ref: '#/components/schemas/CMI5.CourseStructure'
+              examples:
+                example-1:
+                  value:
+                    course:
+                      title:
+                        - lang: string
+                          langstring: string
+                      description:
+                        - lang: string
+                          langstring: string
+                      image: string
+                      publicationdate: string
+                      publisher: string
+                      streamcode: string
+                      version: string
+                      streams:
+                        - id: string
+                          description: string
+                    objectives: string
+                    aus:
+                      - id: string
+                        activityType: string
+                        moveOn: string
+                        launchMethod: string
+                        title:
+                          - lang: string
+                            langstring: string
+                        objectives:
+                          - null
+                        url: string
+                        launchParameters: string
+                        image: string
+                        streamref: string
+                    blocks:
+                      - id: string
+                        title:
+                          - lang: string
+                            langstring: string
+                        description:
+                          - lang: string
+                            langstring: string
+                        blocks:
+                          - {}
+                        aus:
+                          - id: string
+                            activityType: string
+                            moveOn: string
+                            launchMethod: string
+                            title:
+                              - lang: string
+                                langstring: string
+                            objectives:
+                              - null
+                            url: string
+                            launchParameters: string
+                            image: string
+                            streamref: string
+                        instructions:
+                          - lang: string
+                            langstring: string
+                        image: string
+                        studyloadindicator: 0
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                example-1:
+                  value: {}
       operationId: get-course-cmi5
-      description: Get a specific course by stream ID - returns full CMI5 Extended Course XML
-  '/course/{id}/results':
-    x-tags:
-      - results
-      - course
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0d
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get XAPI statements related to a specific course, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Statement'
-      operationId: get-course-statements
-      description: Get statements related to a specific course
-  '/course/{id}/student/{studentId}/results':
-    x-tags:
-      - course
-      - results
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        description: Unique course identifier
-        required: true
-      - in: path
-        schema:
-          type: string
-        name: studentId
-        description: Unique student identifier
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0d
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get XAPI statements related to a specific student, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Statement'
-      operationId: get-user-statements
-      description: Get statements for a specific user
+      description: |-
+        Get the meta data of a specific course by stream ID - 
+        The meta data contains information abou the course, including which chapters, paragraphs and assignable learning units are available, including links to the publishers playing envirionment so the student start that unit.
+        The LMS can use this to personalise the course per student and add or skip assignable units. This structure and information is also the base for exchanging progress.
+        NOTE: the course content itself is not part of the specification, it describes the meta information and how to navigate to the right point in the course, but not the course itself.
+
+        The CMI5 standard also provides a protocol to launch assignable units in a browser and get progress on thse units. This is not part of the SEM project. The format is used to exchange meta information, not to enforce runtime. For the moment it is expected that the url's in the content work without a need to setup sessions etc. each publisher is responsible for creating url's in such a way that single signof is enforced. example: https://toegang.noordhoff.nl/8717927999997?deepLinkId=e19ffbe3-2411-4d1f-8aa6-14fc43c2142a
+
+        The format of this meta information is based on the international xAPI/ CMI5 / CourseDefinition standard as described in https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/v1/CourseStructure.xsd and the extention defined in http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd .  This format is XML based.
+
+        returns: full CMI5 Extended Course XML
+
+        If we decide to make a JSON version then this definition would do fine, as it contains the same fields/information.  This cannot be fully defined in openAPI/JSON in the same format as the xml version, but this is a close mapping for reference. See remarks bij the CMI5.CourseStructure model.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
 components:
   schemas:
     Course:
       title: Stream Course
       type: object
-      description: 'A course that is available from a learning application, response is a CMI5 Course in XML- (we need to decide if we convert the XSD into OpenAPI spec definitions or leave it open here.)'
-      x-tags:
-        - course
-    CourseRef:
-      title: Course Reference
-      type: object
-      description: A reference to a course provided by a learning application - used to enable searching / filtering.
+      description: 'to be described  '
       x-tags:
         - course
       properties:
-        id:
+        courseid:
           type: string
-          description: A unique identifier
-        name:
+          xml:
+            attribute: true
+        tile:
           type: string
-          description: A short name
-        streamId:
+        description:
           type: string
-          description: Description of the author (in cases not the provider of the LA)
-        relatedProducts:
-          type: array
-          description: |
-            An array of related products this course applies to
-          items:
-            type: string
+        lastpublishedversion:
+          type: string
+          description: Last published version of this course
         levelSubjects:
           type: array
-          description: The set of levels and subjects that this product is targeted at.
           items:
             $ref: '#/components/schemas/LevelSubjects'
     LevelSubjects:
@@ -282,337 +247,416 @@ components:
           type: string
           description: |
             Subject code for specific subject at this level
-    CMI5.Course:
-      title: CMI5 Course
+    CMI5.CourseStructure:
       type: object
-      description: 'A course that is available from a learning application, response is a CMI5 Course - we need to decide if we convert the XSD into OpenAPI spec definitions or leave it open here.'
-      x-tags:
-        - course
-      properties:
-        id:
-          type: string
-          description: A unique identifier
-        name:
-          type: string
-          description: A short name
-        author:
-          type: string
-          description: Description of the author (in cases not the provider of the LA)
-        courseId:
-          type: string
-          description: Description of the author (in cases not the provider of the LA)
-        relatedProducts:
-          type: array
-          description: |
-            An array of related products this course applies to
-          items:
-            type: string
-    Statement:
-      title: XAPI Statement
-      type: object
-      required:
-        - id
-        - actor
-        - verb
-        - object
-      properties:
-        id:
-          type: string
-        actor:
-          type: object
-          description: 'Whom the Statement is about, as an Agent or Group Object.'
-          enum:
-            - $ref: '#/components/schemas/Agent'
-            - $ref: '#/components/schemas/Group'
-        verb:
-          type: object
-          description: Action taken by the Actor.
-        object:
-          type: object
-          description: Activity or Agent that is the Object of the Statement.
-          enum:
-            - $ref: '#/components/schemas/Activity'
-            - $ref: '#/components/schemas/Agent'
-        result:
-          $ref: '#/components/schemas/Result'
-        context:
-          type: object
-        timestamp:
-          type: string
-        stored:
-          type: string
-        authority:
-          type: object
-        version:
-          type: string
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attachment'
+      description: |-
+        Course definition in CMI5 format. 
+        (see https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/v1/CourseStructure.xsd)
+        The cmi5 course structure definition is extended with http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd fields. They are added in this spec with an xml namespace 'ecs'
+
+
+        If the API the xml version is defined. This cannot be fully defined in openAPI/JSON, but this is a close mapping for reference.
+        Technical: In the xml the aus and blocks collections are not explicit available and are there implicit
+        example:
+        <courseStructure>
+          <course...>
+          </course>
+          <au>
+              details
+          </au>
+          <block>
+              details
+          </block>
+          <block>
+              details
+          </block>
+        <courseStructure>
+           
       x-examples:
         example-1:
-          id: string
-          actor:
-            $ref: '#/components/schemas/Agent'
-          verb: {}
-          object:
-            $ref: '#/components/schemas/Activity'
-          result:
-            score:
-              scaled: 0
-              raw: 0
-              min: 0
-              max: 0
-            success: true
-            completion: true
-            response: string
-            duration: string
-            extensions: {}
-          context: {}
-          timestamp: string
-          stored: string
-          authority: {}
-          version: string
-          attachments:
-            - usageType: string
-              display: {}
-              description: {}
-              contentType: string
-              length: 0
-              sha2: string
-              fileUrl: string
-    StatementResult:
-      title: XAPI Statement Result
-      type: object
+          course:
+            title:
+              - lang: string
+                langstring: string
+            description:
+              - lang: string
+                langstring: string
+            image: string
+            publicationdate: string
+            publisher: string
+            streamcode: string
+            version: string
+            streams:
+              - id: string
+                description: string
+          objectives: string
+          aus:
+            - id: string
+              activityType: string
+              moveOn: string
+              launchMethod: string
+              title:
+                - lang: string
+                  langstring: string
+              objectives:
+                - null
+              url: string
+              launchParameters: string
+              image: string
+              streamref: string
+          blocks:
+            - id: string
+              title:
+                - lang: string
+                  langstring: string
+              description:
+                - lang: string
+                  langstring: string
+              blocks:
+                - {}
+              aus:
+                - id: string
+                  activityType: string
+                  moveOn: string
+                  launchMethod: string
+                  title:
+                    - lang: string
+                      langstring: string
+                  objectives:
+                    - null
+                  url: string
+                  launchParameters: string
+                  image: string
+                  streamref: string
+              image: string
+              studyloadindicator: 0
       properties:
-        statementId:
-          type: string
-          description: Id of Statement to fetch
-        voidedStatementId:
-          type: string
-          description: Id of voided Statement to fetch. see Voided Statements
-        agent:
-          type: object
-          enum:
-            - $ref: '#/components/schemas/Agent'
-            - $ref: '#/components/schemas/Group'
-          description: 'Filter, only return Statements for which the specified Agent or Group is the Actor or Object of the Statement'
-        verb:
-          type: string
-          description: 'Filter, only return Statements matching the specified Verb id.'
-        activity:
-          type: string
-          description: 'Filter, only return Statements for which the Object of the Statement is an Activity with the specified id.'
-        registration:
-          type: string
-          description: 'Filter, only return Statements matching the specified registration id. Note that although frequently a unique registration will be used for one Actor assigned to one Activity, this cannot be assumed. If only Statements for a certain Actor or Activity are required, those parameters also need to be specified.'
-        related_activities:
-          type: boolean
-          default: false
-          description: 'Apply the Activity filter broadly. Include Statements for which the Object, any of the context Activities, or any of those properties in a contained SubStatement match the Activity parameter, instead of that parameter''s normal behavior. Matching is defined in the same way it is for the "activity" parameter.'
-        related_agents:
-          type: boolean
-          default: false
-          description: 'Apply the Agent filter broadly. Include Statements for which the Actor, Object, Authority, Instructor, Team, or any of these properties in a contained SubStatement match the Agent parameter, instead of that parameter''s normal behavior. Matching is defined in the same way it is for the "agent" parameter.'
-        since:
-          type: string
-          format: date-time
-          description: Only Statements stored since the specified Timestamp (exclusive) are returned.
-        until:
-          type: string
-          format: date-time
-          description: Only Statements stored at or before the specified Timestamp are returned.
-        limit:
-          type: integer
-          default: 0
-          description: Maximum number of Statements to return. 0 indicates return the maximum the server will allow.
-        format:
-          type: string
-          default: exact
-          enum:
-            - ids
-            - exact
-            - canonical
-        attachments:
-          type: boolean
-          default: false
-          description: 'If true, the LRS uses the multipart response format and includes all attachments as described previously. If false, the LRS sends the prescribed response with Content-Type application/json and does not send attachment data.'
-        ascending:
-          type: boolean
-          default: false
-          description: 'If true, return results in ascending order of stored time'
-    Group:
-      title: XAPI Group
-      type: object
-    Agent:
-      title: XAPI Agent
-      type: object
-      properties:
-        objectType:
-          type: string
-        name:
-          type: string
-    Person:
-      title: XAPI Person
-      type: object
+        course:
+          $ref: '#/components/schemas/CMI5.Course'
+        objectives:
+          type:
+            - string
+            - array
+          description: |
+            To be described in more detail
+          items:
+            $ref: '#/components/schemas/CMI5.Objective'
+        aus:
+          type: array
+          description: If the course has no structure in paragraphs and chapters then this list of assignable units forms the course. Not really used in SEM project
+          items:
+            $ref: '#/components/schemas/CMI5.AU'
+        blocks:
+          type: array
+          description: The block containing the chapter and paragraphs
+          items:
+            $ref: '#/components/schemas/CMI5.Block'
       required:
-        - objectType
-      properties:
-        objectType:
-          type: string
-          default: Person
-        name:
-          type: array
-          items:
-            type: string
-            description: List of names of Agents retrieved.
-        mbox:
-          type: array
-          items:
-            type: string
-            description: List of e-mail addresses of Agents retrieved.
-        mbox_sha1sum:
-          type: array
-          items:
-            type: string
-            description: List of the SHA1 hashes of mailto IRIs (such as go in an mbox property).
-        openid*:
-          type: array
-          items:
-            type: string
-            description: List of openids that uniquely identify the Agents retrieved.
-        account*:
-          type: array
-          items:
-            $ref: '#/components/schemas/Account'
-    Account:
-      title: XAPI Account
+        - course
+    CMI5.Course:
+      title: null
       type: object
-      required:
-        - homePage
-        - name
-      properties:
-        homePage:
-          type: string
-        name:
-          type: string
-    Verb:
-      title: XAPI Verb
-      type: object
-      required:
-        - id
+      description: |-
+        Courde definition as based on cmi5 course definition: 
+        (see https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/v1/CourseStructure.xsd)
+        The cmi5 course structure definition is extended with http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd fields. They are added in this spec with an xml namespace 'ecs'
+      x-examples:
+        example-1:
+          id: 39c50b7f-c0f6-499b-bd90-e673eace2be4
+          title:
+            - lang: nl-NL
+              langstring: Stepping Stones - 4 vwo K2 (5e Ed.)
+          description:
+            - lang: nl-NL
+              langstring: A very nice course called Stepping Stones 5th edition for vwo 4
+          image: 'https://sem.noordhoff.nl/content/stepping-365839.png'
+          publicationdate: string
+          publisher: Noordhoff BV
+          streamcode: string
+          version: 04-02-2020
+          streams:
+            - id: string
+              description: string
       properties:
         id:
           type: string
-        display:
-          type: object
-          description: 'The human readable representation of the Verb in one or more languages. This does not have any impact on the meaning of the Statement, but serves to give a human-readable display of the meaning already determined by the chosen Verb.'
-      example:
-        id: 'http://example.com/xapi/verbs#defenestrated'
-        display:
-          en-US: defenestrated
-          es: defenestrado
-    Activity:
-      title: XAPI Activity
-      type: object
-      properties:
-        name:
-          type: object
+          xml:
+            attribute: true
+          description: the unique identifier of this version of the course
+        title:
+          $ref: '#/components/schemas/CMI5.TextType'
         description:
-          type: object
-        type:
-          type: object
-        moreInfo:
-          type: object
-        extensions:
-          type: object
-    StatementReference:
-      title: XAPI Statement Reference
-      type: object
-      required:
-        - objectType
-        - id
-      properties:
-        objectType:
+          $ref: '#/components/schemas/CMI5.TextType'
+        image:
           type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+          description: 'Additional field: URI to the image to represent this course'
+        publicationdate:
+          type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+          description: 'Additional field: Date of the publication of this version of the course'
+        publisher:
+          type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+          description: 'Additinal field: name of the publisher of this course'
+        streamcode:
+          type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+          description: 'Additional: the course identifier (like steppingstone-5e-4vwo)'
+        version:
+          type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+          description: 'Additonal field to specify a version of this course (like #1, #2 or a date 2022-03-14)'
+        streams:
+          type: array
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+          minItems: 0
+          description: |-
+            Additinal: 
+            A list of used streams in this course. A stream is a extra catagory for the au's to indicate optional material, material voor 'verdieping', etc. It helps teachers to specify individual courses for each student
+          items:
+            $ref: '#/components/schemas/CMI5.Stream'
+      required:
+        - id
+        - title
+        - description
+    CMI5.Objective:
+      title: CMI5.Objective
+      type: object
+      properties:
         id:
           type: string
-    Result:
-      title: XAPI Result
+      description: To be described
+    CMI5.Block:
+      title: CMI5.Block
       type: object
+      x-examples:
+        example-1:
+          id: 'es:7DD56457-A9F5-44AD-9AA7-E791DE57C454'
+          title:
+            - lang: nl-NL
+              langstring: England
+          description:
+            - lang: nl-NL
+              langstring: '-'
+          blocks:
+            - id: 'es:AB8EB0CB-CF3D-4961-9E6C-BF6271CE7A3F'
+              title:
+                - lang: nl-NL
+                  langstring: Listening
+              description:
+                - lang: nl-NL
+                  langstring: 1. Je kunt de Engelse persoonlijke voornaamwoorden gebruiken. 2. Je kunt de Engelse bezittelijke voornaamwoorden gebruiken. 3. Je kent de betekenis van Engelse woorden rondom het thema 'School'. 4. Je kunt Engelse woorden rondom het thema 'School' gebruiken.
+              aus:
+                - id: 'es:EA9A53C6-44DD-46CE-A223-79FA33DD8282'
+                  activityType: Theorie
+                  launchMethod: AnyWindow
+                  moveOn: CompletedOrPassed
+                  title:
+                    - lang: Lesstof
+                      langstring: Lesstof
+                  description:
+                    - lang: nl-NL
+                      langstring: ...
+                  url: 'https://allright.secure.malmberg.nl/deeplink/paragraph-component/es:EA9A53C6-44DD-46CE-A223-79FA33DD8282'
+                  image: 'https://media.malmberg.nl/component/EA9A53C6-44DD-46CE-A223-79FA33DD8282.png'
+                  streamref: core
+              instructions:
+                - lang: nl-NL
+                  langstring: Lees de volgende paragraaf zorgvuldig door
+              studyloadindicator: 3
+          instructions:
+            - lang: nl-NL
+              langstring: In deze paragraaf leer je weer heel veel
+          image: 'https://media.malmberg.nl/images/Listening.png'
+          studyloadindicator: 1
       properties:
-        score:
-          $ref: '#/components/schemas/Score'
-        success:
-          type: boolean
-        completion:
-          type: boolean
-        response:
+        id:
           type: string
-        duration:
-          type: string
-        extensions:
-          type: object
-    Score:
-      title: XAPI Score
-      type: object
-      properties:
-        scaled:
-          type: number
-        raw:
-          type: number
-        min:
-          type: number
-        max:
-          type: number
-    Context:
-      title: XAPI Context
-      type: object
-      properties:
-        registration:
-          type: string
-        instructor:
-          $ref: '#/components/schemas/Agent'
-        team:
-          type: object
-        contextActivities:
-          type: object
-        revision:
-          type: string
-        platform:
-          type: string
-        language:
-          type: string
-        statement:
-          $ref: '#/components/schemas/Statement'
-        extensions:
-          type: object
-    Attachment:
-      title: XAPI Attachment
-      type: object
-      required:
-        - usageType
-        - display
-        - contentType
-        - length
-        - sha2
-      properties:
-        usageType:
-          type: string
-        display:
-          type: object
+          xml:
+            attribute: true
+        title:
+          $ref: '#/components/schemas/CMI5.TextType'
         description:
-          type: object
-        contentType:
+          $ref: '#/components/schemas/CMI5.TextType'
+        blocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CMI5.Block'
+        aus:
+          type: array
+          items:
+            $ref: '#/components/schemas/CMI5.AU'
+        instructions:
+          $ref: '#/components/schemas/CMI5.TextType'
+        image:
           type: string
-        length:
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+        studyloadindicator:
           type: integer
-        sha2:
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+      required:
+        - id
+        - title
+        - description
+      description: |-
+        A block describes a chapter or paragraph of a course. It describes title, additional description, links to objectives and the assignable learning units (au) that are part of this chapter or paragraph.
+        The structure is recursive, so each block can contain other blocks. In practice the number of levels in secondary education will be 2: chapters, followed by paragraphs, containing au's.
+
+        the description field can be used to specify more information on the chapter or paragraph, for example filling it with learning goals so the teacher and student can see the bigger picture.
+
+        there are 3 additional, optional fields: 
+        * instructions : additional instructions for the student, if any
+        * studyload indicator: an integer that gives a relative studyload, with this you can specify that this block is expected to take a factor 2 or 3 more time to complete. this is a great help for planning. It is reative, not an absolute time in hours or days
+        * image: an uri to an image that represents this chapter.   
+    CMI5.AU:
+      title: CMI5.AU
+      type: object
+      x-examples:
+        example-1:
+          id: e19ffbe3-2411-4d1f-8aa6-14fc43c2142a
+          activityType: ARRANGEMENT
+          moveOn: CompletedOrPassed
+          launchMethod: AnyWindow
+          title:
+            - lang: nl-NL
+              langstring: Test Yourself
+          objectives: []
+          url: 'https://toegang.noordhoff.nl/8717927999997?deepLinkId=e19ffbe3-2411-4d1f-8aa6-14fc43c2142a'
+          launchParameters: ''
+          image: ''
+          streamref: core
+      description: |-
+        A assignable unit describes the smalles unit that will exchanged in the cmi5 format. Most of the time this is an instruction, a link to some content or exercise in the learning platform of the publisher or learning application.
+
+        The CMI5/xAPi definition contains some meta data, an url to start the activity and some information how to use the url.
+        Important fields:
+
+        ### activity type
+        this describes how to represent or interpret the activity. In the standard this is a free field, with lots of examples how to use it. For the SEM scope we will use it only to present the right icon/instructions for a student.
+        initally used values:
+         * Oefening
+         * Naslagwerk
+         * ARRANGEMENT
+         * Assignment
+         * Test
+         * Instructie
+         * Theorie
+
+        ### moveon
+        This field is exchanged and mandatory but not used unless the full flow with progress is also implemented. Default value for SEM: _CompletedOrPassed_
+
+        ### launchmethod
+        The launchmethod describes how the content should be presented. The exact support for using launchparameters etc is not yet defined in SEM project, so currently this field is ignored is SEM scope
+        Default value for SEM: _AnyWindow_
+
+        ### launchParameters
+        Optional information how to launch the url. The exact support for using launchparameters etc is not yet defined in SEM project, so currently this field is ignored is SEM scope
+        Default value for SEM:empty or not present
+
+        ## Additional fields
+        there are 3 additional, optional fields: 
+
+        * image: an uri to an image that represents this unit of learning.  
+      properties:
+        id:
           type: string
-        fileUrl:
+          xml:
+            attribute: true
+        activityType:
           type: string
+          xml:
+            attribute: true
+        launchMethod:
+          type: string
+          xml:
+            attribute: true
+        moveOn:
+          type: string
+          xml:
+            attribute: true
+        title:
+          $ref: '#/components/schemas/CMI5.TextType'
+        description:
+          $ref: '#/components/schemas/CMI5.TextType'
+        objectives:
+          type: array
+          items: {}
+        url:
+          type: string
+        launchParameters:
+          type: string
+        image:
+          type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+        streamref:
+          type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+          description: 'Additional field to point to a stream in the course object to indicate that this AU is for example core material or optional material, of for a higher level.'
+      required:
+        - id
+        - activityType
+        - launchMethod
+        - moveOn
+        - title
+        - url
+    CMI5.TextType:
+      title: CMI5.TextType
+      type: array
+      items:
+        type: object
+        properties:
+          lang:
+            type: string
+            xml:
+              attribute: true
+          langstring:
+            type: string
+      xml: wrapped
+      description: |-
+        This is a representation of a translatable string. Effectively an Array of strings with an attribute which language the string is in.
+        NOTE : In xml this should be represented as < langstring lang="nl-NL">Hallo< /langstring>, but that is not possible in the current openAPI3 spec (see https://github.com/OAI/OpenAPI-Specification/issues/630)
+      x-examples:
+        example-1:
+          - lang: string
+            langstring: string
+    CMI5.Stream:
+      title: CMI5.Stream
+      type: object
+      properties:
+        id:
+          type: string
+          xml:
+            attribute: true
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+        description:
+          type: string
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
   securitySchemes:
-    API Key - 1:
+    APIKey:
       type: oauth2
       flows:
         implicit:
@@ -620,4 +664,3 @@ components:
           refreshUrl: ''
           scopes:
             la.course.school: Access to available course information available to a school
-            la.progress.school: Access to progress for a specific learner at a specific school'

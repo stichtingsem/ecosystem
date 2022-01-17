@@ -1,0 +1,43 @@
+<xs:schema xmlns="http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cmi5="https://w3id.org/xapi/profiles/cmi5/v1/CourseStructure.xsd"
+           targetNamespace="http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd"
+           elementFormDefault="qualified"
+           id="cmi5ExtendedCourseStructureExtension">
+    <xs:import namespace="https://w3id.org/xapi/profiles/cmi5/v1/CourseStructure.xsd" schemaLocation="CourseStructure.xsd"/>
+    <xs:element name="publisher" type="xs:string" />
+    <xs:element name="streamcode" type="xs:string" />
+    <xs:element name="image" type="xs:anyURI" />
+    <xs:element name="version" type="xs:string" />
+    <xs:element name="publishdate" type="xs:dateTime" />
+    <xs:element name="instructions" type="cmi5:textType"/>
+    <xs:element name="studyloadindicator" type="xs:int" />
+
+    <xs:element name="keywords">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="keyword" type="xs:string" maxOccurs="unbounded" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="streams">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="stream" maxOccurs="unbounded" >
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="id" type="xs:string" />
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="streamref">
+        <xs:complexType>
+            <xs:attribute name="idref" type="xs:anyURI" />
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
