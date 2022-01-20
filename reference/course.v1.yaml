@@ -99,11 +99,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-      operationId: get-stream-course
+      operationId: get-course
       description: |-
-        Get a specific course by stream ID - returns basic metadata.
+        Get a specific course by course ID - returns basic metadata.
         Usually the course is found via the catalog, each product has a list of courses that is available for a student/teacher when that product is bought. This call is used to get more infomation, can also be used to see if there are any new versions of this course published
-  '/course/{id}/cmi5e-course':
+  '/course/{id}/cmi5e':
     x-tags:
       - course
     parameters:
@@ -193,7 +193,7 @@ paths:
                   value: {}
       operationId: get-course-cmi5
       description: |-
-        Get the meta data of a specific course by stream ID - 
+        Get the meta data of a specific course by course ID - 
         The meta data contains information abou the course, including which chapters, paragraphs and assignable learning units are available, including links to the publishers playing envirionment so the student start that unit.
         The LMS can use this to personalise the course per student and add or skip assignable units. This structure and information is also the base for exchanging progress.
         NOTE: the course content itself is not part of the specification, it describes the meta information and how to navigate to the right point in the course, but not the course itself.
@@ -357,7 +357,7 @@ components:
       title: null
       type: object
       description: |-
-        Courde definition as based on cmi5 course definition: 
+        Course definition as based on cmi5 course definition: 
         (see https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/v1/CourseStructure.xsd)
         The cmi5 course structure definition is extended with http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd fields. They are added in this spec with an xml namespace 'ecs'
       x-examples:

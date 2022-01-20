@@ -39,7 +39,7 @@ paths:
           format: int32
         examples:
           default:
-            value: 0d
+            value: 0
             summary: The start point for pagination
       - in: query
         name: limit
@@ -116,7 +116,7 @@ paths:
                   $ref: '#/components/schemas/Statement'
               examples:
                 example-1:
-                  value: {}
+                  value: []
       operationId: get-course-statements-xapi
       description: Get statements related to a specific course
   '/course/{id}/progress/simple':
@@ -137,7 +137,7 @@ paths:
           format: int32
         examples:
           default:
-            value: 0d
+            value: 0
             summary: The start point for pagination
       - in: query
         name: limit
@@ -203,7 +203,7 @@ paths:
           format: int32
         examples:
           default:
-            value: 0d
+            value: 0
             summary: The start point for pagination
       - in: query
         name: limit
@@ -271,7 +271,7 @@ paths:
           format: int32
         examples:
           default:
-            value: 0d
+            value: 0
             summary: The start point for pagination
       - in: query
         name: limit
