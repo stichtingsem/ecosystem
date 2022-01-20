@@ -246,7 +246,7 @@ components:
         subjectChoices:
           type: array
           items:
-            $ref: '#/components/schemas/subjectChoice'
+            $ref: '#/components/schemas/SubjectChoice'
         quantity:
           type: integer
           example: 100
