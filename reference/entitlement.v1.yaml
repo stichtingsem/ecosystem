@@ -304,7 +304,7 @@ components:
     SubjectChoice:
       title: SubjectChoice
       type: object
-      description: A subjectChoice within a school that the entitlement is applicable to - typically a subject and level. So every student who has this subjectchoice is entitled to the products in this entitlement. Todo: what is primary key and is this matchable on SIS data?
+      description: 'A subjectChoice within a school that the entitlement is applicable to - typically a subject and level. So every student who has this subjectchoice is entitled to the products in this entitlement. Todo: what is primary key and is this matchable on SIS data?'
       properties:
         subjectCode:
           type: string
