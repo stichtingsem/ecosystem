@@ -86,30 +86,45 @@ components:
       description: |-
         An event is a notification that something of interest has happened within a service, that, based on authorised scopes, a subscriber may then process.  This enables systems to communicate with each other in a loosely coupled way, where the event creator has no direct connection to any of the subscribing systems.
 
-        Typically an event will contain a basic data object that indicates what the state of the object is at the point at which the event is raised, but this is optional.  In the case that no data object exists it is intended that the subscribing system would call back to the provided API to retrieve the information.
+        Events have their own id and an identification of the object they carry. (objectId) This can be used to make sure events are pocessed in order for that object.
+        The create tim eof the event is the time the action that triggered the event happened, it is not the time the event was send or processed.
+
+        Typically an event will contain a basic data object that indicates what the state of the object is at the point at which the event is raised, but this is optional.  In the case that no data object exists it is intended that the subscribing system would call back to the provided API to retrieve the information. This is defined per event type.
 
         By calling back at a future point you avoid a number of distributed system related issues:
-
         - Ordering doesn't matter, as when you call back you always get the latest version.  The biggest risk is you call back twice and get the same information twice - but you always have correct data.
         - Security can be checked again at the point of request, so even in the unlikely scenario that a subscriber authorization changes between an event being emitted and the call back occurring, the subscriber can only ever get data they are authorized to retrieve.
+
+        Deleting of object is supported by sending an event with the flag isLast to true. This indicates that this is the last event you will get about thos object. the data is empty in this case.
       properties:
         id:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
+          description: Unique id of an event
         type:
           type: string
           example: la.usage
+          description: Type of the event
+        objectId:
+          type: string
+          description: Id of the events data
         created:
           type: number
           example: 1530291411
+          description: event creation moment
         data:
           type: object
+          description: Data of this object. could be empty when this is the 'last' event or when 'url' is filled
         url:
           type: string
           description: |
-            The URL that can be called to get information about the event.
+            The URL that can be called to get the event.
+            This is used
+        isLast:
+          type: boolean
+          description: 'indication that this is the last event you will ever see, as the object is deleted.'
       required:
         - id
         - type
-        - url
+        - created
