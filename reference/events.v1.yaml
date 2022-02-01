@@ -120,7 +120,6 @@ components:
           type: string
           description: |
             The URL that can be called to get the event.
-            This is used
         isLast:
           type: boolean
           description: 'indication that this is the last event you will ever see, as the object is deleted.'
