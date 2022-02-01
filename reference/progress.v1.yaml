@@ -3,10 +3,10 @@ info:
   title: Progress API
   version: '1.0'
   description: |-
-    This API defines progress about the specific activities is the course to report to the LMS. Main goal is to inform teachers on progress (which activities are completed) and possible indication that the activity was completed, but needs attention of the teacher. 
+    This API defines progress about the specific activities (assignable Units) is the course to report to the LMS. Main goal is to inform teachers on progress (which activities are completed) and possible indication that the activity was completed, but needs attention of the teacher. 
 
     Progress is reported on the actities of the LA (based on the UA (assignable units) in the course description.
-    Progress is reported when an activity is strated or completed, not while the activity is in progress. If the activity is adaptive and will take more time for one student due to addaptive levels, that is not reported.
+    Progress is reported when an activity is started or completed, not while the activity is in progress. If the activity is adaptive and will take more time for one student due to addaptive levels, that is not reported.
 
     Activities have a life cylcle of not-started, started, completed. The not started is the deafult and will not be reported, unless (for some reason) the status goes back to not-started. The abandoned state is to indicate that the activity was started,but will never be completed (optional)
 
@@ -168,23 +168,29 @@ components:
       x-examples:
         example-1:
           id: string
-          activityId: string
-          studentEckId: string
-          studentId: string
-          status: not-started
-          timestamp: string
-          version: string
+          schemaVersion: 0
+          studentEckId: eck1
+          studentId: '12345'
+          assignableUnitId: '1234566'
+          courseId: english-22-high
+          status: completed
+          timestamp: '20220112T02:55:12'
+          additionalInfo: ':)'
+          detailsUrl: 'https://course.publisher.com/analisys/1234566/eck1'
       properties:
         id:
           type: string
-        activityId:
-          type: string
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         studentEckId:
           type: string
           description: The eckid of the student for which the progress is reported.
         studentId:
           type: string
           description: The id of the student for which the progress is reported.
+        assignableUnitId:
+          type: string
         courseId:
           type: string
           description: Optional id of the course.
@@ -197,8 +203,6 @@ components:
             - completed
             - abandoned
         timestamp:
-          type: string
-        version:
           type: string
         additionalInfo:
           type: string
@@ -215,7 +219,6 @@ components:
           description: 'optional: the entitlement when known'
       required:
         - id
-        - activityId
         - studentEckId
         - studentId
         - status
