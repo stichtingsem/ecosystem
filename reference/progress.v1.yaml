@@ -3,639 +3,70 @@ info:
   title: Progress API
   version: '1.0'
   description: |-
-    This API defines progress about the specific activities available within the application that can be scheduled within an LMS.
+    This API defines progress about the specific activities (assignable Units) is the course to report to the LMS. Main goal is to inform teachers on progress (which activities are completed) and possible indication that the activity was completed, but needs attention of the teacher. 
 
-    ### Event Access
+    Progress is reported on the actities of the LA (based on the UA (assignable units) in the course description.
+    Progress is reported when an activity is started or completed, not while the activity is in progress. If the activity is adaptive and will take more time for one student due to addaptive levels, that is not reported.
 
-    Events|Event Data|Rationale|
-    |------|---------|--|
-    |la.progress| // as per XAPI statements |To enable the LMS to receive XAPI statements after registering webhook for a specific school|
+    Activities have a life cylcle of not-started, started, completed. The not started is the deafult and will not be reported, unless (for some reason) the status goes back to not-started. The abandoned state is to indicate that the activity was started,but will never be completed (optional)
+
+    The API does not force the LA to use a standard for the indication about the quality of the progress. That is optional and is intended to give the LA a way to tell the teacher that the progress was not standard and the teacher is advised to have a look at the LA's dashboard (with a direct url). An LA can provide any scale (1-10, avarage, good, bad) by adding this as text. The LMS should not try to combine these indications for a complete chapter or paragraph.
+
+    Normally this progress is send as events. When the consent flow is completed and both LA and LMS have consent the events are send. 
+
+    At this moment there is no catchup mechanism defined. (we still have discussion if there should be an API to retrieve the progress. we tend to say no..)
+
+    In the progress statement the LA can add the entitlement and course information so the LMS can use that information to efficiently process the events.
+
+    ### Events
+    SimpleProgress - send from the LA to the LMS prefereably near realtime so the LMS can show progress for teachers.
 
     ## Scopes and Data
 
-    - la.progress.school
+    - la.progress - scope needed to send events from la to lms
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
 servers:
   - url: 'https://example.stichtingsem.org/api'
     description: course
-paths:
-  '/course/{id}/progress/xapi':
-    x-tags:
-      - results
-      - progress
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get XAPI statements related to a specific course, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Statement'
-              examples:
-                example-1:
-                  value:
-                    - id: string
-                      actor:
-                        $ref: '#/components/schemas/Agent'
-                      verb: {}
-                      object:
-                        $ref: '#/components/schemas/Activity'
-                      result:
-                        score:
-                          scaled: 0
-                          raw: 0
-                          min: 0
-                          max: 0
-                        success: true
-                        completion: true
-                        response: string
-                        duration: string
-                        extensions: {}
-                      context: {}
-                      timestamp: string
-                      stored: string
-                      authority: {}
-                      version: string
-                      attachments:
-                        - usageType: string
-                          display: {}
-                          description: {}
-                          contentType: string
-                          length: 0
-                          sha2: string
-                          fileUrl: string
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Statement'
-              examples:
-                example-1:
-                  value: []
-      operationId: get-course-statements-xapi
-      description: Get statements related to a specific course
-  '/course/{id}/progress/simple':
-    x-tags:
-      - results
-      - progress
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get XAPI statements related to a specific course, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SimpleProgress'
-              examples:
-                example-1: null
-      operationId: get-course-statements-simple
-      description: Get statements related to a specific course
-  '/course/{id}/student/{studentId}/progress/xapi':
-    x-tags:
-      - course
-      - progress
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        description: Unique course identifier
-        required: true
-      - in: path
-        schema:
-          type: string
-        name: studentId
-        description: Unique student identifier
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get XAPI statements related to a specific student, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Statement'
-            application/xml:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Statement'
-      operationId: get-user-statements-xapi
-      description: Get statements for a specific user
-  '/course/{id}/student/{studentId}/progress/simple':
-    x-tags:
-      - course
-      - progress
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        description: Unique course identifier
-        required: true
-      - in: path
-        schema:
-          type: string
-        name: studentId
-        description: Unique student identifier
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get Simple progress statements related to a specific student, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SimpleProgress'
-      operationId: get-user-statements-simple
-      description: Get simple progress statements for a specific user
 components:
   schemas:
-    Statement:
-      title: XAPI Statement
+    SimpleProgress:
+      title: SimpleProgressStatement
       type: object
       x-examples:
         example-1:
-          id: string
-          actor:
-            $ref: '#/components/schemas/Agent'
-          verb: {}
-          object:
-            $ref: '#/components/schemas/Activity'
-          result:
-            score:
-              scaled: 0
-              raw: 0
-              min: 0
-              max: 0
-            success: true
-            completion: true
-            response: string
-            duration: string
-            extensions: {}
-          context: {}
-          timestamp: string
-          stored: string
-          authority: {}
-          version: string
-          attachments:
-            - usageType: string
-              display: {}
-              description: {}
-              contentType: string
-              length: 0
-              sha2: string
-              fileUrl: string
+          id: 123-bigstring-or-guid-does-not-matter-but-uniquu-for-this-progres-statement
+          schemaVersion: 0
+          studentEckId: eck1
+          studentId: '12345'
+          assignableUnitId: '1234566'
+          courseId: english-22-high
+          status: completed
+          timestamp: '20220112T02:55:12'
+          additionalInfo: ':)'
+          detailsUrl: 'https://course.publisher.com/analisys/1234566/eck1'
       properties:
         id:
           type: string
-        actor:
-          type: object
-          description: 'Whom the Statement is about, as an Agent or Group Object.'
-          enum:
-            - $ref: '#/components/schemas/Agent'
-            - $ref: '#/components/schemas/Group'
-        verb:
-          type: object
-          description: Action taken by the Actor.
-        object:
-          type: object
-          description: Activity or Agent that is the Object of the Statement.
-          enum:
-            - $ref: '#/components/schemas/Activity'
-            - $ref: '#/components/schemas/Agent'
-          properties:
-            '':
-              type: string
-        result:
-          $ref: '#/components/schemas/Result'
-        context:
-          type: object
-        timestamp:
-          type: string
-        stored:
-          type: string
-        authority:
-          type: object
-        version:
-          type: string
-        attachments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Attachment'
-      required:
-        - id
-        - actor
-        - verb
-        - object
-    StatementResult:
-      title: XAPI Statement Result
-      type: object
-      properties:
-        statementId:
-          type: string
-          description: Id of Statement to fetch
-        voidedStatementId:
-          type: string
-          description: Id of voided Statement to fetch. see Voided Statements
-        agent:
-          type: object
-          enum:
-            - $ref: '#/components/schemas/Agent'
-            - $ref: '#/components/schemas/Group'
-          description: 'Filter, only return Statements for which the specified Agent or Group is the Actor or Object of the Statement'
-        verb:
-          type: string
-          description: 'Filter, only return Statements matching the specified Verb id.'
-        activity:
-          type: string
-          description: 'Filter, only return Statements for which the Object of the Statement is an Activity with the specified id.'
-        registration:
-          type: string
-          description: 'Filter, only return Statements matching the specified registration id. Note that although frequently a unique registration will be used for one Actor assigned to one Activity, this cannot be assumed. If only Statements for a certain Actor or Activity are required, those parameters also need to be specified.'
-        related_activities:
-          type: boolean
-          default: false
-          description: 'Apply the Activity filter broadly. Include Statements for which the Object, any of the context Activities, or any of those properties in a contained SubStatement match the Activity parameter, instead of that parameter''s normal behavior. Matching is defined in the same way it is for the "activity" parameter.'
-        related_agents:
-          type: boolean
-          default: false
-          description: 'Apply the Agent filter broadly. Include Statements for which the Actor, Object, Authority, Instructor, Team, or any of these properties in a contained SubStatement match the Agent parameter, instead of that parameter''s normal behavior. Matching is defined in the same way it is for the "agent" parameter.'
-        since:
-          type: string
-          format: date-time
-          description: Only Statements stored since the specified Timestamp (exclusive) are returned.
-        until:
-          type: string
-          format: date-time
-          description: Only Statements stored at or before the specified Timestamp are returned.
-        limit:
+        schemaVersion:
           type: integer
-          default: 0
-          description: Maximum number of Statements to return. 0 indicates return the maximum the server will allow.
-        format:
-          type: string
-          default: exact
-          enum:
-            - ids
-            - exact
-            - canonical
-        attachments:
-          type: boolean
-          default: false
-          description: 'If true, the LRS uses the multipart response format and includes all attachments as described previously. If false, the LRS sends the prescribed response with Content-Type application/json and does not send attachment data.'
-        ascending:
-          type: boolean
-          default: false
-          description: 'If true, return results in ascending order of stored time'
-    Group:
-      title: XAPI Group
-      type: object
-    Agent:
-      title: XAPI Agent
-      type: object
-      properties:
-        objectType:
-          type: string
-        name:
-          type: string
-    Person:
-      title: XAPI Person
-      type: object
-      required:
-        - objectType
-      properties:
-        objectType:
-          type: string
-          default: Person
-        name:
-          type: array
-          items:
-            type: string
-            description: List of names of Agents retrieved.
-        mbox:
-          type: array
-          items:
-            type: string
-            description: List of e-mail addresses of Agents retrieved.
-        mbox_sha1sum:
-          type: array
-          items:
-            type: string
-            description: List of the SHA1 hashes of mailto IRIs (such as go in an mbox property).
-        openid*:
-          type: array
-          items:
-            type: string
-            description: List of openids that uniquely identify the Agents retrieved.
-        account*:
-          type: array
-          items:
-            $ref: '#/components/schemas/Account'
-    Account:
-      title: XAPI Account
-      type: object
-      required:
-        - homePage
-        - name
-      properties:
-        homePage:
-          type: string
-        name:
-          type: string
-    Verb:
-      title: XAPI Verb
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: string
-        display:
-          type: object
-          description: 'The human readable representation of the Verb in one or more languages. This does not have any impact on the meaning of the Statement, but serves to give a human-readable display of the meaning already determined by the chosen Verb.'
-      example:
-        id: 'http://example.com/xapi/verbs#defenestrated'
-        display:
-          en-US: defenestrated
-          es: defenestrado
-    Activity:
-      title: XAPI Activity
-      type: object
-      properties:
-        name:
-          type: object
-        description:
-          type: object
-        type:
-          type: object
-        moreInfo:
-          type: object
-        extensions:
-          type: object
-    StatementReference:
-      title: XAPI Statement Reference
-      type: object
-      required:
-        - objectType
-        - id
-      properties:
-        objectType:
-          type: string
-        id:
-          type: string
-    Result:
-      title: XAPI Result
-      type: object
-      properties:
-        score:
-          $ref: '#/components/schemas/Score'
-        success:
-          type: boolean
-        completion:
-          type: boolean
-        response:
-          type: string
-        duration:
-          type: string
-        extensions:
-          type: object
-    Score:
-      title: XAPI Score
-      type: object
-      properties:
-        scaled:
-          type: number
-        raw:
-          type: number
-        min:
-          type: number
-        max:
-          type: number
-    Context:
-      title: XAPI Context
-      type: object
-      properties:
-        registration:
-          type: string
-        instructor:
-          $ref: '#/components/schemas/Agent'
-        team:
-          type: object
-        contextActivities:
-          type: object
-        revision:
-          type: string
-        platform:
-          type: string
-        language:
-          type: string
-        statement:
-          $ref: '#/components/schemas/Statement'
-        extensions:
-          type: object
-    Attachment:
-      title: XAPI Attachment
-      type: object
-      required:
-        - usageType
-        - display
-        - contentType
-        - length
-        - sha2
-      properties:
-        usageType:
-          type: string
-        display:
-          type: object
-        description:
-          type: object
-        contentType:
-          type: string
-        length:
-          type: integer
-        sha2:
-          type: string
-        fileUrl:
-          type: string
-    SimpleProgress:
-      title: SimpleProgress
-      type: object
-      properties:
-        id:
-          type: string
-        activityId:
-          type: string
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         studentEckId:
           type: string
           description: The eckid of the student for which the progress is reported.
         studentId:
           type: string
           description: The id of the student for which the progress is reported.
+        assignableUnitId:
+          type: string
+        courseId:
+          type: string
+          description: Optional id of the course.
         status:
           type: string
-          description: Status of the .
+          description: 'New status of the activity. '
           enum:
             - not-started
             - started
@@ -643,22 +74,25 @@ components:
             - abandoned
         timestamp:
           type: string
-        version:
+        additionalInfo:
           type: string
+          description: |-
+            Additional signal to show to teachers about this progress. This could be a signal that all is fine, or that the activity was finished, but not successfull or with so much efford that the teacher is advised that to look at the LA systems dashboards. 
+            field is free format, bust should be very short. eg "good","avarage", single digit, smileys, "!" (also see detailsUrl)
+          maxLength: 15
+          example: ':)'
+        detailsUrl:
+          type: string
+          description: Deeplink to the page of the LA where a teacher can get details on this progress/result.
+        entitlementId:
+          type: string
+          description: 'optional: the entitlement when known'
       required:
         - id
-        - studentECKId
+        - studentEckId
+        - studentId
         - status
         - timestamp
-      x-examples:
-        example-1:
-          id: string
-          activityId: string
-          studentEckId: string
-          studentId: string
-          status: not-started
-          timestamp: string
-          version: string
   securitySchemes:
     APIKey:
       type: oauth2
@@ -667,4 +101,4 @@ components:
           authorizationUrl: ''
           refreshUrl: ''
           scopes:
-            la.progress.school: Access to progress for a specific learner at a specific school
+            la.progress: Access to progress for a specific learner at a specific school
