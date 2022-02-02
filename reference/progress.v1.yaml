@@ -12,162 +12,32 @@ info:
 
     The API does not force the LA to use a standard for the indication about the quality of the progress. That is optional and is intended to give the LA a way to tell the teacher that the progress was not standard and the teacher is advised to have a look at the LA's dashboard (with a direct url). An LA can provide any scale (1-10, avarage, good, bad) by adding this as text. The LMS should not try to combine these indications for a complete chapter or paragraph.
 
-    Normally this progress is send as events.
+    Normally this progress is send as events. When the consent flow is completed and both LA and LMS have consent the events are send. 
 
-    (we still have discussion if there should be an API to retrieve the progress. we tend to say no..)
+    At this moment there is no catchup mechanism defined. (we still have discussion if there should be an API to retrieve the progress. we tend to say no..)
 
-    Normally the LA can add the entitlement and course information so the LMS can use that information to efficiently process the events.
+    In the progress statement the LA can add the entitlement and course information so the LMS can use that information to efficiently process the events.
 
     ### Events
     SimpleProgress - send from the LA to the LMS prefereably near realtime so the LMS can show progress for teachers.
 
-    ### Event Access
-
-    Events|Event Data|Rationale|
-    |------|---------|--|
-    |la.simpleprogress| // To enable the LMS to receive progress statements after registering webhook for a specific school|
-
     ## Scopes and Data
 
-    - la.progress
+    - la.progress - scope needed to send events from la to lms
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
 servers:
   - url: 'https://example.stichtingsem.org/api'
     description: course
-paths:
-  '/course/{id}/progress/simple':
-    x-tags:
-      - results
-      - progress
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get XAPI statements related to a specific course, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SimpleProgress'
-              examples:
-                example-1: null
-      operationId: get-course-statements-simple
-      description: Get statements related to a specific course
-  '/course/{id}/student/{studentId}/progress/simple':
-    x-tags:
-      - course
-      - progress
-    parameters:
-      - in: path
-        schema:
-          type: string
-        name: id
-        description: Unique course identifier
-        required: true
-      - in: path
-        schema:
-          type: string
-        name: studentId
-        description: Unique student identifier
-        required: true
-      - in: query
-        name: start
-        description: 'Start point for pagination of results, defaults to 0,'
-        schema:
-          type: integer
-          format: int32
-        examples:
-          default:
-            value: 0
-            summary: The start point for pagination
-      - in: query
-        name: limit
-        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-        schema:
-          type: integer
-          maximum: 100
-          format: int32
-        examples:
-          default:
-            value: 20
-            summary: The default value if none is provided
-          max:
-            value: 100
-            summary: The largest recommended page size
-      - in: query
-        name: schoolYear
-        description: School year the results were recorded in
-        schema:
-          type: string
-        examples:
-          default:
-            value: 2020-2021
-            summary: The default value if none is provided
-    get:
-      summary: 'Get Simple progress statements related to a specific student, newest statements first'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SimpleProgress'
-      operationId: get-user-statements-simple
-      description: Get simple progress statements for a specific user
 components:
   schemas:
     SimpleProgress:
-      title: SimpleProgress
+      title: SimpleProgressStatement
       type: object
       x-examples:
         example-1:
-          id: string
+          id: 123-bigstring-or-guid-does-not-matter-but-uniquu-for-this-progres-statement
           schemaVersion: 0
           studentEckId: eck1
           studentId: '12345'
