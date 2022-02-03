@@ -46,7 +46,6 @@ paths:
       security:
         - APIKey:
             - mp.entitlements.school
-            - mp.entitlements.provider
   '/entitlements/school/{id}':
     parameters:
       - schema:
@@ -135,11 +134,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Entitlement'
+              $ref: '#/components/schemas/Entitlements'
+            examples: {}
       description: |-
         The entitlement endpoint POST request is the request to send a entitlement or update of the entitlement from the MP to the LA or LMS.
         This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
         This endpoint is only implemented by the LA and LMS. The MP should give an exception.
+      security:
+        - APIKey:
+            - mp.entitlements.school
 components:
   schemas:
     Entitlement:
@@ -157,13 +160,16 @@ components:
         contractId:
           type: string
           description: An optional unique identifier for the purchase agreement. Mandatoty within the communication between MP/SA and LA
-        start:
+        startDate:
           type: string
           format: date
           example: '2021-08-22'
-        end:
+        endDate:
           type: string
           format: date
+        expirationDate:
+          type: string
+          description: 'Date - time Expiration date, is the date on which the product can no longer be converted to a license. The agreement to activate the product has expired. This does not say anything about being able to use the product after activation before this date.'
         product:
           $ref: '#/components/schemas/Product'
         entitlee:
@@ -192,8 +198,8 @@ components:
           description: The marketplace that provided the entitlement.
       required:
         - id
-        - start
-        - end
+        - startDate
+        - endDate
         - product
         - entitlee
         - status
@@ -326,12 +332,10 @@ components:
     APIKey:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            mp.entitlements.school: Can see all entitlements created for a specific school regardless of vendor (e.g. a LMS)
-            mp.entitlements.provider: Can see all entitlements created for products that you sell in the Marketplace (e.g. a LA)
+          scopes: {}
 tags:
   - name: entitlements
   - name: provider
