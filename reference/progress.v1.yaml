@@ -53,12 +53,12 @@ components:
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        studentEckId:
+        eckId:
           type: string
           description: The eckid of the student for which the progress is reported.
-        studentId:
+        userId:
           type: string
-          description: The id of the student for which the progress is reported.
+          description: The id of the student for which the progress is reported. userid. (nledupersonrealId or nledupersonprofileId)
         assignableUnitId:
           type: string
         courseId:
@@ -89,8 +89,8 @@ components:
           description: 'optional: the entitlement when known'
       required:
         - id
-        - studentEckId
-        - studentId
+        - eckId
+        - userId
         - status
         - timestamp
   securitySchemes:

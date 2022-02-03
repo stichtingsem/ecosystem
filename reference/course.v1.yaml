@@ -224,6 +224,9 @@ components:
           type: string
           xml:
             attribute: true
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         tile:
           type: string
         description:
