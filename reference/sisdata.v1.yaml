@@ -16,6 +16,8 @@ info:
      - `sis.teacher` - A teacher has been created or modified
      - `sis.group` - A group has been modified (this is an aggregate event) - this means that basic metadata changed, a student added/removed, a teacher added or removed or a student subject choice modified within a group.     
      
+    Events about students, teachers and groups is scoped per schoolyear. Each year a new set of events is generated. A recieving system (LMS/LA/MP) should check if the events are for the current year or already for the next year.
+
     # Privacy and Scopes
      
     Data from the SIS can be sensitive, and the events and APIs available to a requesting service depend on the scopes requested and approved during setup.  The following scopes exist for the SIS, and map to the following entities and attributes:
@@ -27,9 +29,10 @@ info:
     ### Event Access
 
     |Events|Event Data|Rationale|
-    |------|---------|
+    |------|---------|----|
     |sis.student|id, eckId, name, school, groups, subjects|To enable the requesting service to maintain a copy of basic (non-PII) student profile information|
     |sis.teacher|id, eckId, name, school, groups|To enable the requesting service to maintain a copy of basic (non-PII) teacher information|
+    |sis.group|id, name, school, students, teachers, and subjectchoices|To enable the requesting service to maintain a copy group information|
 
     ### Data Visibility
 
@@ -44,12 +47,11 @@ info:
 
     We have a principle to never send PII in events or store in an event log, so this event is only a notification.  The subscribing system must call back to retrieve the information.
      
-    > NOTE: Do we never deliver anything to teachers?
 
     ### Event Access
 
     |Events|Event Data|Rationale|
-    |------|---------|
+    |------|---------|---|
     |sis.student-delivery|id, eckId|This is a notification only, as there should be no PII sent in events - only accessed by API calls.|
 
     ### Data Visibility
@@ -429,12 +431,10 @@ components:
     APIKey:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            sis.student-teacher-group: 'Access to basic student, teacher and group information.'
-            sis.student-teacher-delivery: Access to sensitive student and teacher delivery information.
+          scopes: {}
 paths:
   '/student/{id}':
     parameters:
@@ -454,6 +454,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/student'
+              examples:
+                example-1:
+                  value:
+                    userId: string
+                    schemaVersion: 0
+                    eckId: string
+                    firstname: string
+                    surname: string
+                    surnamePrefix: string
+                    schoolYear: string
+                    school:
+                      schoolId: string
+                      schoolName: string
+                    groups:
+                      - groupId: string
+                        name: string
+                    subjectChoices:
+                      - id: string
+                        startDate: '2019-08-24'
+                        endDate: '2019-08-24'
+                        subjectCode: string
+                        schoolSubjectCode: string
+                        schoolSubjectName: string
+                        level: string
+                        courseCode: string
+                        courseYear: 0
       operationId: get-student-id
       description: 'Retrieve basic student information, including their groups and subject choices.'
       security:
@@ -569,7 +595,7 @@ paths:
             type: string
           in: query
           name: schoolYear
-          description: request this list for a particular schoolyear
+          description: request this list of subject choices for a particular schoolyear
 tags:
   - name: group
   - name: student

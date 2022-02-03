@@ -97,8 +97,7 @@ components:
     APIKey:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            la.progress: Access to progress for a specific learner at a specific school
+          scopes: {}
