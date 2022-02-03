@@ -67,17 +67,17 @@ components:
   schemas:
     school:
       type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-      required:
-        - id
-        - name
       title: ''
       x-tags:
         - school
+      properties:
+        schoolId:
+          type: string
+        schoolName:
+          type: string
+      required:
+        - schoolId
+        - schoolName
     student:
       type: object
       x-tags:
@@ -87,36 +87,6 @@ components:
         - subject
       title: ''
       description: Access to non-sensitive student information for us in an LMS or LA.
-      properties:
-        id:
-          type: string
-        schemaVersion:
-          type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        eckid:
-          type: string
-        firstname:
-          type: string
-        surname:
-          type: string
-        surnamePrefix:
-          type: string
-        schoolYear:
-          type: string
-          description: A reference to the school year for this student.
-        school:
-          $ref: '#/components/schemas/school'
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/groupReference'
-        subjectChoices:
-          type: array
-          items:
-            $ref: '#/components/schemas/subject-choice'
-      required:
-        - id
-        - school
       x-examples:
         example-Student:
           id: fdff8a426c0a4e9996d70260de623add
@@ -139,39 +109,14 @@ components:
               level: HAVO-2
               courseCode: W_HAVO
               courseYear: 2
-    studentReference:
-      type: object
-      x-tags:
-        - student
-      title: ''
-      description: Access to non-sensitive student information for us in an LMS or LA.
       properties:
-        id:
+        userId:
           type: string
-        eckid:
-          type: string
-        firstname:
-          type: string
-        surname:
-          type: string
-        surnamePrefix:
-          type: string
-      required:
-        - id
-    teacher:
-      type: object
-      x-tags:
-        - teacher
-        - group
-        - school
-      title: ''
-      properties:
-        id:
-          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        eckid:
+        eckId:
           type: string
         firstname:
           type: string
@@ -181,18 +126,51 @@ components:
           type: string
         schoolYear:
           type: string
-          description: A reference to the school year for this teacher.
+          description: A reference to the school year for this student.
         school:
           $ref: '#/components/schemas/school'
         groups:
           type: array
           items:
             $ref: '#/components/schemas/groupReference'
-          description: |
-            Do we need this? This information is already available in groups. It will not be available in the beginning of the school year when the rosters are not complete. Neither LMS or LA need it to function.
+        subjectChoices:
+          type: array
+          items:
+            $ref: '#/components/schemas/subject-choice'
       required:
-        - id
+        - userId
+        - firstname
+        - surname
         - school
+    studentReference:
+      type: object
+      x-tags:
+        - student
+      title: ''
+      description: Access to non-sensitive student information for us in an LMS or LA.
+      properties:
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        eckId:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        surnamePrefix:
+          type: string
+      required:
+        - userId
+        - firstname
+        - surname
+    teacher:
+      type: object
+      x-tags:
+        - teacher
+        - group
+        - school
+      title: ''
       x-examples:
         example-1:
           id: 407b751eb2a44ad98ae3f7336c160fde
@@ -207,15 +185,48 @@ components:
           groups:
             - id: 83302cc7309c497c9530537ac50248b3
               name: W2C MM
+      properties:
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+        eckId:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        surnamePrefix:
+          type: string
+        schoolYear:
+          type: string
+          description: A reference to the school year for this teacher.
+        school:
+          $ref: '#/components/schemas/school'
+        groups:
+          type: array
+          description: |
+            Do we need this? This information is already available in groups. It will not be available in the beginning of the school year when the rosters are not complete. Neither LMS or LA need it to function.
+          items:
+            $ref: '#/components/schemas/groupReference'
+      required:
+        - userId
+        - firstname
+        - surname
+        - schoolYear
+        - school
     teacherReference:
       type: object
       x-tags:
         - teacher
       title: ''
       properties:
-        id:
+        userId:
           type: string
-        eckid:
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        eckId:
           type: string
         firstname:
           type: string
@@ -224,7 +235,9 @@ components:
         surnamePrefix:
           type: string
       required:
-        - id
+        - userId
+        - firstname
+        - surname
     group:
       type: object
       x-examples:
@@ -263,7 +276,7 @@ components:
       description: A group or other grouping of students.
       title: group
       properties:
-        id:
+        groupId:
           type: string
         schemaVersion:
           type: integer
@@ -289,7 +302,7 @@ components:
           type: string
           description: A reference to the school year for this group.
       required:
-        - id
+        - groupId
         - name
         - school
     groupReference:
@@ -299,12 +312,12 @@ components:
         - group
       description: ''
       properties:
-        id:
+        groupId:
           type: string
         name:
           type: string
       required:
-        - id
+        - groupId
         - name
     subject-choice:
       type: object
@@ -327,6 +340,9 @@ components:
         subjectCode:
           type: string
           description: 'Officiële elementcode, bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
+        schoolSubjectCode:
+          type: string
+          description: code that the school gives to this subject (like 'en')
         schoolSubjectName:
           type: string
           description: Optional name of subject if different within specific school.
@@ -341,7 +357,13 @@ components:
           description: Learning year
       required:
         - id
+        - startDate
+        - subjectCode
+        - schoolSubjectCode
         - schoolSubjectName
+        - level
+        - courseCode
+        - courseYear
     subject-choices:
       type: array
       items:
@@ -357,8 +379,9 @@ components:
         - student
         - student-delivery
       properties:
-        id:
+        userId:
           type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
@@ -369,9 +392,15 @@ components:
           format: date
         emailAddress:
           type: string
-        postcode:
+        zipcode:
+          type: string
+        street:
           type: string
         houseNumber:
+          type: string
+        city:
+          type: string
+        country:
           type: string
         firstname:
           type: string
@@ -384,6 +413,18 @@ components:
         surnamePrefix:
           type: string
           description: Used for delivery
+      required:
+        - userId
+        - eckid
+        - dateOfBirth
+        - emailAddress
+        - zipcode
+        - street
+        - houseNumber
+        - city
+        - country
+        - firstname
+        - surname
   securitySchemes:
     APIKey:
       type: oauth2

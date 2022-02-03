@@ -116,6 +116,9 @@ components:
           type: string
           description: |
             The unique EAN for this product.
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         type:
           type: string
           description: |

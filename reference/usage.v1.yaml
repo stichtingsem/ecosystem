@@ -90,6 +90,32 @@ paths:
             max:
               value: 100
               summary: The largest recommended page size
+  /usage/individual:
+    parameters: []
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/individualUsage'
+      operationId: get-usage-user-userid
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: userid
+          description: userid
+        - schema:
+            type: string
+          in: query
+          name: eckid
+          description: eckid
 tags:
   - name: entitlements
   - name: usage
@@ -108,10 +134,10 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         schoolId:
           type: string
-        id:
+        userId:
           type: string
-          description: unique id of user who used the product of this entitlement (optional)
-        eckid:
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        eckId:
           type: string
         usageDate:
           type: string
@@ -129,10 +155,11 @@ components:
           description: Accumulated total for this entitlement
       required:
         - entitlementId
+        - schoolId
         - usageDate
         - usageType
-    usage:
-      title: usage API
+    EntitlementUsage:
+      title: EntitlementUsage
       type: object
       description: |
         This is an API provided by the LA in the SEM ecosystem, and is designed to enable a MP to make the usage information about teachers and learners of product available to the rest of the ecosystem in a security and privacy concious way.
@@ -144,26 +171,48 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         schoolId:
           type: string
-        id:
-          type: string
-          description: unique id of user who used the product of this entitlement (optional)
-        eckid:
-          type: string
-        totalForThisEntitlement:
-          type: integer
-          description: Accumulated total for this entitlement
         entitleeUsageList:
           type: array
           items:
             $ref: '#/components/schemas/entitlee'
       required:
         - entitlementId
+        - schoolId
+        - entitleeUsageList
+    individualUsage:
+      title: Individual Usage
+      type: object
+      description: |
+        This is an API provided by the LA in the SEM ecosystem, and is designed to enable a MP to make the usage information about teachers and learners of product available to the rest of the ecosystem in a security and privacy concious way.
+      properties:
+        eckId:
+          type: string
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        schoolId:
+          type: string
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+        usageDate:
+          type: string
+          description: why do we have this one?
+        entitlementUsageList:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsedEntiltlemen'
+      required:
+        - eckId
+        - schoolId
+        - entitlementUsageList
     entitlee:
       title: entitlee
       type: object
       properties:
-        id:
+        userId:
           type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
         firstUsed:
@@ -173,8 +222,31 @@ components:
           type: string
           format: date-time
       required:
-        - id
+        - userId
         - firstUsed
+    UsedEntiltlemen:
+      title: UsedEntiltlemen
+      type: object
+      description: Useage information per entilement the student has
+      properties:
+        entitlementId:
+          type: string
+        EAN:
+          type: string
+        firstUsed:
+          type: string
+          description: Date - time that the entitlement becomes active on the moment that the user access the product for the firsttime
+        lastUsed:
+          type: string
+          description: Date - time that the product is used for the last time. Even if the prduct's license periode within this entitlement has expired
+        status:
+          type: string
+          enum:
+            - active
+            - not active
+            - blocked
+            - returned
+          description: 'Status van de entitlement on product level: active; not active; blocked; returned'
   securitySchemes:
     APIKey:
       type: oauth2
