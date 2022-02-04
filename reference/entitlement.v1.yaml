@@ -106,7 +106,7 @@ paths:
 
         This API has pagination, using `start` and `limit`, with an optional `status` filter.
         This API is only implemented by the MP. LMS and LA will give an exception
-  /entitlements:
+  '/entitlements':
     post:
       summary: AcceptEntitlement
       operationId: post-entitlements
