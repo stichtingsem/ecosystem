@@ -9,10 +9,13 @@ info:
 
     This forms the 'near real time' element of the architecture, and enables subscribers to retrieve information on all changes immediately, while still retaining full control of when that data will be subsequently processed.
 
+    The registerd url is the events API endpoint which implemented the POST /event and /events path.
+
     Notes:
       - Ideally you would have one webhook registration per subscriber, but we should allow for multiple.
       - It should be possible to filter to only events you are interested in as part of the configuration, to avoid sending events that then need to be discarded.
-      - Event filters should automatically be applied aligned with oauth scopes in place for the subscriber - e.g. don't allow events to go to a subscriber for entities that they are not allowed to access.  This restriction will be defined in the API specification for each service.
+      - Event filters should automatically be applied aligned with oauth scopes in place for the subscriber - e.g. don't allow events to go to a subscriber for entities that they are not allowed to access.
+        This restriction will be defined in the API specification for each service. 
   version: 1.0.0
   title: Generic Web Hook API
   contact:
