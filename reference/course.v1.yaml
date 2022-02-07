@@ -10,12 +10,6 @@ info:
     the deatils of the course are exchaged in the xAPI cmi5 course format (https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/v1/CourseStructure.xsd)
 
 
-    ### Event Access
-
-    Events|Event Data|Rationale|
-    |------|---------|--|
-    |la.course| // as per Course |To enable the LMS to receive updates to course information for a specific school|
-
     ## Scopes and Data
 
     - la.course.school // scope to get the course information specificly for one school
@@ -80,6 +74,9 @@ paths:
         searchterm is google like. Could be matching on part of courseid, or description or levelsubjects
 
         Usually the course is found via the catalog, each product has a list of courses that is available for a student/teacher when that product is bought. 
+      security:
+        - APIKey:
+            - la.course.school
   '/course/{id}':
     x-tags:
       - course
@@ -103,6 +100,10 @@ paths:
       description: |-
         Get a specific course by course ID - returns basic metadata.
         Usually the course is found via the catalog, each product has a list of courses that is available for a student/teacher when that product is bought. This call is used to get more infomation, can also be used to see if there are any new versions of this course published
+      security:
+        - APIKey:
+            - la.course.lms
+            - la.course.school
   '/course/{id}/cmi5e':
     x-tags:
       - course
@@ -211,6 +212,10 @@ paths:
             schema:
               type: object
               properties: {}
+      security:
+        - APIKey:
+            - la.course.school
+            - la.course.lms
 components:
   schemas:
     Course:
@@ -224,6 +229,9 @@ components:
           type: string
           xml:
             attribute: true
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         tile:
           type: string
         description:
@@ -659,8 +667,7 @@ components:
     APIKey:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            la.course.school: Access to available course information available to a school
+          scopes: {}

@@ -116,6 +116,9 @@ components:
           type: string
           description: |
             The unique EAN for this product.
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         type:
           type: string
           description: |
@@ -258,15 +261,6 @@ components:
       description: 'A reference to a video, image or document that can be used by a Marketplace (or LMS).'
       x-tags:
         - catalogue
-    ProductComponents:
-      title: ProductComponents
-      type: object
-      properties:
-        id:
-          type: string
-      description: Sub-elements of the product - used for scheduling in the LMS?  We could probably create a better name.
-      x-tags:
-        - planning
     Stream:
       title: Stream
       type: object
@@ -291,11 +285,10 @@ components:
           description: |
             Subject code for specific subject at this level
   securitySchemes:
-    API Key - 1:
+    API Key:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            la.catalogue: Access to the basic provider catalogue
+          scopes: {}

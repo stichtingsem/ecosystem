@@ -177,3 +177,12 @@ components:
         - id
         - type
         - created
+        - url
+  securitySchemes:
+    APIKey:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes: {}

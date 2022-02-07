@@ -103,15 +103,16 @@ components:
         - webhooks
     webhook:
       type: object
-      required:
-        - id
-        - url
-        - enabled_events
+      x-tags:
+        - webhooks
       properties:
         id:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         url:
           type: string
           description: The url that will be called when any of the subscribed events occur
@@ -119,10 +120,12 @@ components:
         enabled_events:
           type: array
           description: Allow filtering of events that should be sent to this endpoint
-          items:
-            type: string
           example:
             - 'la:usage'
             - 'la:results'
-      x-tags:
-        - webhooks
+          items:
+            type: string
+      required:
+        - id
+        - url
+        - enabled_events

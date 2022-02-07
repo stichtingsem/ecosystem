@@ -39,65 +39,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Entitlement'
       operationId: get-entitlements-by-id
-      description: 'Retrieve the full specification for an entitlement from a marketplace, needs to confirm that the caller is able to access either based on their provider information (they can only see their own products) in the case of the provider scope.'
+      description: |-
+        Retrieve the full specification for an entitlement from a marketplace, LA or LMS, needs to confirm that the caller is able to access either based on their provider information (they can only see their own products) in the case of the provider scope.
+
+        This call is used to make sure all parties are in sync about the entitlements. For this reason it is implemented in MP, LMS and LA's
       security:
         - APIKey:
             - mp.entitlements.school
-            - mp.entitlements.provider
-  /entitlements/provider:
-    parameters: []
-    get:
-      summary: Get all entitlements for a specific vendor (Learning Application Provider)
-      tags:
-        - entitlements
-        - provider
-      parameters:
-        - in: query
-          name: status
-          description: |
-            Filter by status
-          schema:
-            type: string
-            example: active
-        - in: query
-          name: start
-          description: 'Start point for pagination of results, defaults to 0,'
-          schema:
-            type: integer
-            format: int32
-          examples:
-            default:
-              value: 0
-              summary: The start point for pagination
-        - in: query
-          name: limit
-          description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-          schema:
-            type: integer
-            maximum: 100
-            format: int32
-          examples:
-            default:
-              value: 20
-              summary: The default value if none is provided
-            max:
-              value: 100
-              summary: The largest recommended page size
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Entitlements'
-      operationId: get-entitlements-provider-id
-      security:
-        - APIKey:
-            - mp.entitlements.provider
-      description: |-
-        Get all entitlements related to products from a specific provider of a learning application (or other product used by a school).  It is assumed that at the point of setup and provision of an API key, that the provider name is also stored against the API key by the marketplace, so that all calls with this key will be filtered to that specific provider in the response.
-
-        This API has pagination, using `start` and `limit`, with an optional `status` filter.
   '/entitlements/school/{id}':
     parameters:
       - schema:
@@ -147,14 +95,54 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Entitlements'
+        '405':
+          description: Method Not Allowed
       operationId: get-entitlements-school-id
       security:
         - APIKey:
             - mp.entitlements.school
       description: |-
-        Retrieve all entilements for a specific school, the school will have approved the LMS to have access to its Marketplace during the setup phase.
+        Retrieve all entilements for a specific school, the school will have approved the LMS and LA to have access to its Marketplace during the setup phase.
 
         This API has pagination, using `start` and `limit`, with an optional `status` filter.
+        This API is only implemented by the MP. LMS and LA will give an exception
+  '/entitlements':
+    post:
+      summary: AcceptEntitlement
+      operationId: post-entitlements
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entitlementConfirmationId:
+                    type: string
+                    description: 'A confirmation Id '
+                  processDate:
+                    type: string
+                    description: Date time of moment processing by the LA
+              examples:
+                example-1:
+                  value:
+                    confirmationId: string
+        '405':
+          description: Method Not Allowed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Entitlements'
+            examples: {}
+      description: |-
+        The entitlement endpoint POST request is the request to send a entitlement or update of the entitlement from the MP to the LA or LMS.
+        This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
+        This endpoint is only implemented by the LA and LMS. The MP should give an exception.
+      security:
+        - APIKey:
+            - mp.entitlements.school
 components:
   schemas:
     Entitlement:
@@ -166,35 +154,42 @@ components:
       properties:
         schemaVersion:
           type: integer
-        start:
+        id:
+          type: string
+          example: 24e39454-5360-4ba4-819f-03e59b8dd679
+        contractId:
+          type: string
+          description: An optional unique identifier for the purchase agreement. Mandatoty within the communication between MP/SA and LA
+        startDate:
           type: string
           format: date
           example: '2021-08-22'
-        end:
+        endDate:
           type: string
           format: date
+        expirationDate:
+          type: string
+          description: 'Date - time Expiration date, is the date on which the product can no longer be converted to a license. The agreement to activate the product has expired. This does not say anything about being able to use the product after activation before this date.'
         product:
           $ref: '#/components/schemas/Product'
         entitlee:
           oneOf:
             - $ref: '#/components/schemas/School'
             - $ref: '#/components/schemas/Individual'
-        model:
-          $ref: '#/components/schemas/BusinessModel'
         quantity:
           type: integer
           example: 100
           format: int32
           description: ''
-        id:
-          type: string
-          example: 24e39454-5360-4ba4-819f-03e59b8dd679
         status:
           type: string
           description: 'The status of the entitlement '
           enum:
             - entitled
+            - provisioned
+            - activated
             - cancelled
+            - blocked
           default: entitled
           example: entitled
         marketplace:
@@ -202,11 +197,11 @@ components:
           example: 'https://iddink.nl'
           description: The marketplace that provided the entitlement.
       required:
-        - start
-        - end
+        - id
+        - startDate
+        - endDate
         - product
         - entitlee
-        - id
         - status
         - marketplace
     Product:
@@ -235,29 +230,43 @@ components:
     School:
       title: School
       type: object
+      description: |-
+        The school as entitlee.
+        This can be in 3 forms: 
+        - the school will use this entitlement for the quantitee specified. 
+        - when entitlees is filled: the entitlees list specifies which students in the school are entitled
+        - when subjectchoices is filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data
       properties:
-        id:
+        schoolId:
           type: string
           description: |
-            The ID for the school (RIO?)
-        name:
+            The ID for the school
+        schoolName:
           type: string
           description: The name for the school
         subjectChoices:
           type: array
+          description: 'List of subject choices. when filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data'
           items:
             $ref: '#/components/schemas/SubjectChoice'
+        entitlees:
+          type: array
+          description: List of students in the school who has rigth to this entitlement
+          items:
+            $ref: '#/components/schemas/Individual'
         quantity:
           type: integer
           example: 100
           description: 'Quantity available to the school, used if no subjectChoices selected.'
       required:
-        - id
-        - name
+        - schoolId
+        - schoolName
     Individual:
       title: Individual
       type: object
       description: Information about an individual who has an entitlement to use a specific product that they have purchased or selected.
+      x-tags:
+        - entitlements
       properties:
         id:
           type: string
@@ -269,42 +278,22 @@ components:
         email:
           type: string
           description: 'The email address of the person purchasing, used to notify the individual of fulfilment and provide access.'
-        eckid:
+        eckId:
           type: string
           description: 'If needed, the ECK-ID of the individual.'
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
       required:
         - id
         - display_name
         - email
-      x-tags:
-        - entitlements
-    BusinessModel:
-      title: BusinessModel
-      type: object
-      description: 'The model under which the entitlement has been granted, possible business models per product can be exchanged with the Marketplace by the Learning Application provider via the Catalogue API.'
-      properties:
-        id:
-          type: string
-          description: Unique identifier of the business model recognised by both the marketplace and the learning application.
-          example: 24e39454-5360-4ba4-819f-03e59b8dd679
-        name:
-          type: string
-          description: |
-            A description of the business model so it can be displayed in the Marketplace or LMS if needed.
-          example: pre-pay
-        description:
-          type: string
-          description: A longer description of the business model.
-          example: 'Pre-Pay: This product must be paid for before it can be used.'
-      required:
-        - id
-        - name
-      x-tags:
-        - entitlements
     SubjectChoice:
       title: SubjectChoice
       type: object
       description: 'A subjectChoice within a school that the entitlement is applicable to - typically a subject and level. So every student who has this subjectchoice is entitled to the products in this entitlement. Todo: what is primary key and is this matchable on SIS data?'
+      x-tags:
+        - entitlements
       properties:
         subjectCode:
           type: string
@@ -322,14 +311,15 @@ components:
           type: integer
           example: 100
           description: Quantity selected or purchased.
+        schoolSubjectCode:
+          type: string
+          description: 'Code that the school gives: like ''en'''
         schoolSubjectName:
           type: string
-          description: 'School description of this subject, may differ from standard.'
+          description: 'School description of this subject, may differ from standard. like ''queens english'''
       required:
         - subjectCode
         - level
-      x-tags:
-        - entitlements
     Entitlements:
       title: Entitlements
       type: array
@@ -342,12 +332,10 @@ components:
     APIKey:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            mp.entitlements.school: Can see all entitlements created for a specific school regardless of vendor (e.g. a LMS)
-            mp.entitlements.provider: Can see all entitlements created for products that you sell in the Marketplace (e.g. a LA)
+          scopes: {}
 tags:
   - name: entitlements
   - name: provider
