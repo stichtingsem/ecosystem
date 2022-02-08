@@ -126,8 +126,8 @@ tags:
   - name: usage
 components:
   schemas:
-    usage-event:
-      title: usage API event
+    UsageEvent:
+      title: Usage API event
       type: object
       description: |
         This is an API provided by the LA in the SEM ecosystem, and is designed to enable a MP to make the usage information about teachers and learners of product available to the rest of the ecosystem in a security and privacy concious way.

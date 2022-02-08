@@ -76,11 +76,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/events'
+                $ref: '#/components/schemas/Events'
       summary: ''
     post:
       summary: ''
       operationId: post-events
+      tags:
+        -events
       responses:
         '200':
           description: OK
@@ -92,7 +94,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/event'
+                $ref: '#/components/schemas/Event'
         description: |-
           Body contains a list of events so multiple events can be send in one request. Events can only be grouped in the same request if they are for the same school.
           Oldest events first.
@@ -102,6 +104,8 @@ paths:
     post:
       summary: ''
       operationId: post-event
+      tags:
+        -events
       responses:
         '200':
           description: OK
@@ -109,27 +113,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/event'
+              $ref: '#/components/schemas/Event'
         description: 'Events are processed asynchronisous. The request should return a 200-OK as indication that the event is received in good order, not processed in good order.'
       description: Endpoint to receive one event. These are registered by the webhook api.
 components:
   schemas:
-    events:
+    Events:
       type: array
-      items:
-        $ref: '#/components/schemas/event'
-      x-tags:
+      tags:
         - events
       description: 'A list of events - reverse chronologically ordered, provided to enable subscribers to ''catch up'' on events they may have missed.'
       title: ''
-    event:
+      items:
+        $ref: '#/components/schemas/Event'
+    Event:
       type: object
-      x-tags:
+      tags:
         - events
       description: |-
         An event is a notification that something of interest has happened within a service, that, based on authorised scopes, a subscriber may then process.  This enables systems to communicate with each other in a loosely coupled way, where the event creator has no direct connection to any of the subscribing systems.
 
-        In the SEM context the events either send information on an event that happenened (usage, progress, results) or the latest status of an object that is passed for reference (SIS, Product related  - Student, teacher, group, products)
+        In the SEM context the events either send information on an event that happenened (usage, progress, results) or the latest status of an object that is passed for reference (SIS, Product, Course related  - Student, teacher, group, products, Course)
         The latest catagorie sends the latest version of the object, previous events may be ignored for these types.
 
         Events have their own id and an identification of the object they carry. (objectId) This can be used to make sure events are pocessed in order for that object. The create time of the event is the time the action that triggered the event happened, it is not the time the event was send or processed.
@@ -141,6 +145,7 @@ components:
         - Security can be checked again at the point of request, so even in the unlikely scenario that a subscriber authorization changes between an event being emitted and the call back occurring, the subscriber can only ever get data they are authorized to retrieve.
 
         Deleting of object is supported by sending an event with the flag isDeleteEvent to true. This indicates that this is the last event you will get about this object. the data is empty in this case.
+      x-examples: {}
       properties:
         id:
           type: string
@@ -164,8 +169,16 @@ components:
         schoolId:
           type: string
         data:
-          type: object
-          description: Data of this object. could be empty when this is the 'last' event or when 'url' is filled
+          description: Data of this object. (dependent on type). Could be empty when this is the 'isDelete' event or when 'url' is filled
+          oneOf:
+            - $ref: ./sisdata.v1.yaml#/components/schemas/student
+            - $ref: ./sisdata.v1.yaml#/components/schemas/student-delivery
+            - $ref: ./sisdata.v1.yaml#/components/schemas/teacher
+            - $ref: ./sisdata.v1.yaml#/components/schemas/group
+            - $ref: ./catalogue.v1.yaml#/components/schemas/Product
+            - $ref: ./course.v1.yaml#/components/schemas/Course
+            - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
+            - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
         url:
           type: string
           description: |
