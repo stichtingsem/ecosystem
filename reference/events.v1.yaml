@@ -132,7 +132,7 @@ components:
         In the SEM context the events either send information on an event that happenened (usage, progress, results) or the latest status of an object that is passed for reference (SIS, Product related  - Student, teacher, group, products)
         The latest catagorie sends the latest version of the object, previous events may be ignored for these types.
 
-        Events have their own id and an identification of the object they carry. (objectId) This can be used to make sure events are pocessed in order for that object. The create tim eof the event is the time the action that triggered the event happened, it is not the time the event was send or processed.
+        Events have their own id and an identification of the object they carry. (objectId) This can be used to make sure events are pocessed in order for that object. The create time of the event is the time the action that triggered the event happened, it is not the time the event was send or processed.
 
         Typically an event will contain a basic data object that indicates what the state of the object is at the point at which the event is raised, but this is optional.  In the case that no data object exists it is intended that the subscribing system would call back to the provided API to retrieve the information. This is defined per event type.
 
@@ -140,7 +140,7 @@ components:
         - Ordering doesn't matter, as when you call back you always get the latest version.  The biggest risk is you call back twice and get the same information twice - but you always have correct data.
         - Security can be checked again at the point of request, so even in the unlikely scenario that a subscriber authorization changes between an event being emitted and the call back occurring, the subscriber can only ever get data they are authorized to retrieve.
 
-        Deleting of object is supported by sending an event with the flag isLast to true. This indicates that this is the last event you will get about thos object. the data is empty in this case.
+        Deleting of object is supported by sending an event with the flag isDeleteEvent to true. This indicates that this is the last event you will get about this object. the data is empty in this case.
       properties:
         id:
           type: string
@@ -170,7 +170,7 @@ components:
           type: string
           description: |
             The URL that can be called to get the dataobject for this event.
-        isLast:
+        isDeleteEvent:
           type: boolean
           description: 'indication that this is the last event you will ever see, as the object is deleted.'
       required:
