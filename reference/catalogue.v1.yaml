@@ -137,11 +137,11 @@ components:
         name:
           type: string
           description: A short name
-        streams:
+        productDescriptionIds:
           type: array
-          description: The groupings (e.g method or methods) that this product is a part of.
+          description: 'Reference to this products content/course detailed description (simular to productDescriptionIds in https://www.edustandaard.nl/app/uploads/2021/09/ECK-Distributie-en-Toegang-2.5-Servicebeschrijvingen.pdf)'
           items:
-            $ref: '#/components/schemas/Stream'
+            $ref: '#/components/schemas/CourseReference'
         levelSubjects:
           type: array
           description: The set of levels and subjects that this product is targeted at.
@@ -199,6 +199,21 @@ components:
           description: A link to any other products that are included in this one if it is a package / bundle.
           items:
             type: string
+        'FirstPublishedDate ':
+          type: string
+          description: First expected publication data (ISO 8601)
+        'DeprecationDate ':
+          type: string
+          description: |
+            Product no longer for sale, but still supported  (ISO 8601)
+        'SupportedUntilDate ':
+          type: string
+          description: |
+            Product no longer garanteed available, no longer supported (ISO 8601)
+        'EndOfLifeDate ':
+          type: string
+          description: |
+            Product will be removed from cataloque. This field gives insigth when that day will be so consumers can anticipate on this.(ISO 8601)
       required:
         - ean
         - type
@@ -261,8 +276,8 @@ components:
       description: 'A reference to a video, image or document that can be used by a Marketplace (or LMS).'
       x-tags:
         - catalogue
-    Stream:
-      title: Stream
+    CourseReference:
+      title: CourseReference
       type: object
       properties:
         id:
@@ -271,7 +286,13 @@ components:
           type: string
         description:
           type: string
-      description: A grouping of products into a set - like a method (?)
+      description: |-
+        A reference to the content of the products methods/streams/courses.
+        The deatils of the content can be retrived via the Course API.
+
+        A product license  gives access to one or more methods/streams/courses. A methods/streams/courses can be refrenced by one or more Products
+
+        See productDescriptionIds in https://www.edustandaard.nl/app/uploads/2021/09/ECK-Distributie-en-Toegang-2.5-Servicebeschrijvingen.pdf
       x-tags:
         - catalogue
     LevelSubjects:
