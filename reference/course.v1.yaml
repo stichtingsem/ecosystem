@@ -25,8 +25,8 @@ paths:
     x-tags:
       - course
     get:
-      summary: Get information about all of the courses available within LA based on Stream identifier (this identifier is shared in the catalogue API)
-      tags: []
+      summary: Get Courses
+      x-tags: []
       parameters:
         - in: query
           name: searchterm
@@ -87,8 +87,8 @@ paths:
         in: path
         required: true
     get:
-      summary: Get metadata about a specific stream course by ID
-      tags: []
+      summary: Get course by ID
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -114,8 +114,8 @@ paths:
           type: string
         required: true
     get:
-      summary: Get the CMI5 Course content for a given stream
-      tags: []
+      summary: Get Course content in CMI5e format
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -219,7 +219,7 @@ paths:
 components:
   schemas:
     Course:
-      title: Stream Course
+      title: Course
       type: object
       description: 'to be described  '
       x-tags:
@@ -246,7 +246,9 @@ components:
     LevelSubjects:
       title: LevelSubjects
       type: object
-      description: The combination of level and subject that indicates what a product is targeted at.
+      description: The combination of level and subject that indicates what a course is targeted at.
+      x-tags:
+        - course
       properties:
         level:
           type: string
@@ -279,7 +281,8 @@ components:
               details
           </block>
         <courseStructure>
-           
+      x-tags:
+        - cmi5e           
       x-examples:
         example-1:
           course:
@@ -368,6 +371,8 @@ components:
         Course definition as based on cmi5 course definition: 
         (see https://github.com/AICC/CMI-5_Spec_Current/blob/quartz/v1/CourseStructure.xsd)
         The cmi5 course structure definition is extended with http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd fields. They are added in this spec with an xml namespace 'ecs'
+      x-tags:
+        - cmi5e
       x-examples:
         example-1:
           id: 39c50b7f-c0f6-499b-bd90-e673eace2be4
@@ -447,9 +452,13 @@ components:
         id:
           type: string
       description: To be described
+      x-tags:
+        - cmi5e
     CMI5.Block:
       title: CMI5.Block
       type: object
+      x-tags:
+        - cmi5e
       x-examples:
         example-1:
           id: 'es:7DD56457-A9F5-44AD-9AA7-E791DE57C454'
@@ -536,6 +545,8 @@ components:
     CMI5.AU:
       title: CMI5.AU
       type: object
+      x-tags:
+        - cmi5e      
       x-examples:
         example-1:
           id: e19ffbe3-2411-4d1f-8aa6-14fc43c2142a
@@ -644,6 +655,8 @@ components:
       description: |-
         This is a representation of a translatable string. Effectively an Array of strings with an attribute which language the string is in.
         NOTE : In xml this should be represented as < langstring lang="nl-NL">Hallo< /langstring>, but that is not possible in the current openAPI3 spec (see https://github.com/OAI/OpenAPI-Specification/issues/630)
+      x-tags:
+        - cmi5e
       x-examples:
         example-1:
           - lang: string
@@ -663,6 +676,8 @@ components:
           xml:
             prefix: ecs
             namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+      x-tags:
+        - cmi5e
   securitySchemes:
     APIKey:
       type: oauth2

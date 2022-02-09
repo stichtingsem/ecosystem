@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Marketplace Entitlement API
+  title: Entitlement API
   version: '1.0'
   description: |
     This is an API provided by the Marketplace in the SEM ecosystem, and is designed to enable a marketplace to make information about products that have been selected or purchased by a school or individual to be then added automatically into the LMS of the school, as well as be used by the specific Learning Application that has been purchased to ensure that all setup and provisioning has been completed in advance of access.
@@ -29,7 +29,7 @@ paths:
         description: Specific identifier of an entitlement.
     get:
       summary: Get a specific entitlement
-      tags:
+      x-tags:
         - entitlements
       responses:
         '200':
@@ -56,7 +56,7 @@ paths:
         description: School identifier.
     get:
       summary: Get all entitlements for a specific school
-      tags:
+      x-tags:
         - entitlements
         - school
       parameters:
@@ -236,6 +236,8 @@ components:
         - the school will use this entitlement for the quantitee specified. 
         - when entitlees is filled: the entitlees list specifies which students in the school are entitled
         - when subjectchoices is filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data
+      x-tags:
+        - entitlements
       properties:
         schoolId:
           type: string
@@ -336,7 +338,7 @@ components:
           tokenUrl: ''
           refreshUrl: ''
           scopes: {}
-tags:
+x-tags:
   - name: entitlements
   - name: provider
   - name: school

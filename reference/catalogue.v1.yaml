@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Provider Catalogue API
+  title: Catalogue API
   version: '1.0'
   description: |-
     This API enables a learning application provider (or anyone who wants to sell products in a Marketplace) to provide information about their products to a Marketplace.
@@ -24,7 +24,7 @@ paths:
   /products:
     get:
       summary: Get Products from Catalogue
-      tags: []
+      x-tags: []
       parameters:
         - in: query
           name: subjectCode
@@ -93,7 +93,7 @@ paths:
         required: true
     get:
       summary: Get specific Product by ID
-      tags: []
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -272,10 +272,14 @@ components:
         description:
           type: string
       description: A grouping of products into a set - like a method (?)
+      x-tags:
+        - catalogue
     LevelSubjects:
       title: LevelSubjects
       type: object
       description: The combination of level and subject that indicates what a product is targeted at.
+      x-tags:
+        - catalogue
       properties:
         level:
           type: string
