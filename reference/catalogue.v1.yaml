@@ -289,7 +289,7 @@ components:
           description: |
             Subject code for specific subject at this level
   securitySchemes:
-    API Key:
+    APIKey:
       type: oauth2
       flows:
         clientCredentials:

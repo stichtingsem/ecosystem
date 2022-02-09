@@ -282,7 +282,7 @@ components:
           </block>
         <courseStructure>
       x-tags:
-        - cmi5e           
+        - cmi5e
       x-examples:
         example-1:
           course:
@@ -345,9 +345,7 @@ components:
         course:
           $ref: '#/components/schemas/CMI5.Course'
         objectives:
-          type:
-            - string
-            - array
+          type: array
           description: |
             To be described in more detail
           items:
@@ -546,7 +544,7 @@ components:
       title: CMI5.AU
       type: object
       x-tags:
-        - cmi5e      
+        - cmi5e
       x-examples:
         example-1:
           id: e19ffbe3-2411-4d1f-8aa6-14fc43c2142a
@@ -651,7 +649,8 @@ components:
               attribute: true
           langstring:
             type: string
-      xml: wrapped
+      xml:
+        wrapped: true
       description: |-
         This is a representation of a translatable string. Effectively an Array of strings with an attribute which language the string is in.
         NOTE : In xml this should be represented as < langstring lang="nl-NL">Hallo< /langstring>, but that is not possible in the current openAPI3 spec (see https://github.com/OAI/OpenAPI-Specification/issues/630)

@@ -106,7 +106,7 @@ paths:
 
         This API has pagination, using `start` and `limit`, with an optional `status` filter.
         This API is only implemented by the MP. LMS and LA will give an exception
-  '/entitlements':
+  /entitlements:
     post:
       summary: AcceptEntitlement
       operationId: post-entitlements
@@ -173,9 +173,7 @@ components:
         product:
           $ref: '#/components/schemas/Product'
         entitlee:
-          oneOf:
-            - $ref: '#/components/schemas/School'
-            - $ref: '#/components/schemas/Individual'
+          $ref: '#/components/schemas/Entitlee'
         quantity:
           type: integer
           example: 100
@@ -330,6 +328,13 @@ components:
       description: This is a list of entitlements that can be made available or retrieve in bulk.
       x-tags:
         - entitlements
+    Entitlee:
+      title: Entitlee
+      x-tags:
+        - entitlements      
+      oneOf:
+        - $ref: '#/components/schemas/School'
+        - $ref: '#/components/schemas/Individual'
   securitySchemes:
     APIKey:
       type: oauth2
