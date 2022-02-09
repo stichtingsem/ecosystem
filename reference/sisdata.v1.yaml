@@ -67,7 +67,7 @@ servers:
     description: sisdata
 components:
   schemas:
-    school:
+    School:
       type: object
       title: School
       x-tags:
@@ -80,7 +80,7 @@ components:
       required:
         - schoolId
         - schoolName
-    student:
+    Student:
       type: object
       x-tags:
         - student
@@ -127,21 +127,21 @@ components:
           type: string
           description: A reference to the school year for this student.
         school:
-          $ref: '#/components/schemas/school'
+          $ref: '#/components/schemas/School'
         groups:
           type: array
           items:
-            $ref: '#/components/schemas/groupReference'
+            $ref: '#/components/schemas/GroupReference'
         subjectChoices:
           type: array
           items:
-            $ref: '#/components/schemas/subject-choice'
+            $ref: '#/components/schemas/StudentSubjectChoice'
       required:
         - userId
         - firstname
         - surname
         - school
-    studentReference:
+    StudentReference:
       type: object
       x-tags:
         - student
@@ -163,7 +163,7 @@ components:
         - userId
         - firstname
         - surname
-    teacher:
+    Teacher:
       type: object
       x-tags:
         - teacher
@@ -201,20 +201,20 @@ components:
           type: string
           description: A reference to the school year for this teacher.
         school:
-          $ref: '#/components/schemas/school'
+          $ref: '#/components/schemas/School'
         groups:
           type: array
           description: |
             Do we need this? This information is already available in groups. It will not be available in the beginning of the school year when the rosters are not complete. Neither LMS or LA need it to function.
           items:
-            $ref: '#/components/schemas/groupReference'
+            $ref: '#/components/schemas/GroupReference'
       required:
         - userId
         - firstname
         - surname
         - schoolYear
         - school
-    teacherReference:
+    TeacherReference:
       type: object
       x-tags:
         - teacher
@@ -235,7 +235,7 @@ components:
         - userId
         - firstname
         - surname
-    group:
+    Group:
       type: object
       x-examples:
         example-1:
@@ -278,19 +278,19 @@ components:
         name:
           type: string
         school:
-          $ref: '#/components/schemas/school'
+          $ref: '#/components/schemas/School'
         students:
           type: array
           items:
-            $ref: '#/components/schemas/studentReference'
+            $ref: '#/components/schemas/StudentReference'
         teachers:
           type: array
           items:
-            $ref: '#/components/schemas/teacherReference'
+            $ref: '#/components/schemas/TeacherReference'
         subjectChoices:
           type: array
           items:
-            $ref: '#/components/schemas/subject-choice'
+            $ref: '#/components/schemas/SubjectChoice'
         schoolYear:
           type: string
           description: A reference to the school year for this group.
@@ -298,7 +298,7 @@ components:
         - groupId
         - name
         - school
-    groupReference:
+    GroupReference:
       type: object
       x-examples: {}
       x-tags:
@@ -313,9 +313,44 @@ components:
         - groupId
         - name
       title: Group reference
-    subject-choice:
+    SubjectChoice:
       type: object
-      title: Subjectchoice
+      title: SubjectChoice
+      x-tags:
+        - subjectchoice
+      x-examples: {}
+      properties:
+        id:
+          type: string
+        subjectCode:
+          type: string
+          description: 'Officiële elementcode, bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
+        schoolSubjectCode:
+          type: string
+          description: code that the school gives to this subject (like 'en')
+        schoolSubjectName:
+          type: string
+          description: Optional name of subject if different within specific school.
+        level:
+          type: string
+          description: 'Official Level, followed by courseyear. example ''havo-1, vwo-2, etc.'''
+        courseCode:
+          type: string
+          description: 'School code of the Level/couse/study. example ''Technasium'' This gives schools a way to name the course how they want it, while we still have a link with the official level'
+        courseYear:
+          type: integer
+          description: Learning year
+      required:
+        - id
+        - subjectCode
+        - schoolSubjectCode
+        - schoolSubjectName
+        - level
+        - courseCode
+        - courseYear
+    StudentSubjectChoice:
+      title: StudentSubjectChoice
+      type: object
       x-tags:
         - subjectchoice
       x-examples: {}
@@ -325,11 +360,11 @@ components:
         startDate:
           type: string
           format: date
-          description: Start of this subject for the student. Date cannot be in the future.
+          description: Start of this subject for the student. (ISO8601)
         endDate:
           type: string
           format: date
-          description: Start of this subject for the student. Date cannot be in the future. null if not ended
+          description: Start of this subject for the student. (ISO8601). null if not ended
         subjectCode:
           type: string
           description: 'Officiële elementcode, bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
@@ -357,15 +392,15 @@ components:
         - level
         - courseCode
         - courseYear
-    subject-choices:
+    SubjectChoices:
       type: array
-      items:
-        $ref: '#/components/schemas/subject-choice'
       x-tags:
         - subjectchoice
       description: List of possible subject choices
       title: Subjectchoices
-    student-delivery:
+      items:
+        $ref: '#/components/schemas/SubjectChoice'
+    StudentDelivery:
       title: Student delivery
       type: object
       description: Access to sensitive delivery information for a student.
@@ -383,6 +418,7 @@ components:
         dateOfBirth:
           type: string
           format: date
+          description: (ISO8601)
         emailAddress:
           type: string
         zipcode:
@@ -444,7 +480,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/student'
+                $ref: '#/components/schemas/Student'
               examples:
                 example-1:
                   value:
@@ -499,7 +535,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/teacher'
+                $ref: '#/components/schemas/Teacher'
       operationId: get-teacher-id
       security:
         - APIKey:
@@ -528,7 +564,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/group'
+                $ref: '#/components/schemas/Group'
       operationId: get-group-id
       description: 'Retrieve information about a specific group by ID, this includes the teachers, students and their subject choices.'
       security:
@@ -557,7 +593,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/student-delivery'
+                $ref: '#/components/schemas/StudentDelivery'
       operationId: get-student-id-delivery-information
       description: Retrieve privacy sensitive delivery information by ID - this entity is only available to a specific scope.
       security:
@@ -567,7 +603,7 @@ paths:
     parameters: []
     get:
       summary: GET Subject choices for next years
-      x-tags: 
+      x-tags:
         - subjectchoice
       responses:
         '200':
@@ -575,7 +611,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/subject-choices'
+                $ref: '#/components/schemas/SubjectChoices'
       operationId: get-subjectchoices-schoolyear
       security:
         - APIKey:
