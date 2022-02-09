@@ -84,9 +84,6 @@ components:
       type: object
       x-tags:
         - student
-        - school
-        - group
-        - subject
       title: Student
       description: Access to non-sensitive student information for us in an LMS or LA.
       x-examples:
@@ -170,8 +167,6 @@ components:
       type: object
       x-tags:
         - teacher
-        - group
-        - school
       title: Teacher
       x-examples:
         example-1:
@@ -271,10 +266,6 @@ components:
           schoolYear: 2020-2021
       x-tags:
         - group
-        - student
-        - teacher
-        - subject
-        - school
       description: A group or other grouping of students.
       title: Group
       properties:
@@ -326,8 +317,7 @@ components:
       type: object
       title: Subjectchoice
       x-tags:
-        - subject
-        - student
+        - subjectchoice
       x-examples: {}
       properties:
         id:
@@ -372,7 +362,7 @@ components:
       items:
         $ref: '#/components/schemas/subject-choice'
       x-tags:
-        - subject-choice
+        - subjectchoice
       description: List of possible subject choices
       title: Subjectchoices
     student-delivery:
@@ -381,7 +371,6 @@ components:
       description: Access to sensitive delivery information for a student.
       x-tags:
         - student
-        - student-delivery
       properties:
         userId:
           type: string
@@ -562,7 +551,6 @@ paths:
       summary: Get Student delivery information by ID
       x-tags:
         - student
-        - student-delivery
       responses:
         '200':
           description: OK
@@ -579,7 +567,8 @@ paths:
     parameters: []
     get:
       summary: GET Subject choices for next years
-      x-tags: []
+      x-tags: 
+        - subjectchoice
       responses:
         '200':
           description: OK
@@ -601,5 +590,5 @@ paths:
 x-tags:
   - name: group
   - name: student
-  - name: student-delivery
   - name: teacher
+  - name: subjectchoice
