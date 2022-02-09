@@ -69,7 +69,7 @@ components:
   schemas:
     school:
       type: object
-      title: ''
+      title: School
       x-tags:
         - school
       properties:
@@ -87,7 +87,7 @@ components:
         - school
         - group
         - subject
-      title: ''
+      title: Student
       description: Access to non-sensitive student information for us in an LMS or LA.
       x-examples:
         example-Student:
@@ -148,7 +148,7 @@ components:
       type: object
       x-tags:
         - student
-      title: ''
+      title: Student reference
       description: Access to non-sensitive student information for us in an LMS or LA.
       properties:
         userId:
@@ -172,7 +172,7 @@ components:
         - teacher
         - group
         - school
-      title: ''
+      title: Teacher
       x-examples:
         example-1:
           id: 407b751eb2a44ad98ae3f7336c160fde
@@ -223,7 +223,7 @@ components:
       type: object
       x-tags:
         - teacher
-      title: ''
+      title: Teacher reference
       properties:
         userId:
           type: string
@@ -276,7 +276,7 @@ components:
         - subject
         - school
       description: A group or other grouping of students.
-      title: group
+      title: Group
       properties:
         groupId:
           type: string
@@ -321,9 +321,10 @@ components:
       required:
         - groupId
         - name
+      title: Group reference
     subject-choice:
       type: object
-      title: ''
+      title: Subjectchoice
       x-tags:
         - subject
         - student
@@ -373,8 +374,9 @@ components:
       x-tags:
         - subject-choice
       description: List of possible subject choices
+      title: Subjectchoices
     student-delivery:
-      title: student-delivery
+      title: Student delivery
       type: object
       description: Access to sensitive delivery information for a student.
       x-tags:
@@ -444,8 +446,8 @@ paths:
         in: path
         required: true
     get:
-      summary: Get Student information by ID
-      tags:
+      summary: Get Student by ID
+      x-tags:
         - student
       responses:
         '200':
@@ -500,7 +502,7 @@ paths:
         required: true
     get:
       summary: Get Teacher by ID
-      tags:
+      x-tags:
         - teacher
       responses:
         '200':
@@ -529,7 +531,7 @@ paths:
         required: true
     get:
       summary: Get group by ID
-      tags:
+      x-tags:
         - group
       responses:
         '200':
@@ -558,7 +560,7 @@ paths:
         required: true
     get:
       summary: Get Student delivery information by ID
-      tags:
+      x-tags:
         - student
         - student-delivery
       responses:
@@ -577,7 +579,7 @@ paths:
     parameters: []
     get:
       summary: GET Subject choices for next years
-      tags: []
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -596,7 +598,7 @@ paths:
           in: query
           name: schoolYear
           description: request this list of subject choices for a particular schoolyear
-tags:
+x-tags:
   - name: group
   - name: student
   - name: student-delivery

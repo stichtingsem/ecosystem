@@ -29,7 +29,7 @@ paths:
         description: Specific identifier of an entitlement.
     get:
       summary: Get a specific entitlement
-      tags:
+      x-tags:
         - entitlements
       responses:
         '200':
@@ -56,7 +56,7 @@ paths:
         description: School identifier.
     get:
       summary: Get all entitlements for a specific school
-      tags:
+      x-tags:
         - entitlements
         - school
       parameters:
@@ -336,7 +336,7 @@ components:
           tokenUrl: ''
           refreshUrl: ''
           scopes: {}
-tags:
+x-tags:
   - name: entitlements
   - name: provider
   - name: school

@@ -43,8 +43,8 @@ paths:
         in: path
         required: true
     get:
-      summary: Get usage for a specific entitlement
-      tags:
+      summary: Get usage per entitlement
+      x-tags:
         - usage
       responses:
         '200':
@@ -93,8 +93,8 @@ paths:
   /usage/individual:
     parameters: []
     get:
-      summary: Your GET endpoint
-      tags: []
+      summary: Get individual usage
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -121,7 +121,7 @@ paths:
             - la.usage.first
             - la.usage.ongoing
       description: Get all usages for an individual student
-tags:
+x-tags:
   - name: entitlements
   - name: usage
 components:

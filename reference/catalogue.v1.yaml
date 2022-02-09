@@ -24,7 +24,7 @@ paths:
   /products:
     get:
       summary: Get Products from Catalogue
-      tags: []
+      x-tags: []
       parameters:
         - in: query
           name: subjectCode
@@ -93,7 +93,7 @@ paths:
         required: true
     get:
       summary: Get specific Product by ID
-      tags: []
+      x-tags: []
       responses:
         '200':
           description: OK

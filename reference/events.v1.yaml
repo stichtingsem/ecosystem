@@ -26,14 +26,14 @@ info:
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-tags:
+x-tags:
   - name: events
     description: Operations related to event retrieval
 paths:
   /events:
     get:
       description: Allows a subscriber to retrieve a list of past events. The provider will not keep the events indefinate. This API is intended when a party had downtime and needs to catchup on processing/receiving events. The intended retention is a few days to support catching up.
-      tags:
+      x-tags:
         - events
       operationId: listEvents
       parameters:
@@ -77,12 +77,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Events'
-      summary: ''
+      summary: Get Events
     post:
-      summary: ''
+      summary: Receive Events
       operationId: post-events
-      tags:
-        -events
+      x-tags: '-events'
       responses:
         '200':
           description: OK
@@ -102,10 +101,9 @@ paths:
           Events are processed asynchronisous. The request should return a 200-OK as indication that the events are received in good order, not processed in good order.
   /event:
     post:
-      summary: ''
+      summary: Receive one event
       operationId: post-event
-      tags:
-        -events
+      x-tags: '-events'
       responses:
         '200':
           description: OK
@@ -120,15 +118,15 @@ components:
   schemas:
     Events:
       type: array
-      tags:
+      x-tags:
         - events
       description: 'A list of events - reverse chronologically ordered, provided to enable subscribers to ''catch up'' on events they may have missed.'
-      title: ''
+      title: Events
       items:
         $ref: '#/components/schemas/Event'
     Event:
       type: object
-      tags:
+      x-tags:
         - events
       description: |-
         An event is a notification that something of interest has happened within a service, that, based on authorised scopes, a subscriber may then process.  This enables systems to communicate with each other in a loosely coupled way, where the event creator has no direct connection to any of the subscribing systems.
@@ -191,6 +189,7 @@ components:
         - type
         - created
         - url
+      title: Event
   securitySchemes:
     APIKey:
       type: oauth2

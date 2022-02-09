@@ -25,8 +25,8 @@ paths:
     x-tags:
       - course
     get:
-      summary: Get information about all of the courses available within LA based on Stream identifier (this identifier is shared in the catalogue API)
-      tags: []
+      summary: Get Courses
+      x-tags: []
       parameters:
         - in: query
           name: searchterm
@@ -87,8 +87,8 @@ paths:
         in: path
         required: true
     get:
-      summary: Get metadata about a specific stream course by ID
-      tags: []
+      summary: Get course by ID
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -114,8 +114,8 @@ paths:
           type: string
         required: true
     get:
-      summary: Get the CMI5 Course content for a given stream
-      tags: []
+      summary: Get Course content in CMI5e format
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -219,7 +219,7 @@ paths:
 components:
   schemas:
     Course:
-      title: Stream Course
+      title: Course
       type: object
       description: 'to be described  '
       x-tags:
@@ -246,7 +246,7 @@ components:
     LevelSubjects:
       title: LevelSubjects
       type: object
-      description: The combination of level and subject that indicates what a product is targeted at.
+      description: The combination of level and subject that indicates what a course is targeted at.
       properties:
         level:
           type: string

@@ -23,13 +23,13 @@ info:
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-tags:
+x-tags:
   - name: webhooks
     description: Operations related to webhook management
 paths:
   /webhook:
     get:
-      tags:
+      x-tags:
         - webhooks
       summary: Retrieve list of webhooks
       description: retrieves list of webhooks registered
@@ -42,7 +42,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/webhooks'
     post:
-      tags:
+      x-tags:
         - webhooks
       description: creates or updates a webhook
       operationId: createUpdateWebhook
@@ -59,9 +59,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhook'
+      summary: Create or update webhook
   '/webhook/{webhookId}':
     get:
-      tags:
+      x-tags:
         - webhooks
       summary: Retrieve webhook by ID
       description: retrieves specific of webhook
@@ -80,7 +81,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/webhook'
     delete:
-      tags:
+      x-tags:
         - webhooks
       description: deletes a webhook
       operationId: deleteWebhook
@@ -93,6 +94,7 @@ paths:
       responses:
         '200':
           description: OK
+      summary: Delete a webhook
 components:
   schemas:
     webhooks:
@@ -101,6 +103,7 @@ components:
         $ref: '#/components/schemas/webhook'
       x-tags:
         - webhooks
+      title: Webhooks
     webhook:
       type: object
       x-tags:
@@ -129,3 +132,4 @@ components:
         - id
         - url
         - enabled_events
+      title: Webhook
