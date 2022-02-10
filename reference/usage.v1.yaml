@@ -53,10 +53,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntitlementUsage'
-            application/xml:
-              schema:
-                type: object
-                properties: {}
       operationId: get-usage-by-entitlement-id
       description: |-
         Retrieve the full usage based on a entitlement-id, needs to confirm that the caller is able to access either based on their provider information (they can only see their own usage) in the case of the provider scope.
