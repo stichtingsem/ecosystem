@@ -40,9 +40,9 @@ paths:
                 $ref: '#/components/schemas/Entitlement'
       operationId: get-entitlements-by-id
       description: |-
-        Retrieve the full specification for an entitlement from a marketplace, LA or LMS, needs to confirm that the caller is able to access either based on their provider information (they can only see their own products) in the case of the provider scope.
+        Retrieve the full specification for an entitlement from a marketplace, always scoped per school
 
-        This call is used to make sure all parties are in sync about the entitlements. For this reason it is implemented in MP, LMS and LA's
+        This API is only implemented by the MP. LMS and LA will give an exception
       security:
         - APIKey:
             - mp.entitlements.school
@@ -105,8 +105,9 @@ paths:
         Retrieve all entilements for a specific school, the school will have approved the LMS and LA to have access to its Marketplace during the setup phase.
 
         This API has pagination, using `start` and `limit`, with an optional `status` filter.
+
         This API is only implemented by the MP. LMS and LA will give an exception
-  '/entitlements':
+  /entitlements:
     post:
       summary: AcceptEntitlement
       operationId: post-entitlements
@@ -139,6 +140,7 @@ paths:
       description: |-
         The entitlement endpoint POST request is the request to send a entitlement or update of the entitlement from the MP to the LA or LMS.
         This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
+
         This endpoint is only implemented by the LA and LMS. The MP should give an exception.
       security:
         - APIKey:
