@@ -144,6 +144,7 @@ components:
 
         Deleting of object is supported by sending an event with the flag isDeleteEvent to true. This indicates that this is the last event you will get about this object. the data is empty in this case.
       x-examples: {}
+      title: Event
       properties:
         id:
           type: string
@@ -167,16 +168,7 @@ components:
         schoolId:
           type: string
         data:
-          description: Data of this object. (dependent on type). Could be empty when this is the 'isDelete' event or when 'url' is filled
-          oneOf:
-            - $ref: ./sisdata.v1.yaml#/components/schemas/student
-            - $ref: ./sisdata.v1.yaml#/components/schemas/student-delivery
-            - $ref: ./sisdata.v1.yaml#/components/schemas/teacher
-            - $ref: ./sisdata.v1.yaml#/components/schemas/group
-            - $ref: ./catalogue.v1.yaml#/components/schemas/Product
-            - $ref: ./course.v1.yaml#/components/schemas/Course
-            - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
-            - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
+          $ref: '#/components/schemas/EventData'
         url:
           type: string
           description: |
@@ -189,7 +181,22 @@ components:
         - type
         - created
         - url
-      title: Event
+    EventData:
+      title: EventData
+      description: Data of event object.  (dependent on type in event).
+      x-tags:
+        - events
+      oneOf:
+        - $ref: ./sisdata.v1.yaml#/components/schemas/student
+        - $ref: ./sisdata.v1.yaml#/components/schemas/student-delivery
+        - $ref: ./sisdata.v1.yaml#/components/schemas/teacher
+        - $ref: ./sisdata.v1.yaml#/components/schemas/group
+        - $ref: ./catalogue.v1.yaml#/components/schemas/Product
+        - $ref: ./course.v1.yaml#/components/schemas/Course
+        - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
+        - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
+        - properties: {}
+          nullable: true
   securitySchemes:
     APIKey:
       type: oauth2
