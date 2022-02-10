@@ -168,16 +168,7 @@ components:
         schoolId:
           type: string
         data:
-          description: Data of this object. (dependent on type). Could be empty when this is the 'isDelete' event or when 'url' is filled
-          oneOf:
-            - $ref: ./sisdata.v1.yaml#/components/schemas/Student
-            - $ref: ./sisdata.v1.yaml#/components/schemas/StudentDelivery
-            - $ref: ./sisdata.v1.yaml#/components/schemas/Teacher
-            - $ref: ./sisdata.v1.yaml#/components/schemas/Group
-            - $ref: ./catalogue.v1.yaml#/components/schemas/Product
-            - $ref: ./course.v1.yaml#/components/schemas/Course
-            - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
-            - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
+          $ref: '#/components/schemas/EventData'
         url:
           type: string
           description: |
@@ -190,6 +181,22 @@ components:
         - type
         - created
         - url
+    EventData:
+      title: EventData
+      description: Data of event object.  (dependent on type in event).
+      x-tags:
+        - events
+      oneOf:
+        - $ref: ./sisdata.v1.yaml#/components/schemas/student
+        - $ref: ./sisdata.v1.yaml#/components/schemas/student-delivery
+        - $ref: ./sisdata.v1.yaml#/components/schemas/teacher
+        - $ref: ./sisdata.v1.yaml#/components/schemas/group
+        - $ref: ./catalogue.v1.yaml#/components/schemas/Product
+        - $ref: ./course.v1.yaml#/components/schemas/Course
+        - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
+        - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
+        - properties: {}
+          nullable: true
   securitySchemes:
     APIKey:
       type: oauth2

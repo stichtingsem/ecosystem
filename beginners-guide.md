@@ -29,7 +29,8 @@ The particular mapping of this specification is as follows:
 | [SIS Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/sisdata.v1.yaml)                    | SIS              | MP, LA, LMS        |
 | [Catalogue Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/catalogue.v1.yaml)            | LA               | MP, LMS            |
 | [Course Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/coursee.v1.yaml)                 | LA               | LMS                |
-| [Entitlements](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/entitlement.v1.yaml)            | MP (LA, LMS)              | LMS, LA  (LA)          | Entitlements are created by MP, but API is implemented by 3 parties
+| [Recieve Entitlements](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/entitlement.v1.yaml)            | LA, LMS             | MP          | The LA and LMS recieve entitlements from the MP. This is transactional.
+| [Entitlements](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/entitlement.v1.yaml)            | MP              | LMS, LA         | Entitlements can be checked at the MP
 | [Usage](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/usage.v1.yaml)                         | LA               | MP, LMS            |
 | [Progress](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/progress.v1.yaml) | LA               | MP, LMS            |
 | Results to be defined | LA               | MP, LMS            |

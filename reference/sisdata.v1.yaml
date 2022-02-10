@@ -367,7 +367,7 @@ components:
           description: Start of this subject for the student. (ISO8601). null if not ended
         subjectCode:
           type: string
-          description: 'Officiële elementcode, bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
+          description: 'Officiële vakcode, bron: Ministerie van OCW, like https://wetten.overheid.nl/BWBR0045375'
         schoolSubjectCode:
           type: string
           description: code that the school gives to this subject (like 'en')
