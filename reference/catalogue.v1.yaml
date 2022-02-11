@@ -288,7 +288,7 @@ components:
           type: string
       description: |-
         A reference to the content of the products methods/streams/courses.
-        The deatils of the content can be retrived via the Course API.
+        The details of the content can be retrieved via the Course API.
 
         A product license  gives access to one or more methods/streams/courses. A methods/streams/courses can be refrenced by one or more Products
 
