@@ -145,6 +145,25 @@ paths:
       security:
         - APIKey:
             - mp.entitlements.school
+  /entitlements/firstactivation:
+    post:
+      summary: Report activation
+      operationId: post-activation
+      x-tags:
+        - entitlements
+      responses:
+        '200':
+          description: OK
+      description: |-
+        Report first activation
+
+        This API is only implemented by the MP. LMS and LA will give an exception
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Activation'
+    parameters: []
 components:
   schemas:
     Entitlement:
@@ -333,10 +352,33 @@ components:
     Entitlee:
       title: Entitlee
       x-tags:
-        - entitlements      
+        - entitlements
       oneOf:
         - $ref: '#/components/schemas/School'
         - $ref: '#/components/schemas/Individual'
+    Activation:
+      title: Activation
+      type: object
+      x-tags:
+        - entitlements
+      properties:
+        entitlementId:
+          type: string
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+        schoolId:
+          type: string
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        eckId:
+          type: string
+        activationDate:
+          type: string
+          format: date
+          description: ISO8601
+      description: Initial activation for a student based on a entitlement
   securitySchemes:
     APIKey:
       type: oauth2
