@@ -199,18 +199,18 @@ components:
           description: A link to any other products that are included in this one if it is a package / bundle.
           items:
             type: string
-        'FirstPublishedDate ':
+        FirstPublishedDate:
           type: string
           description: First expected publication data (ISO 8601)
-        'DeprecationDate ':
+        DeprecationDate:
           type: string
           description: |
             Product no longer for sale, but still supported  (ISO 8601)
-        'SupportedUntilDate ':
+        SupportedUntilDate:
           type: string
           description: |
             Product no longer garanteed available, no longer supported (ISO 8601)
-        'EndOfLifeDate ':
+        EndOfLifeDate:
           type: string
           description: |
             Product will be removed from cataloque. This field gives insigth when that day will be so consumers can anticipate on this.(ISO 8601)
