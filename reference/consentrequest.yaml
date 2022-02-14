@@ -6,15 +6,15 @@ info:
   title: Consent API
   description: |-
     Consent-flow for third party-consent:
-
     __Introduction__
     
-    When two parties agree to exchange data, they will define their roles and with this a list of scopes will be defined and saved alongside the client credentials. This will allow for validation of applications if they may ask consent through an LMS (to access the third party data). Also an optional callbackurl is registered alongside the client, where an update-message about the consent or consent-request can be sent.
+    When two parties agree to exchange data, they will define their roles and with this a list of scopes will be defined and saved alongside the client credentials. Also a callbackurl is registered alongside the client, where an update-message about the consent or consent-request can be sent. 
     
-    __Application initiated flow (optional)__
+    Consent always has to be given in both systems that are involved. For example: both in the SIS and in the MP a user with the access role to allow data sharing (ie. security officer) has to give consent before the SIS can share their data with the MP (or other systems).
+    
+    __Technical description for initial consent__
     
     An application (A) will ask for a token at the IDP (using the client_credentials flow) without a specific scope but for a specific digitalDeliveryId and can do an HTTP POST request to ask consent (#redirectToApiSpec). A UUID for this consent-request will be returned. This flow will be asynchronous, the application is done for now.
-    
     
     __Consent-request resource__
     
@@ -22,13 +22,11 @@ info:
     
     __Consent resource__ 
     
-    Application (A) can check which schools have given consent by doing an HTTP GET request to ask if a specific digitalDeliveryId has given consent. Status can be Active or Revoked.
+    Application (A) can check which schools have given consent in both applications by doing an HTTP GET request to ask if a specific digitalDeliveryId has given consent. Status can be Active or Revoked.
     
     In the other application (B) the currently open consent-requests will be made visible to users with the access role to allow data sharing (ie. security officer). The user accepts the consent-request and a consent is created. If the user declines the consent-request no consent is created. In both cases an update-message is (optionally) sent to the registered callbackurl.
-    The user can also revoke a prior given consent. An updatemessage will than also be send to the callbackurl.
-    The user can also create a consent without prior consent-request. Therefor the application needs to render all registered parties from the SEM ecosystem, for the user to select and create a consent. This consent will be available on the API described below.
+    The user can also revoke a prior given consent. This can be done in both application A & B. An updatemessage will than also be send to the callbackurl of the other application.
     
-
     __Token for digideliveryId__
     
     When requesting a token on the oauth2 token resource using the client_credentials a queryparameter containing the identifier for the school.
