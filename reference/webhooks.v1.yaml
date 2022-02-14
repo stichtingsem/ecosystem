@@ -133,3 +133,12 @@ components:
         - url
         - enabled_events
       title: Webhook
+  securitySchemes:
+    APIKey:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes: {}
+      description: ''
