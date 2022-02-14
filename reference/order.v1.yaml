@@ -1,0 +1,156 @@
+openapi: 3.0.0
+info:
+  title: Purchase Order API
+  version: '1.0'
+  contact:
+    name: Stichting SEM
+    url: 'https://stichtingsem.org/'
+  description: |-
+    API to order products from the LA by the MP.
+    needed because:....
+servers:
+  - url: 'https://example.stichtingsem.org/api'
+    description: course
+paths:
+  '/order/{orderid}':
+    get:
+      summary: Get an order
+      tags: []
+      responses: {}
+      operationId: get-order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FullOrder'
+        description: ''
+      description: get an order
+    parameters:
+      - schema:
+          type: string
+        name: orderid
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-order-orderid
+      responses:
+        '200':
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine
+            1 - orderId does not exist
+            2 - order in wrong state to make adjustments
+            x - <to be defined>
+
+            99- Other, see statusMessage for details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
+                  referenceId:
+                    type: string
+                required:
+                  - status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+  /correctorderamount:
+    parameters: []
+    post:
+      summary: ''
+      operationId: post-correctorderamount
+      responses:
+        '200':
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine
+            1 - orderId does not exist
+            2 - order in wrong state to make adjustments
+            x - <to be defined>
+
+            99- Other, see statusMessage for details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
+                required:
+                  - status
+      description: Correct the amount of the order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: string
+                newAmount:
+                  type: integer
+                  minimum: 0
+              required:
+                - orderId
+                - newAmount
+components:
+  securitySchemes:
+    APIKey:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes: {}
+  schemas:
+    Order:
+      title: Order
+      type: object
+      description: Simple purchase order
+      x-examples: {}
+      properties:
+        orderId:
+          type: string
+        ean:
+          type: string
+        contractId:
+          type: string
+        amount:
+          type: integer
+        requestReferenceId:
+          type: string
+      required:
+        - orderId
+        - ean
+        - contractId
+        - amount
+        - requestReferenceId
+    FullOrder:
+      title: FullOrder
+      allOf:
+        - $ref: '#/components/schemas/Order'
+        - type: object
+          properties:
+            createdDate:
+              type: string
+            referenceId:
+              type: string
+            status:
+              type: string
+      x-examples: {}
