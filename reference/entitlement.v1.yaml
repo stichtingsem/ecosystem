@@ -191,6 +191,7 @@ components:
         expirationDate:
           type: string
           description: 'Date - time Expiration date, is the date on which the product can no longer be converted to a license. The agreement to activate the product has expired. This does not say anything about being able to use the product after activation before this date.'
+          format: date
         product:
           $ref: '#/components/schemas/Product'
         entitlee:
@@ -254,7 +255,7 @@ components:
         This can be in 3 forms: 
         - the school will use this entitlement for the quantitee specified. 
         - when entitlees is filled: the entitlees list specifies which students in the school are entitled
-        - when subjectchoices is filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data
+        - when subject is filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data
       x-tags:
         - entitlements
       properties:
@@ -265,11 +266,17 @@ components:
         schoolName:
           type: string
           description: The name for the school
-        subjectChoices:
+        subjects:
           type: array
-          description: 'List of subject choices. when filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data'
+          description: 'List of chools subject . when filled: each student who has this school stubject is entitled to this product. The LA can make this match based on sis data'
           items:
-            $ref: '#/components/schemas/SubjectChoice'
+            type: object
+            properties:
+              subject:
+                $ref: '#/components/schemas/SchoolSubject'
+              quantity:
+                type: integer
+                description: Quantity selected or purchased.
         entitlees:
           type: array
           description: List of students in the school who has rigth to this entitlement
@@ -278,10 +285,30 @@ components:
         quantity:
           type: integer
           example: 100
-          description: 'Quantity available to the school, used if no subjectChoices selected.'
+          description: 'Quantity available to the school, used if no subjects provided.'
       required:
         - schoolId
         - schoolName
+      x-examples:
+        example-1:
+          schoolId: string
+          schoolName: string
+          subjects:
+            - subject:
+                subjectCode: string
+                schoolSubjectCode: string
+                schoolSubjectName: string
+                level: string
+                levelYear: 0
+                schoolLevelCode: string
+              quantity: 0
+          entitlees:
+            - id: string
+              display_name: string
+              email: string
+              eckId: string
+              userId: string
+          quantity: 100
     Individual:
       title: Individual
       type: object
@@ -309,35 +336,31 @@ components:
         - id
         - display_name
         - email
-    SubjectChoice:
-      title: SubjectChoice
+    SchoolSubject:
+      title: SchoolSubject
       type: object
-      description: 'A subjectChoice within a school that the entitlement is applicable to - typically a subject and level. So every student who has this subjectchoice is entitled to the products in this entitlement. Todo: what is primary key and is this matchable on SIS data?'
+      description: 'A SchoolSubject within a school that the entitlement is applicable to - typically a subject and level. So every student who has this subject is entitled to the products in this entitlement. (Todo: what is primary key and is this matchable on SIS data?)'
       x-tags:
         - entitlements
       properties:
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
-        level:
-          type: string
-          description: 'Official Level, followed by courseyear. example ''havo-1, vwo-2, etc.'''
-        courseCode:
-          type: string
-          description: 'School code of the Level/couse/study. example ''Technasium'' This gives schools a way to name the course how they want it, while we still have a link with the official level'
-        courseYear:
-          type: integer
-          description: Learning year
-        quantity:
-          type: integer
-          example: 100
-          description: Quantity selected or purchased.
         schoolSubjectCode:
           type: string
           description: 'Code that the school gives: like ''en'''
         schoolSubjectName:
           type: string
           description: 'School description of this subject, may differ from standard. like ''queens english'''
+        level:
+          type: string
+          description: 'Official Level. example ''havo, vwo, etc.''. Todo : add link to offical code/list'
+        levelYear:
+          type: integer
+          description: Learning year (eg 1)
+        schoolLevelCode:
+          type: string
+          description: 'School code of the Level/couse/study. example ''Technasium'' This gives schools a way to name the course how they want it, while we still have a link with the official level'
       required:
         - subjectCode
         - level
@@ -361,6 +384,7 @@ components:
       type: object
       x-tags:
         - entitlements
+      description: Initial activation for a student based on a entitlement
       properties:
         entitlementId:
           type: string
@@ -376,9 +400,8 @@ components:
           type: string
         activationDate:
           type: string
-          format: date
+          format: date-time
           description: ISO8601
-      description: Initial activation for a student based on a entitlement
   securitySchemes:
     APIKey:
       type: oauth2
