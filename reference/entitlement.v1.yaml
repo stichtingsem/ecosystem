@@ -113,7 +113,16 @@ paths:
       operationId: post-entitlements
       responses:
         '200':
-          description: OK
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine
+            1 - Entitlement already exists
+            x - <to be defined>
+            x - <to be defined>
+
+            99- Other, see statusMessage for details
           content:
             application/json:
               schema:
@@ -159,7 +168,19 @@ paths:
         - entitlements
       responses:
         '200':
-          description: OK
+          description: |
+            OK, the request is processed.
+
+            status - Message
+            0 - All fine
+            1 - Entilement not found for this school
+            2 - Entitlement not in right state for this action
+            3 - This UserId is unknown
+            4 - This EckId is unknown
+            5 - This user is not entitled to the entitlement. Activation refused
+            6 - activationDate is not a valid date
+            7 - activationDate is not within the allowed timeframe.
+            99- Other, see statusMessage for details
           content:
             application/json:
               schema:
@@ -188,7 +209,19 @@ paths:
       operationId: post-entitlements-changeentileestatus
       responses:
         '200':
-          description: OK
+          description: |
+            OK, the request is processed.
+
+            status - Message
+            0 - All fine
+            1 - Entilement not found for this school
+            2 - Entitlement not in right state for this action
+            3 - This UserId is unknown
+            4 - This EckId is unknown
+            5 - UserId has not activated this entitlement, so status cannot be changed
+            6 - EckId has not activated this entitlement, so status cannot be changed
+            7 - NewStatus value not correct
+            99- Other, see statusMessage for details
           content:
             application/json:
               schema:
@@ -202,7 +235,10 @@ paths:
                 required:
                   - status
       description: |-
-        a
+        This call is used to change the status of one individual entilee within an entitlement. When an entitle activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to cancelled or blocked (or back to active). 
+        The LA can return several errors as result of this request. See error table.
+        The LMS will accept any new status and use that to display or remove access links to the course in the LA.
+
 
         This endpoint is only implemented by the LA and LMS. The MP should give an exception.
       requestBody:
@@ -223,6 +259,7 @@ paths:
                     - blocked
                     - active
                     - cancelled
+        description: ''
     parameters: []
   /entitlements/changestatus:
     post:
@@ -230,7 +267,15 @@ paths:
       operationId: post-entitlements-changestatus
       responses:
         '200':
-          description: OK
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine
+            2 - Entitlement not in right state for this action
+            3 - Cannot change status, see statusMessage for details
+            4 - NewQuantity is not an acceptable value
+            99- Other, see statusMessage for details
           content:
             application/json:
               schema:
@@ -478,8 +523,6 @@ components:
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        schoolId:
-          type: string
         userId:
           type: string
           description: userid. (nledupersonrealId or nledupersonprofileId)
@@ -489,6 +532,9 @@ components:
           type: string
           format: date-time
           description: ISO8601
+      required:
+        - entitlementId
+        - activationDate
   securitySchemes:
     APIKey:
       type: oauth2
