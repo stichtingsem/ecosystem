@@ -85,6 +85,24 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: id of the event
+                    status:
+                      type: integer
+                      description: 'Result status (0=OK, see list with Errors)'
+                    statusMessage:
+                      type: string
+                  required:
+                    - id
+                    - status
       description: |
         Endpoint to receive events. These are registered by the webhook api.
       requestBody:
@@ -98,7 +116,7 @@ paths:
           Body contains a list of events so multiple events can be send in one request. Events can only be grouped in the same request if they are for the same school.
           Oldest events first.
 
-          Events are processed asynchronisous. The request should return a 200-OK as indication that the events are received in good order, not processed in good order.
+          Events are processed asynchronisous. The request should a response with status=0 as indication that the events are received in good order, not processed in good order. The only reason to reject events is when there is no consent/authorization to deliver events from that type for a school
   /event:
     post:
       summary: Receive one event
@@ -107,6 +125,18 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
+                required:
+                  - status
       requestBody:
         content:
           application/json:
