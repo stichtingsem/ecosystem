@@ -211,9 +211,9 @@ components:
             - activated
             - cancelled
             - blocked
-        subsequentUsages:
+        frequencyOfUsage:
           type: integer
-          description: 'Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
       required:
         - userId
         - firstUsed
@@ -259,9 +259,9 @@ components:
             - activated
             - cancelled
             - blocked
-        subsequentUsages:
+        frequencyOfUsage:
           type: integer
-          description: 'Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
       required:
         - entitlementId
   securitySchemes:
