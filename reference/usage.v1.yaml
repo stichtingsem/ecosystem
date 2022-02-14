@@ -195,6 +195,13 @@ components:
         lastUsed:
           type: string
           format: date-time
+        status:
+          type: string
+          description: 'The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.'
+          enum:
+            - activated
+            - cancelled
+            - blocked
       required:
         - userId
         - firstUsed
@@ -232,6 +239,13 @@ components:
         lastUsed:
           type: string
           description: Date - time that the product is used for the last time. Even if the prduct's license periode within this entitlement has expired
+        status:
+          type: string
+          description: 'The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.'
+          enum:
+            - activated
+            - cancelled
+            - blocked
       required:
         - entitlementId
   securitySchemes:
