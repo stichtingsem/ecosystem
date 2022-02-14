@@ -162,9 +162,9 @@ components:
           type: string
           description: Id of the events data
         created:
-          type: number
-          example: 1530291411
+          type: string
           description: event creation moment (seconds after 1970?)
+          format: date-time
         schoolId:
           type: string
         data:
@@ -187,10 +187,10 @@ components:
       x-tags:
         - events
       oneOf:
-        - $ref: ./sisdata.v1.yaml#/components/schemas/student
-        - $ref: ./sisdata.v1.yaml#/components/schemas/student-delivery
-        - $ref: ./sisdata.v1.yaml#/components/schemas/teacher
-        - $ref: ./sisdata.v1.yaml#/components/schemas/group
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Student
+        - $ref: ./sisdata.v1.yaml#/components/schemas/StudentDelivery
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Teacher
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Group
         - $ref: ./catalogue.v1.yaml#/components/schemas/Product
         - $ref: ./course.v1.yaml#/components/schemas/Course
         - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
