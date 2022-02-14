@@ -144,8 +144,6 @@ paths:
                 example-1:
                   value:
                     confirmationId: string
-        '405':
-          description: Method Not Allowed
       requestBody:
         content:
           application/json:
