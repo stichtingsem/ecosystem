@@ -172,6 +172,14 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         schoolId:
           type: string
+        status:
+          type: string
+          enum:
+            - activated
+            - cancelled
+            - blocked
+            - entiled
+            - provisioned
         entitleeUsageList:
           type: array
           items:
@@ -179,6 +187,7 @@ components:
       required:
         - entitlementId
         - schoolId
+        - status
         - entitleeUsageList
     EntileeUsage:
       title: EntileeUsage
@@ -195,9 +204,20 @@ components:
         lastUsed:
           type: string
           format: date-time
+        status:
+          type: string
+          description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
+          enum:
+            - activated
+            - cancelled
+            - blocked
+        frequencyOfUsage:
+          type: integer
+          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
       required:
         - userId
         - firstUsed
+      description: Usage details per entilee. Only entilee's that have activated the entitlement are added in this list.
     IndividualUsage:
       title: IndividualUsage
       type: object
@@ -232,6 +252,16 @@ components:
         lastUsed:
           type: string
           description: Date - time that the product is used for the last time. Even if the prduct's license periode within this entitlement has expired
+        status:
+          type: string
+          description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
+          enum:
+            - activated
+            - cancelled
+            - blocked
+        frequencyOfUsage:
+          type: integer
+          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
       required:
         - entitlementId
   securitySchemes:

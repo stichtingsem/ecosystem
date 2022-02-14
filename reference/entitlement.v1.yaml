@@ -113,24 +113,37 @@ paths:
       operationId: post-entitlements
       responses:
         '200':
-          description: OK
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine
+            1 - Entitlement already exists
+            x - <to be defined>
+            x - <to be defined>
+
+            99- Other, see statusMessage for details
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
                   entitlementConfirmationId:
                     type: string
                     description: 'A confirmation Id '
                   processDate:
                     type: string
                     description: Date time of moment processing by the LA
+                    format: date-time
               examples:
                 example-1:
                   value:
                     confirmationId: string
-        '405':
-          description: Method Not Allowed
       requestBody:
         content:
           application/json:
@@ -153,7 +166,31 @@ paths:
         - entitlements
       responses:
         '200':
-          description: OK
+          description: |
+            OK, the request is processed.
+
+            status - Message
+            0 - All fine
+            1 - Entilement not found for this school
+            2 - Entitlement not in right state for this action
+            3 - This UserId is unknown
+            4 - This EckId is unknown
+            5 - This user is not entitled to the entitlement. Activation refused
+            6 - activationDate is not a valid date
+            7 - activationDate is not within the allowed timeframe.
+            99- Other, see statusMessage for details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
+                required:
+                  - status
       description: |-
         Report first activation
 
@@ -164,6 +201,114 @@ paths:
             schema:
               $ref: '#/components/schemas/Activation'
     parameters: []
+  /entitlements/changeentileestatus:
+    post:
+      summary: ChangeEntileeStatus
+      operationId: post-entitlements-changeentileestatus
+      responses:
+        '200':
+          description: |
+            OK, the request is processed.
+
+            status - Message
+            0 - All fine
+            1 - Entilement not found for this school
+            2 - Entitlement not in right state for this action
+            3 - This UserId is unknown
+            4 - This EckId is unknown
+            5 - UserId has not activated this entitlement, so status cannot be changed
+            6 - EckId has not activated this entitlement, so status cannot be changed
+            7 - NewStatus value not correct
+            99- Other, see statusMessage for details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
+                required:
+                  - status
+      description: |-
+        This call is used to change the status of one individual entilee within an entitlement. When an entitle activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to cancelled or blocked (or back to active). 
+        The LA can return several errors as result of this request. See error table.
+        The LMS will accept any new status and use that to display or remove access links to the course in the LA.
+
+
+        This endpoint is only implemented by the LA and LMS. The MP should give an exception.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entitlement:
+                  type: string
+                userId:
+                  type: string
+                eckId:
+                  type: string
+                newStatus:
+                  type: string
+                  enum:
+                    - blocked
+                    - active
+                    - cancelled
+        description: ''
+    parameters: []
+  /entitlements/changestatus:
+    post:
+      summary: Change Entitlement Status
+      operationId: post-entitlements-changestatus
+      responses:
+        '200':
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine
+            2 - Entitlement not in right state for this action
+            3 - Cannot change status, see statusMessage for details
+            4 - NewQuantity is not an acceptable value
+            99- Other, see statusMessage for details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
+                required:
+                  - status
+      description: |-
+        Change the status of an entitlement. Both Status and quantity can be changed.
+
+        This endpoint is only implemented by the LA and LMS. The MP should give an exception.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entitlementId:
+                  type: string
+                newStatus:
+                  type: string
+                  enum:
+                    - blocked
+                    - active
+                    - cancelled
+                newQuantity:
+                  type: integer
+              required:
+                - entitlementId
+        description: ''
 components:
   schemas:
     Entitlement:
@@ -180,7 +325,7 @@ components:
           example: 24e39454-5360-4ba4-819f-03e59b8dd679
         contractId:
           type: string
-          description: An optional unique identifier for the purchase agreement. Mandatoty within the communication between MP/SA and LA
+          description: An optional unique identifier for the purchase agreement. Mandatory within the communication between MP/SA and LA
         startDate:
           type: string
           format: date
@@ -188,6 +333,14 @@ components:
         endDate:
           type: string
           format: date
+        entitlementType:
+          type: string
+          description: 'The type of the entitlement. '
+          enum:
+            - school
+            - schoolsubject
+            - entitlees
+            - individual
         expirationDate:
           type: string
           description: 'Date - time Expiration date, is the date on which the product can no longer be converted to a license. The agreement to activate the product has expired. This does not say anything about being able to use the product after activation before this date.'
@@ -200,7 +353,7 @@ components:
           type: integer
           example: 100
           format: int32
-          description: ''
+          description: maximum quantity
         status:
           type: string
           description: 'The status of the entitlement '
@@ -212,10 +365,6 @@ components:
             - blocked
           default: entitled
           example: entitled
-        marketplace:
-          type: string
-          example: 'https://iddink.nl'
-          description: The marketplace that provided the entitlement.
       required:
         - id
         - startDate
@@ -223,30 +372,17 @@ components:
         - product
         - entitlee
         - status
-        - marketplace
     Product:
       title: Product
       type: object
-      description: A product that can be accessed after being purchased or selected.
+      description: 'A product that can be accessed after being purchased or selected. The product details should be pickedup via the catalogue API. '
       x-tags:
         - entitlements
       properties:
         ean:
           type: string
-        name:
-          type: string
-        defaultAccessUrl:
-          type: string
-          description: |
-            This is the default URL to access the product - there may be more detailed structure and access points exchanged later between LA and LMS.
-        provider:
-          type: string
-          description: 'id for a specific vendor, established (along with the vendor secret) at the point of setup.'
-          example: e8346234-6bda-4c07-ab2e-a687a94430b2
       required:
         - ean
-        - name
-        - provider
     School:
       title: School
       type: object
@@ -258,6 +394,26 @@ components:
         - when subject is filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data
       x-tags:
         - entitlements
+      x-examples:
+        example-1:
+          schoolId: string
+          schoolName: string
+          subjects:
+            - subject:
+                subjectCode: string
+                schoolSubjectCode: string
+                schoolSubjectName: string
+                level: string
+                levelYear: 0
+                schoolLevelCode: string
+              quantity: 0
+          entitlees:
+            - id: string
+              display_name: string
+              email: string
+              eckId: string
+              userId: string
+          quantity: 100
       properties:
         schoolId:
           type: string
@@ -288,27 +444,6 @@ components:
           description: 'Quantity available to the school, used if no subjects provided.'
       required:
         - schoolId
-        - schoolName
-      x-examples:
-        example-1:
-          schoolId: string
-          schoolName: string
-          subjects:
-            - subject:
-                subjectCode: string
-                schoolSubjectCode: string
-                schoolSubjectName: string
-                level: string
-                levelYear: 0
-                schoolLevelCode: string
-              quantity: 0
-          entitlees:
-            - id: string
-              display_name: string
-              email: string
-              eckId: string
-              userId: string
-          quantity: 100
     Individual:
       title: Individual
       type: object
@@ -316,10 +451,6 @@ components:
       x-tags:
         - entitlements
       properties:
-        id:
-          type: string
-          description: |
-            A unique identifier for the purchaser.
         display_name:
           type: string
           description: The name of the person purchasing.
@@ -333,7 +464,6 @@ components:
           type: string
           description: userid. (nledupersonrealId or nledupersonprofileId)
       required:
-        - id
         - display_name
         - email
     SchoolSubject:
@@ -391,8 +521,6 @@ components:
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        schoolId:
-          type: string
         userId:
           type: string
           description: userid. (nledupersonrealId or nledupersonprofileId)
@@ -402,6 +530,9 @@ components:
           type: string
           format: date-time
           description: ISO8601
+      required:
+        - entitlementId
+        - activationDate
   securitySchemes:
     APIKey:
       type: oauth2
