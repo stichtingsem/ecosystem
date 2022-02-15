@@ -13,7 +13,7 @@ A typical school uses a broad range of learning materials from several education
 This repository consists of the following elements:
 - [Big Picture](big-picture.md) which explains all the concepts within the ecosystem in more detail.
 - [Technical reference](technical-reference.md) with information about the architecture, used standards and links to the reference files.
-- [API documentation](https://stichtingsem.stoplight.io/) can be found on stoplight.
+- [API documentation](https://stichtingsem.stoplight.io/docs/ecosystem) can be found on stoplight.
 - [Implementation Guide](documentation/implementation-guide.md) with practical advice for new parties.
 - [Glossary](glossary.md) describing all terms and definitions used within the ecosystem.
 - [SEM Party directory](SEM-Party-Directory.md) with all Parties that are currently active in the ecosystem.
