@@ -10,6 +10,7 @@ The LMS needs/should to implement the folowing:
   * Events api endpoint
   * Webhook client to register with SIS, MP and LA's
   * Consent flow API 
+  * Entitlement API (for the LMS endpoints)
 * Create a UI for a school administrator to 
   * give consent to receive data from a SIS
   * give consent to receive data from a MP

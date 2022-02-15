@@ -6,11 +6,11 @@ The Big Picture gives you a high level overview of the scope and working of the 
 3. Usage, progress, and results are crucial for transparency and insight
 4. Core flow: Order and access of digital learning materials
 5. Setup and consent
-6. Updates and mutations
+6. Updates of data used in the Ecosystem (not yet documented)
 
 ## Four services in the SEM Ecosystem
 
-Services are provided to enable the roles to carrying out the processes. The services communicate directly with each other, under the direction and control of the school (where appropriate). Note that schools can select multiple of these services, so multiple Learning Applications, multiple Learning Management Systems, multiple Marketplaces and even multiple School Information Systems. Next to that schools can also omit one or more of these services. In theory the smallest set might be a single Marketplace and a single Learning Application.
+Services are provided to enable the roles to carrying out the processes. The services communicate directly with each other, under the direction and control of the school (where appropriate). Note that schools can select multiple of these services, so multiple Learning Applications, multiple Learning Management Systems, multiple Marketplaces and even multiple Student Information Systems. Next to that schools can also omit one or more of these services. In theory the smallest set might be a single Marketplace and a single Learning Application.
 
 ![services](documentation/diagrams/process-diagrams-Services.svg)
 
@@ -110,27 +110,24 @@ After starting and completing elements from the digital learning material, progr
 
 ## Setup and consent
 
+Data is only exchanged within the Ecosystem after a succesful setup and for some relationships after consent from the school.
+
 ### Setup of (market) Parties that want to join the Ecosystem in one or more roles (S)
 
-These parties need to establish connections with all other parties in the ecosystem. In order to establish this connection, the new Party has to receive all endpoints and credentials from the other Parties. These bilateral authorizations require an acknowledgement from admins of both Parties.
+These parties need to establish connections with all other parties in the ecosystem. In order to establish this connection, the new Party has to receive all endpoints and credentials from the other Parties. These bilateral authorizations require an acknowledgement from admins of both Parties. For more information see the implementation guides for implementing the [Student Information System](documentation/implementation-guide-SIS.md), [Learning Management System](documentation/implementation-guide-LMS.md), [Market Place](documentation/implementation-guide-MP.md) and/or [Learning Application](documentation/implementation-guide-LA.md) role(s).
 
-- TODO: [S.1 Connect a new Party into the Ecosystem]
-- TODO: [S.2 Setup of Market Place for a new Learning Application (Catalogue)](documentation/use-cases/s.1.0-learning-application-sales-agent.md)
-- TODO: [S.3 Setup of Learning Management System for a new Learning Application (Catalogue and Course)]
+### [Consent](documentation/use-cases/c-1-consentflow.md) for exchange of data between Parties within the Ecosystem of a School (C)
 
-### Consent for exchange of data between Parties within the Ecosystem of a School (C)
+The school needs to acknowledge the data exchange between roles within the Ecosystem of the School. After the acknowledged consent the roles are allowed to exchange data acquired for their specific role. The Administrator of the school has to acknowledge this consent for each bilateral relation within the Ecosystem and at both sides of the relation (sender and receiver). Within the Ecosystemn Consent is given for the exchange of:
 
-The school needs to acknowledge the data exchange between roles within the Ecosystem of the School. After the acknowledged consent the roles are allowed to exchange data acquired for their specific role. The Administrator of the school has to acknowledge this consent for each bilateral relation within the Ecosystem and at both sides of the relation (sender and receiver).
+- SIS data from Student Information System with the Market Place, Learning Application, and/or Learning Management System
+- Entitlement data from the Market Place with the Learning Managemnt System
+- Usage, Progress, and Results data from Learning Application with the Learning Management System
+- Results data from Learning Application with the Student Information System
 
-- TODO: [C.1 Consent for the exchange of SIS data from Student Information System with the Market Place, Learning Application, and/or Learning Management System]
-- TODO: [C.2 Consent for the exchange of Entitlement data from the Market Place with the Learning Managemnt System]
-- TODO: [C.3 Consent for the exchange of Usage, Progress, and Results data from Learning Application with the Learning Management System]
-- TODO: [C.4 Consent for the exchange of Results data from Learning Application with the Student Information System]
-- TODO: [C.5 Revoke consent for the exchange of data from a Party]
+For the exchange of data between Market Place and Learning Application no consent from the school is required. For more information about the way Consent is handled within the Ecosystem see Use Case [C.1 Consent flow](documentation/use-cases/c-1-consentflow.md).
 
-For the exchange of data between Market Place and Learning Application no consent from the school is required. 
-
-## Updates of data objects within the Ecosystem (U)
+## Mutations of data used in the Ecosystem (U)
 
 Each Party in the Ecosystem is responsible for the integrity of data exchanged within their own APIs. For example the Student Information System is responsible for the integrity of all student data. Whenever data changes at the source, the providing role shares these updates with all other Parties that are subscribed to its API. We foresee changes on the following data objects:
 

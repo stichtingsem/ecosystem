@@ -14,7 +14,7 @@ This repository consists of the following elements:
 - [Big Picture](big-picture.md) which explains all the concepts within the ecosystem in more detail.
 - [Technical reference](technical-reference.md) with information about the architecture, used standards and links to the reference files.
 - [API documentation](https://stichtingsem.stoplight.io/) can be found on stoplight.
-- [Implementation Guides](implementation-guide.md) with practical advice for new parties.
+- [Implementation Guide](documentation/implementation-guide.md) with practical advice for new parties.
 - [Glossary](glossary.md) describing all terms and definitions used within the ecosystem.
 - [SEM Party directory](SEM-Party-Directory.md) with all Parties that are currently active in the ecosystem.
 
@@ -47,7 +47,7 @@ All organisations offering products and/or services to Dutch schools are welcome
 |---|---|---|---|
 | 0.1 | 2 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) |
 | 0.2 | 7 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) |
-| 0.3 | 15 February 2022 | DRAFT | [@kvoer](https://github.com/kvoer) |
+| 1.1 | 15 February 2022 | UNDER REVIEW | [@kvoer](https://github.com/kvoer) |
 
 ## Contributors
 
