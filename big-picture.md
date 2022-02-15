@@ -22,21 +22,33 @@ Services are provided to enable the roles to carrying out the processes. The ser
 | [Identity Provider (IdP)](documentation/services/identity-provider.md) | A service that provides Identity information about both students and teachers to the other services in the ecosystem.  This includes the ECK-ID as base for other associated data as needed (e.g. the students initials or class information). The IdP is not shown in the above diagram and not equal to the SIS service |
 
 ## Entitlements: the core concept within the SEM Ecosystem
-The SEM Ecosystem is build upon the core concept of Entitlements. An Entitlement is the right to activate a digital learning material within an agreed upon period. Furthermore, an Entitlement is a clear, unambigious and transparent set of information required for all Parties in the Ecosystem to
-- fulfil digital learning materials to the Buyer and its User(s);
+The SEM Ecosystem is build upon the core concept of Entitlements. An Entitlement is the right to activate and use a digital learning material within an agreed upon period. Furthermore, an Entitlement is a clear, unambigious and transparent set of information required for all Parties in the Ecosystem to
+- fulfil digital learning materials to the Buyer and its Entitlee(s);
 - specify, administer, and control the financial transactions between the Buyer, the Market Place, and the Learning Application.
 
 In the figure below we outlined the lifecycle of an Entitlement and its corresponding usage (or license) period.
 
 ![services](documentation/diagrams/entitlement-lifecycle.png)
 
-For each digital learning material that is purchased at the Market Place a new Entitlement is created with the status *Entitled*. This new Entitlement is send to the Learning Application. The Learning Application provisions the learning material to the Buyer. After provisioning, the Market Place changes the status of the Entitlement to *Provisioned*. In the period between the start date and the expiration date, users related to the Buyer of a Provisioned Entitlement are allowed to activate the digital learning material. After the experiation date the status of the Entitlement changes to *Expired*. This is the final state of an Entitlement.
+For each digital learning material that is purchased at the Market Place a new Entitlement is created with the status *Entitled*. This new Entitlement is send to the Learning Application. The Learning Application provisions the learning material to the Buyer. After provisioning, the Market Place changes the status of the Entitlement to *Provisioned*. In the period between the start date and the expiration date, entitlees related to the Buyer of a Provisioned Entitlement are allowed to activate the digital learning material. After the experiation date the status of the Entitlement changes to *Expired*. This is the final state of an Entitlement.
 
-After a succesfull activation of a digital learning material, the usage or license period starts for the User. The User is allowed to use the digital learning material until the agreed upon end date. During this period the status of the user is *Active*. After the end date the status of the status of the License is changed to *Ended*. This is the final state of a License.
+After a succesfull activation of a digital learning material, the usage or license period starts for the Entitlee. This changes the Entitlee into a Licensee. The Licensee is allowed to use the digital learning material until the agreed upon end date. During this period the status of the license is *Active*. After the end date the status of the status of the license is changed to *Ended*. This is the final state of a license.
 
-In addition to this normal lifecycle of both the Entitlement and the License, the Ecosystem has the following exception statuses:
-- *Blocked* Entitlement: Active Users are not allowed anymore to use the digital learning material and not yet activated users cannot activate the digital learning material.
-- *Blocked* User: The Active User is not allowed anymore to use the digital learning material.
+In addition to this normal lifecycle of both the Entitlement and the license, the Ecosystem has the following exception statuses:
+- *Blocked* Entitlement: Active Licensees are not allowed anymore to use the digital learning material and not yet activated Entitlees cannot activate the digital learning material.
+- *Cancelled* Enitltement: not yet activated Entitlees cannot activate the digital learning material.
+- *Blocked* License: The Active Licensee is not allowed anymore to use the digital learning material.
+
+The Ecosystem supports four types of Entitlements. For each of these variants the order and access flow differs. This is further explained in the next paragraph.
+
+| Variant | Name | Buyer | Description |
+| A. | School | School | Learning materials bought for the entire school |
+| B. | SchoolSubject | School | Learning materials bought for students that follow a specific SchoolSubject |
+| C. | SchoolIndividual | School | Learning materials bought for specific individuals |
+| D. | Personal | Individual | Learning materials bought for a single individual |
+
+Within variant B, we introduce the SchoolSubject object. The SchoolSubject is a Subject (e.g. Math) on a school level (e.g. VWO) and within a learning year (e.g. learning year 3). The Entitlement variants offer Schools and Parties the possibility to choose the most applicable variant to their specific learning material and use case. For example:
+
 
 ## Core flow: Order and Access of digital learning materials (OA)
 
@@ -59,24 +71,18 @@ The fulfilment of digital learning materials consists of three activities:
 - The Learning Management System adds the product and optionally the course info to the generic library with learning materials of the School (School Library).
 - The Learning Management System adds the product links to the learning lists of the users for which the product was purchased.
 
-The Market Place is in charge of the digital fulfilment and triggers the above activities in sequence. Within the SEM Ecosystem we support four variants of Entitlements: School, SchoolSubject, Individual and Personal. For each of these variants the digital fulfilment proces is different.
+The Market Place is in charge of the digital fulfilment and triggers the above activities in sequence. For each of the Entitlement variants the digital fulfilment proces differs.
 
-| Variant | Buyer | LA provisioning | LMS School Library | LMS Links |
+| Variant  | LA provisioning | LMS School Library | LMS Links |
 |---|---|---|---|---|
-| [A. School](documentation/use-cases/oa-3a-digital-fulfilment-school.md) | School | For all users from the school | Yes | School places the links manually or based on set rules within the LMS. |
-| [B. SchoolSubject](documentation/use-cases/oa-3b-digital-fulfilment-schoolsubject.md) | School | For all users following specific SchoolSubject(s) | Yes | LMS adds the links automatically for all Students with one of the SchoolSubjects |
-| [C. SchoolIndividual](documentation/use-cases/oa-3c-digital-fulfilment-schoolindividual-personal.md) | School | For all specified Individual(s) | Yes | LMS adds the links automatically for all Users for which the product was entitled. |
-| [D. Personal](documentation/use-cases/oa-3c-digital-fulfilment-schoolindividual-personal.md) | Individual | For a specific Individual | No | LMS adds the links automatically for the User for which the product was entitled. |
-
-Within variant B. SchoolSubject, we introduce the SchoolSubject object. The SchoolSubject is a Subject (e.g. Math) on a school level (e.g. VWO) and within a learning year (e.g. learning year 3). The Entitlement variants offer Schools and Parties the possibility to choose the most applicable variant to their specific learning material and use case. For example:
-
-- Learning materials that are offered as an all-you-can-eat model at school level can use variant A. School. All students from the school are allowed to activate the learning material.
-- Learning materials that are made for a specific subject and a specific school level could benefit from variant B. SchoolSubject. At the moment of purchasing the School does not have to specifically know all students yet. But the school does know that only students that follow the SchoolSubject are allowed to activate the learning material. And all the students that follow the SchoolSubject have the links on their learning lists. 
-- Finally the SchoolIndividual variant is the most strict variant. A school knows that only the individual for which the learning material was bought is able to activate the learning material and has the link on their learning list.
+| [A. School](documentation/use-cases/oa-3a-digital-fulfilment-school.md) | For all users from the school | Yes | School places the links manually or based on set rules within the LMS. |
+| [B. SchoolSubject](documentation/use-cases/oa-3b-digital-fulfilment-schoolsubject.md) | For all users following specific SchoolSubject(s) | Yes | LMS adds the links automatically for all Students with one of the SchoolSubjects |
+| [C. SchoolIndividual](documentation/use-cases/oa-3c-digital-fulfilment-schoolindividual-personal.md) | For all specified Individual(s) | Yes | LMS adds the links automatically for all Users for which the product was entitled. |
+| [D. Personal](documentation/use-cases/oa-3c-digital-fulfilment-schoolindividual-personal.md) | For a specific Individual | No | LMS adds the links automatically for the User for which the product was entitled. |
 
 ### [OA.4 Initial Activation](documentation/use-cases/oa-4-initial-activation.md): the initial activation of a digital learning material by a User
 
-After the start date, users are allowed to activate the digital learning material. At the initial login of a new user, the Learning Application checks if the user is entitled to activate the product. For each of the Entitlement variants this check is different:
+After the start date, users are allowed to activate the digital learning material. At the initial login of a new user, the Learning Application checks if the user is entitled to activate the product. For each of the Entitlement variants this check differs:
 
 | Variant | Entitlement validation|
 |---|---|
