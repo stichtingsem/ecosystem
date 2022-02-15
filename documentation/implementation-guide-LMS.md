@@ -21,3 +21,5 @@ The LMS needs/should to implement the folowing:
   * show links for students
   * retrieve course information from LA for used products
 * receive events about progress from the LA's and display
+
+## TODO : more details
