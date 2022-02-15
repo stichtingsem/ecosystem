@@ -36,4 +36,18 @@ TODO: What is the underlying information model used within the ecosystem?
 
 ## APIs
 
-TODO: Describe and refer to the API definitions
+Each Party in the SEM Ecosystem provides and consumes APIs according to their roles. The table outlines these APIs.
+
+| API Definition | Service Provider | Services Consuming | Remarks |
+|---|---|---|---|
+| [Events](https://stichtingsem.stoplight.io/docs/ecosystem/reference/events.v1.yaml) | all | all | All parties can send or recieve events |
+| [Webhooks](https://stichtingsem.stoplight.io/docs/ecosystem/reference/events.v1.yaml) | all | all | |
+| [Consent](https://stichtingsem.stoplight.io/docs/ecosystem/reference/consent.v1.yaml) | SIS, LA, MP | SIS: MP, LA, LMS<br>LA: LMS, SIS<br>MP: LMS | |
+| [SIS Data](https://stichtingsem.stoplight.io/docs/ecosystem/reference/sisdata.v1.yaml) | SIS | MP, LA, LMS | |
+| [Catalogue Data](https://stichtingsem.stoplight.io/docs/ecosystem/reference/catalogue.v1.yaml) | LA | MP, LMS | |
+| [Course Data](https://stichtingsem.stoplight.io/docs/ecosystem/reference/coursee.v1.yaml) | LA | LMS | |
+| [Recieve Entitlements](https://stichtingsem.stoplight.io/docs/ecosystem/reference/entitlement.v1.yaml) | LA, LMS | MP | The LA and LMS recieve entitlements from the MP. This is transactional. |
+| [Entitlements](https://stichtingsem.stoplight.io/docs/ecosystem/reference/entitlement.v1.yaml) | MP | LMS, LA | Entitlements can be checked at the MP, First activation |
+| [Usage](https://stichtingsem.stoplight.io/docs/ecosystem/reference/usage.v1.yaml) | LA | MP, LMS | |
+| [Progress](https://stichtingsem.stoplight.io/docs/ecosystem/reference/progress.v1.yaml) | LA | LMS | To be defined |
+| Results | LA | LMS, SIS | To be defined |
