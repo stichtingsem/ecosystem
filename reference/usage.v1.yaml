@@ -180,44 +180,31 @@ components:
             - blocked
             - entiled
             - provisioned
-        entitleeUsageList:
+        licenses:
           type: array
           items:
-            $ref: '#/components/schemas/EntileeUsage'
+            $ref: '#/components/schemas/License'
       required:
         - entitlementId
         - schoolId
         - status
-        - entitleeUsageList
-    EntileeUsage:
-      title: EntileeUsage
+        - licenses
+    License:
+      title: License
       type: object
+      description: Usage details per licencee. Only activated entitlements are added in this list as license
       properties:
         userId:
           type: string
           description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
-        firstUsed:
-          type: string
-          format: date-time
-        lastUsed:
-          type: string
-          format: date-time
         status:
-          type: string
-          description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
-          enum:
-            - activated
-            - cancelled
-            - blocked
-        frequencyOfUsage:
-          type: integer
-          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+          $ref: '#/components/schemas/Status'
+        usage:
+          $ref: '#/components/schemas/Usage'
       required:
         - userId
-        - firstUsed
-      description: Usage details per entilee. Only entilee's that have activated the entitlement are added in this list.
     IndividualUsage:
       title: IndividualUsage
       type: object
@@ -235,23 +222,40 @@ components:
         entitlementUsageList:
           type: array
           items:
-            $ref: '#/components/schemas/IndividualEntitlementUsage'
+            $ref: '#/components/schemas/IndividualLicense'
       required:
         - entitlementUsageList
-    IndividualEntitlementUsage:
-      title: IndividualEntitlementUsage
+    IndividualLicense:
+      title: IndividualLicense
       type: object
-      description: Usage information per entilement for a student
+      description: 'Usage information per entilement for a student, only activated entitlements are in the list'
       properties:
         entitlementId:
           type: string
           description: id of the entitlement
+        status:
+          $ref: '#/components/schemas/Status'
+        usage:
+          $ref: '#/components/schemas/Usage'
+      required:
+        - entitlementId
+    Usage:
+      title: Usage
+      type: object
+      properties:
         firstUsed:
           type: string
           description: Date - time that the entitlement becomes active on the moment that the user access the product for the firsttime. can be null if never activated
         lastUsed:
           type: string
           description: Date - time that the product is used for the last time. Even if the prduct's license periode within this entitlement has expired
+        frequencyOfUsage:
+          type: integer
+          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+    Status:
+      title: Status
+      type: object
+      properties:
         status:
           type: string
           description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
@@ -259,11 +263,11 @@ components:
             - activated
             - cancelled
             - blocked
-        frequencyOfUsage:
-          type: integer
-          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
-      required:
-        - entitlementId
+        validUntil:
+          type: string
+          format: date
+          description: |
+            Moment the license expires
   securitySchemes:
     APIKey:
       type: oauth2
