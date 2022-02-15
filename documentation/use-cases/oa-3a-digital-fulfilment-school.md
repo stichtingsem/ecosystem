@@ -39,7 +39,6 @@ In this process a School Entitlement is fulfilled to the [Users](../roles/user.m
   - Digital learning material is provisioned to the school
   - Product links are available on the learning material list of students
 
-
 ## Next process
 
 The flow continues with the initial activation of the digital learning material by a User (OA.4).
