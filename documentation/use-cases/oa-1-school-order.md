@@ -32,6 +32,7 @@ The process by which a [Buyer](../roles/buyer.md) places an order at the Market 
   - The school Administrator has given consent to the Learning Applications for the exchange of SIS data from the Student Information System [C.1]()
   - The school Administrator has given consent to the Learning Management System for exchange of SIS data from the Student Information System. [C.1]()
   - The school Administrator has given consent to the Learning Management System for the exchange of Entitlement data from the Market Place. [C.2]()
+  - The school has a valid school_id used within the Ecosystem (digideliveryID in NL)
 
 ## Post-conditions
 

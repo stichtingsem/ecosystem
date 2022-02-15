@@ -1,11 +1,12 @@
 # Big Picture
 
-The Big Picture eginner's guide gives you a high level overview of the scope and working of the SEM Ecosystem. This guide consists of the following paragraphs:
+The Big Picture gives you a high level overview of the scope and working of the SEM Ecosystem. This guide consists of the following paragraphs:
 1. Four servivces in the SEM Ecosystem
-2. Entitlements: the core concept within the SEM Ecosystem
-3. Core flow: Order and access of digital learning materials
-4. Setup and consent
-5. Updates and mutations
+2. Entitlements: right to activate and use a digital learning material from the catalogue of a Learning Application
+3. Usage, progress, and results are crucial for transparency and insight
+4. Core flow: Order and access of digital learning materials
+5. Setup and consent
+6. Updates and mutations
 
 ## Four services in the SEM Ecosystem
 
@@ -18,10 +19,10 @@ Services are provided to enable the roles to carrying out the processes. The ser
 | [Marketplace (MP)](documentation/services/marketplace.md) | A service that allows buyers to order, and then have delivered, learning materials (physical and digital) via either a LML (for start school year) or at any time of the year either at school level or via students / parents.  A school can contract with multiple marketplaces if desired. |
 | [Learning Management System (LMS)](documentation/services/learning-management-system.md) | A service that allows users to schedule and manage the learning material that is assigned to students.  The Learning Management system can be populated with learning material that is selected or purchased from a Marketplace. |
 | [Learning Application (LA)](documentation/services/learning-application.md) | A service that allows for the delivery of a specific learning activity in a digital environment and subject.  This service is typically accessed via a Learning Management system but can also be accessed directly. |
-| [School Information System (SIS)](documentation/services/school-information-system.md) | A service that allows an administrator to manage the core data that the school needs to operate:  students, teachers, subjects, streams and classes.  This data is then provided (at the minimum level required and under the control of the school) to other services to allow them to function efficiently.  The SIS is the source of the ECK-ID |
-| [Identity Provider (IdP)](documentation/services/identity-provider.md) | A service that provides Identity information about both students and teachers to the other services in the ecosystem.  This includes the ECK-ID as base for other associated data as needed (e.g. the students initials or class information). The IdP is not shown in the above diagram and not equal to the SIS service |
+| [Student Information System (SIS)](documentation/services/school-information-system.md) | A service that allows an administrator to manage the core data that the school needs to operate:  students, teachers, subjects, streams and classes.  This data is then provided (at the minimum level required and under the control of the school) to other services to allow them to function efficiently.  The SIS is the source of the ECK-ID |
 
-## Entitlements: the core concept within the SEM Ecosystem
+## Entitlements: right to activate and use a digital learning material from the catalogue of a Learning Application
+
 The SEM Ecosystem is build upon the core concept of Entitlements. An Entitlement is the right to activate and use a digital learning material within an agreed upon period. Furthermore, an Entitlement is a clear, unambigious and transparent set of information required for all Parties in the Ecosystem to
 - fulfil digital learning materials to the Buyer and its Entitlee(s);
 - specify, administer, and control the financial transactions between the Buyer, the Market Place, and the Learning Application.
@@ -30,7 +31,7 @@ In the figure below we outlined the lifecycle of an Entitlement and its correspo
 
 ![services](documentation/diagrams/entitlement-lifecycle.png)
 
-For each digital learning material that is purchased at the Market Place a new Entitlement is created with the status *Entitled*. This new Entitlement is send to the Learning Application. The Learning Application provisions the learning material to the Buyer. After provisioning, the Market Place changes the status of the Entitlement to *Provisioned*. In the period between the start date and the expiration date, entitlees related to the Buyer of a Provisioned Entitlement are allowed to activate the digital learning material. After the experiation date the status of the Entitlement changes to *Expired*. This is the final state of an Entitlement.
+The Market Place sells products from Learning Applications. The Learning Application publishes all their products in their Catalogue and allows a specific Market Place to sell a selection of these products to schools and/or individuals. For each digital learning material that is purchased at the Market Place a new Entitlement is created with the status *Entitled*. This new Entitlement is send to the Learning Application. The Learning Application provisions the learning material to the Buyer. After provisioning, the Market Place changes the status of the Entitlement to *Provisioned*. In the period between the start date and the expiration date, entitlees related to the Buyer of a Provisioned Entitlement are allowed to activate the digital learning material. After the experiation date the status of the Entitlement changes to *Expired*. This is the final state of an Entitlement.
 
 After a succesfull activation of a digital learning material, the usage or license period starts for the Entitlee. This changes the Entitlee into a Licensee. The Licensee is allowed to use the digital learning material until the agreed upon end date. During this period the status of the license is *Active*. After the end date the status of the status of the license is changed to *Ended*. This is the final state of a license.
 
@@ -47,8 +48,15 @@ The Ecosystem supports four types of Entitlements. For each of these variants th
 | C. | SchoolIndividual | School | Learning materials bought for specific individuals |
 | D. | Personal | Individual | Learning materials bought for a single individual |
 
-Within variant B, we introduce the SchoolSubject object. The SchoolSubject is a Subject (e.g. Math) on a school level (e.g. VWO) and within a learning year (e.g. learning year 3). The Entitlement variants offer Schools and Parties the possibility to choose the most applicable variant to their specific learning material and use case. For example:
+Within variant B, we introduce the SchoolSubject object. The SchoolSubject is a Subject (e.g. Math) on a school level (e.g. VWO) and within a learning year (e.g. learning year 3). The Entitlement variants offer Schools and Parties the possibility to choose the most applicable variant to their specific learning material and, its use case and the business model.
 
+## Usage, progress, and results are crucial for transparency and insight
+
+Within the SEM Ecosysten data is shared among Parties to give students, teachers, and schools more insight into the usage of digital learning materials. Moreover progress information and assessment results give insights into the learning journey of students. Each Learning Application has this information for the usage, progress, and results within their own products and related courses.
+
+Within the Ecosystem Usage data is shared with the Market Place. This enables the Market Place and the Learning Application to offer digital learning materials with different business models. For example all-you-can-learn models or metered business models based on actual usage. Usage information is also shared with the Learning Management System. The Learning Management Sytem can provide an overall dashboard to Schools where they have an aggregated view on the activation and usage of digital learning materials bought at all their Market Place and froom all the Learning Applications.
+
+Progress information is shared with the Learning Management System. This allows the Learning Management System to provide learning dashboards towards Teachers and Students. A Teacher gets notified about the progress of students and can directly plan follow-up actions within the Learning Management System. Finally Assessment Results are reported to the grade books of the Learning Management System and/or the Student Information System. This minimizes manual errors in registering student results into the official administration of grades.
 
 ## Core flow: Order and Access of digital learning materials (OA)
 
@@ -89,7 +97,7 @@ After the start date, users are allowed to activate the digital learning materia
 | A. School | Product is provisioned for School of User | 
 | B. SchoolSubject | Product is provisioned for School of User and User follows the specified SchoolSubject (based on SIS data of User) |
 | C. SchoolIndividual | Product is provisioned for School of User and User is on the Entitlee list of the Entitlement |
-| D. Personal | Personal Entitlement for User |
+| D. Personal | User is the Entitlee of a Personal Entitlement |
 
 After a succesful validation, the user is able to activate and immediately use the learning material. The Learning application registers the User as a new InitialActivation and Active Licensee of the Entitlement. The InitialActivation is send to the Market Place and optionally to the Learning Management System. The Market Place can use this information to trigger backoffice processes related to the Entitlement, e.g. update an activation dashboard, send a notification to the Buyer or initize post paid billing processes. The Learning Management System can use the information to update activation statistics of learning materials bought by Schools. Within the Learning Management Systems statistics of different Market Places of the School can be combined into a single dashboard. 
 
