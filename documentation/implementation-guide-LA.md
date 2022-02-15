@@ -1,23 +1,25 @@
-# Implementation Guide LMS
+# Implementation Guide LA
 
 ##TLDR
 
-The LMS needs/should to implement the folowing:
+The LA needs/should to implement the folowing:
 * register with SEM
-* retrieve list of all available SIS, MP and LA's in your region
-* Setup with alls SIS, MP and LA parties.
+* retrieve list of all available SIS, MP and LMS's in your region
+* Setup with all SIS, MP and LA parties that you do business with.
 * Implement API endpoints
   * Events api endpoint
-  * Webhook client to register with SIS, MP and LA's
+  * Webhook client to register with SIS
   * Consent flow API 
+  * Usage API
 * Create a UI for a school administrator to 
   * give consent to receive data from a SIS
   * give consent to receive data from a MP
-  * give consent to reciev data from several LA's
+  * give consent to send progress data  to the LMS
 * Receive events about school students and teachers
-* Retrieve product information from each LA's catalogue and subscribe to updates
-* recieve events about product updates
-* recieve entitlements from the MP 
-  * show links for students
-  * retrieve course information from LA for used products
-* receive events about progress from the LA's and display
+* send events about product updates to all parties that have registered a webhook and have given consent
+* recieve entitlements from the MP
+* allow students to access tour methods
+  * if this is the first time a student uses your product: send activation to MP
+* send usage information events to MP
+* send progress events to LMS
+* respond to change entitlement requests from the MP
