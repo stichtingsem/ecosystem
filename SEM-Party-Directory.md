@@ -22,3 +22,5 @@ Please contact stichting SEM to be included in this directory.
 | The Learning Network | TLN | MP | < tbd >| - 
 | Topicus | SOM2Day | LMS |  < tbd > | - |
 | Topicus | SOM2Day | SIS |  < tbd > | - |
+| ThiemeMeulehhoff | ThiemeMeulenhoff | LA |  < tbd > | - |
+| ThiemeMeulehhoff | ThiemeMeulenhoff | MP |  < tbd > | - |

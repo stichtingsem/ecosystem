@@ -16,6 +16,7 @@ This repository consists of the following elements:
 - [API documentation](https://stichtingsem.stoplight.io/) can be found on stoplight.
 - [Implementation Guides](implementation-guide.md) with practical advice for new parties.
 - [Glossary](glossary.md) describing all terms and definitions used within the ecosystem.
+- [SEM Party directory](SEM-Party-Directory.md) with all Parties that are currently active in the ecosystem.
 
 This repository is an initiative of the Stichting Samenwerkende Educatieve Marktpartijen (SEM) and is based upon the [principles](principles.md) defined in the working document [Moving from a chain to an ecosystem](documentation/documents/).
 
@@ -28,6 +29,17 @@ The SEM ecosystem tries to overcome the main challenges in the current learning 
 - There is a large dependency between parties within the current chain. On the other hand is the use of standards and the commitment to industry agreements open-ended. Parties are therefore able to (not) use these standards and agreements without obligation.
 - The current chain is too complex for the end-users within schools.
 - The technology used within the current chain is end-of-life.
+
+The SEM ecosystem has the following benefits for schools and market parties:
+- Flexiblity in the selection of learning materials for schools.
+- Possibility to offer new business models for market parties.
+- Transparency in transactions and usage information for both schools and market parties.
+- Aggregated insight into progress information and results for teachers and students.
+- Schools are in control of the data that is exchanged between market parties (consent).
+
+## Join the SEM Foundation and adopt the SEM Ecosystem standard
+
+All organisations offering products and/or services to Dutch schools are welcome to join the SEM Foundation and adopt the SEM Ecosystem. The  [SEM Party Directory](SEM-Party-Directory.md) lists all Parties that are currently active in the Ecosystem.
 
 ## Version history
 
