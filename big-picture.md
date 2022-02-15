@@ -1,7 +1,7 @@
 # Big Picture
 
 The Big Picture gives you a high level overview of the scope and working of the SEM Ecosystem. This guide consists of the following paragraphs:
-1. Four servivces in the SEM Ecosystem
+1. Four services in the SEM Ecosystem
 2. Entitlements: right to activate and use a digital learning material from the catalogue of a Learning Application
 3. Usage, progress, and results are crucial for transparency and insight
 4. Core flow: Order and access of digital learning materials
@@ -43,6 +43,7 @@ In addition to this normal lifecycle of both the Entitlement and the license, th
 The Ecosystem supports four types of Entitlements. For each of these variants the order and access flow differs. This is further explained in the next paragraph.
 
 | Variant | Name | Buyer | Description |
+|---|---|---|---|
 | A. | School | School | Learning materials bought for the entire school |
 | B. | SchoolSubject | School | Learning materials bought for students that follow a specific SchoolSubject |
 | C. | SchoolIndividual | School | Learning materials bought for specific individuals |
@@ -82,7 +83,7 @@ The fulfilment of digital learning materials consists of three activities:
 The Market Place is in charge of the digital fulfilment and triggers the above activities in sequence. For each of the Entitlement variants the digital fulfilment proces differs.
 
 | Variant  | LA provisioning | LMS School Library | LMS Links |
-|---|---|---|---|---|
+|---|---|---|---|
 | [A. School](documentation/use-cases/oa-3a-digital-fulfilment-school.md) | For all users from the school | Yes | School places the links manually or based on set rules within the LMS. |
 | [B. SchoolSubject](documentation/use-cases/oa-3b-digital-fulfilment-schoolsubject.md) | For all users following specific SchoolSubject(s) | Yes | LMS adds the links automatically for all Students with one of the SchoolSubjects |
 | [C. SchoolIndividual](documentation/use-cases/oa-3c-digital-fulfilment-schoolindividual-personal.md) | For all specified Individual(s) | Yes | LMS adds the links automatically for all Users for which the product was entitled. |
