@@ -141,10 +141,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupReference'
-        subjects:
+        schoolSubjects:
           type: array
           items:
-            $ref: '#/components/schemas/StudentSubject'
+            type: object
+            properties:
+              schoolSubject:
+                $ref: '#/components/schemas/SchoolSubject'
+              startDate:
+                type: string
+                format: date
+                description: 'Start of this subject for the student. (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14])'
+              endDate:
+                type: string
+                format: date
+                description: |-
+                  Start of this subject for the student.
+                  (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14]). null if not ended
+            required:
+              - schoolSubject
+              - startDate
       required:
         - userId
         - firstname
@@ -366,29 +382,6 @@ components:
         - schoolSubjectName
         - level
         - levelYear
-    StudentSubject:
-      title: StudentSubject
-      type: object
-      x-tags:
-        - subjectchoice
-      x-examples: {}
-      description: ''
-      properties:
-        startDate:
-          type: string
-          format: date
-          description: 'Start of this subject for the student. (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14])'
-        endDate:
-          type: string
-          format: date
-          description: |-
-            Start of this subject for the student.
-            (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14]). null if not ended
-        subject:
-          $ref: '#/components/schemas/SchoolSubject'
-      required:
-        - startDate
-        - subject
     StudentDelivery:
       title: Student delivery
       type: object

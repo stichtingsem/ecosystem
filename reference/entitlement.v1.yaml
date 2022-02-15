@@ -422,13 +422,13 @@ components:
         schoolName:
           type: string
           description: The name for the school
-        subjects:
+        schoolSubjects:
           type: array
           description: 'List of chools subject . when filled: each student who has this school stubject is entitled to this product. The LA can make this match based on sis data'
           items:
             type: object
             properties:
-              subject:
+              schoolSubject:
                 $ref: '#/components/schemas/SchoolSubject'
               quantity:
                 type: integer
