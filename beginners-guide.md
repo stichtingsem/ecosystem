@@ -22,16 +22,18 @@ Services are provided to enable the roles to carrying out the processes. The ser
 
 The particular mapping of this specification is as follows:
 
-| API Definition                                                                                                           | Service Provider | Services Consuming |
-|--------------------------------------------------------------------------------------------------------------------------|------------------|--------------------|
-| [Events](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/events.v1.yaml)                       | all              | all                |
+| API Definition                                                                                                           | Service Provider | Services Consuming | Remarks |
+|--------------------------------------------------------------------------------------------------------------------------|------------------|--------------------|--|
+| [Events](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/events.v1.yaml)                       | all              | all                | All parties can send or recieve events
 | [Webhooks](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/events.v1.yaml)                     | all              | all                |
 | [SIS Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/sisdata.v1.yaml)                    | SIS              | MP, LA, LMS        |
 | [Catalogue Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/catalogue.v1.yaml)            | LA               | MP, LMS            |
 | [Course Data](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/coursee.v1.yaml)                 | LA               | LMS                |
-| [Entitlements](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/entitlement.v1.yaml)            | MP               | LMS, LA            |
+| [Recieve Entitlements](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/entitlement.v1.yaml)            | LA, LMS             | MP          | The LA and LMS recieve entitlements from the MP. This is transactional.
+| [Entitlements](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/entitlement.v1.yaml)            | MP              | LMS, LA         | Entitlements can be checked at the MP, First activation
 | [Usage](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/usage.v1.yaml)                         | LA               | MP, LMS            |
-| [Progress & Results](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/progress-results.v1.yaml) | LA               | MP, LMS            |
+| [Progress](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/progress.v1.yaml) | LA               | MP, LMS            |
+| Results to be defined | LA               | MP, LMS            |
 
 ## Actors in the SEM Ecosystem
 

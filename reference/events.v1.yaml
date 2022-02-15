@@ -9,27 +9,31 @@ info:
 
     The Event API is the mechanism, in conjunction with the Webhook API, that enables this event based notification mechanism to function reliably.  It enables subscribers to request events from the provider, and paginate through to the last place that it received a message.
 
+    The events are posted to the URL that the eventhook registers. The body of the post contains a list of new events to be processed.
+
     Notes:
       - Pagination is essential - using start and limit semantics.
+      - Oldest events first
       - Limits should be imposed on page size.
-      - Order should always be reverese chronological.
       - Filtering is available by matching specific event type.
-      - Providers should ensure that this API is cacheable or able to be retrieved at minimal cost, as it may be accessed a lot by consumers who are 'catching up'
+      - Filtering is available on event time, so only events after a date can be requested to catchup
       
-      > Note:  We may need to provide an API that creates a 'dummy' event list of all entities to enable an initial synchronisation of all data (e.g. a brand new LA that wants to do an initial synchronisation with data from the SIS) - this may be simpler than providing a GET requests for entities in the SIS itseelf (e.g. get students).
+    Providers should ensure that this API is cacheable or able to be retrieved at minimal cost, as it may be accessed a lot by consumers who are 'catching up'
+      
+    Note:  The consent API can be used to create events of all entities to enable an initial synchronisation of all data (e.g. a brand new LA that wants to do an initial synchronisation with data from the SIS)
   contact:
     email: clifton@infinitaslearning.com
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-tags:
+x-tags:
   - name: events
     description: Operations related to event retrieval
 paths:
   /events:
     get:
-      description: Allows a subscriber to retrieve a list of past events.
-      tags:
+      description: Allows a subscriber to retrieve a list of past events. The provider will not keep the events indefinate. This API is intended when a party had downtime and needs to catchup on processing/receiving events. The intended retention is a few days to support catching up.
+      x-tags:
         - events
       operationId: listEvents
       parameters:
@@ -61,55 +65,173 @@ paths:
             max:
               value: 100
               summary: The largest recommended page size
+        - schema:
+            type: number
+          in: query
+          name: createdAfter
+          description: timestamp to filter on events created after a certain moment
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/events'
-      summary: ''
+                $ref: '#/components/schemas/Events'
+      summary: Get Events
+    post:
+      summary: Receive Events
+      operationId: post-events
+      x-tags: '-events'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: id of the event
+                    status:
+                      type: integer
+                      description: 'Result status (0=OK, see list with Errors)'
+                    statusMessage:
+                      type: string
+                  required:
+                    - id
+                    - status
+      description: |
+        Endpoint to receive events. These are registered by the webhook api.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Event'
+        description: |-
+          Body contains a list of events so multiple events can be send in one request. Events can only be grouped in the same request if they are for the same school.
+          Oldest events first.
+
+          Events are processed asynchronisous. The request should a response with status=0 as indication that the events are received in good order, not processed in good order. The only reason to reject events is when there is no consent/authorization to deliver events from that type for a school
+  /event:
+    post:
+      summary: Receive one event
+      operationId: post-event
+      x-tags: '-events'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'Result status (0=OK, see list with Errors)'
+                  statusMessage:
+                    type: string
+                required:
+                  - status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+        description: 'Events are processed asynchronisous. The request should return a 200-OK as indication that the event is received in good order, not processed in good order.'
+      description: Endpoint to receive one event. These are registered by the webhook api.
 components:
   schemas:
-    events:
+    Events:
       type: array
-      items:
-        $ref: '#/components/schemas/event'
       x-tags:
         - events
       description: 'A list of events - reverse chronologically ordered, provided to enable subscribers to ''catch up'' on events they may have missed.'
-      title: ''
-    event:
+      title: Events
+      items:
+        $ref: '#/components/schemas/Event'
+    Event:
       type: object
       x-tags:
         - events
       description: |-
         An event is a notification that something of interest has happened within a service, that, based on authorised scopes, a subscriber may then process.  This enables systems to communicate with each other in a loosely coupled way, where the event creator has no direct connection to any of the subscribing systems.
 
-        Typically an event will contain a basic data object that indicates what the state of the object is at the point at which the event is raised, but this is optional.  In the case that no data object exists it is intended that the subscribing system would call back to the provided API to retrieve the information.
+        In the SEM context the events either send information on an event that happenened (usage, progress, results) or the latest status of an object that is passed for reference (SIS, Product, Course related  - Student, teacher, group, products, Course)
+        The latest catagorie sends the latest version of the object, previous events may be ignored for these types.
+
+        Events have their own id and an identification of the object they carry. (objectId) This can be used to make sure events are pocessed in order for that object. The create time of the event is the time the action that triggered the event happened, it is not the time the event was send or processed.
+
+        Typically an event will contain a basic data object that indicates what the state of the object is at the point at which the event is raised, but this is optional.  In the case that no data object exists it is intended that the subscribing system would call back to the provided API to retrieve the information. This is defined per event type.
 
         By calling back at a future point you avoid a number of distributed system related issues:
-
         - Ordering doesn't matter, as when you call back you always get the latest version.  The biggest risk is you call back twice and get the same information twice - but you always have correct data.
         - Security can be checked again at the point of request, so even in the unlikely scenario that a subscriber authorization changes between an event being emitted and the call back occurring, the subscriber can only ever get data they are authorized to retrieve.
+
+        Deleting of object is supported by sending an event with the flag isDeleteEvent to true. This indicates that this is the last event you will get about this object. the data is empty in this case.
+      x-examples: {}
+      title: Event
       properties:
         id:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
+          description: Unique id of an event
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         type:
           type: string
           example: la.usage
+          description: Type of the event
+        objectId:
+          type: string
+          description: Id of the events data
         created:
-          type: number
-          example: 1530291411
+          type: string
+          description: event creation moment (seconds after 1970?)
+          format: date-time
+        schoolId:
+          type: string
         data:
-          type: object
+          $ref: '#/components/schemas/EventData'
         url:
           type: string
           description: |
-            The URL that can be called to get information about the event.
+            The URL that can be called to get the dataobject for this event.
+        isDeleteEvent:
+          type: boolean
+          description: 'indication that this is the last event you will ever see, as the object is deleted.'
       required:
         - id
         - type
+        - created
         - url
+    EventData:
+      title: EventData
+      description: Data of event object.  (dependent on type in event).
+      x-tags:
+        - events
+      oneOf:
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Student
+        - $ref: ./sisdata.v1.yaml#/components/schemas/StudentDelivery
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Teacher
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Group
+        - $ref: ./catalogue.v1.yaml#/components/schemas/Product
+        - $ref: ./course.v1.yaml#/components/schemas/Course
+        - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
+        - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
+        - properties: {}
+          nullable: true
+  securitySchemes:
+    APIKey:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes: {}

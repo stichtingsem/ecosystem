@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Provider Catalogue API
+  title: Catalogue API
   version: '1.0'
   description: |-
     This API enables a learning application provider (or anyone who wants to sell products in a Marketplace) to provide information about their products to a Marketplace.
@@ -24,7 +24,7 @@ paths:
   /products:
     get:
       summary: Get Products from Catalogue
-      tags: []
+      x-tags: []
       parameters:
         - in: query
           name: subjectCode
@@ -93,7 +93,7 @@ paths:
         required: true
     get:
       summary: Get specific Product by ID
-      tags: []
+      x-tags: []
       responses:
         '200':
           description: OK
@@ -116,6 +116,9 @@ components:
           type: string
           description: |
             The unique EAN for this product.
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         type:
           type: string
           description: |
@@ -134,11 +137,11 @@ components:
         name:
           type: string
           description: A short name
-        streams:
+        productDescriptionIds:
           type: array
-          description: The groupings (e.g method or methods) that this product is a part of.
+          description: 'Reference to this products content/course detailed description (simular to productDescriptionIds in https://www.edustandaard.nl/app/uploads/2021/09/ECK-Distributie-en-Toegang-2.5-Servicebeschrijvingen.pdf)'
           items:
-            $ref: '#/components/schemas/Stream'
+            $ref: '#/components/schemas/CourseReference'
         levelSubjects:
           type: array
           description: The set of levels and subjects that this product is targeted at.
@@ -196,6 +199,25 @@ components:
           description: A link to any other products that are included in this one if it is a package / bundle.
           items:
             type: string
+        FirstPublishedDate:
+          type: string
+          description: First expected publication data (ISO 8601)
+          format: date
+        DeprecationDate:
+          type: string
+          description: |
+            Product no longer for sale, but still supported  (ISO 8601)
+          format: date
+        SupportedUntilDate:
+          type: string
+          description: |
+            Product no longer garanteed available, no longer supported (ISO 8601)
+          format: date
+        EndOfLifeDate:
+          type: string
+          description: |
+            Product will be removed from cataloque. This field gives insigth when that day will be so consumers can anticipate on this.(ISO 8601)
+          format: date
       required:
         - ean
         - type
@@ -258,17 +280,8 @@ components:
       description: 'A reference to a video, image or document that can be used by a Marketplace (or LMS).'
       x-tags:
         - catalogue
-    ProductComponents:
-      title: ProductComponents
-      type: object
-      properties:
-        id:
-          type: string
-      description: Sub-elements of the product - used for scheduling in the LMS?  We could probably create a better name.
-      x-tags:
-        - planning
-    Stream:
-      title: Stream
+    CourseReference:
+      title: CourseReference
       type: object
       properties:
         id:
@@ -277,25 +290,33 @@ components:
           type: string
         description:
           type: string
-      description: A grouping of products into a set - like a method (?)
+      description: |-
+        A reference to the content of the products methods/streams/courses.
+        The details of the content can be retrieved via the Course API.
+
+        A product license  gives access to one or more methods/streams/courses. A methods/streams/courses can be refrenced by one or more Products
+
+        See productDescriptionIds in https://www.edustandaard.nl/app/uploads/2021/09/ECK-Distributie-en-Toegang-2.5-Servicebeschrijvingen.pdf
+      x-tags:
+        - catalogue
     LevelSubjects:
       title: LevelSubjects
       type: object
       description: The combination of level and subject that indicates what a product is targeted at.
+      x-tags:
+        - catalogue
       properties:
         level:
           type: string
           description: Government level - e.g. havo-1
         subjectCode:
           type: string
-          description: |
-            Subject code for specific subject at this level
+          description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
   securitySchemes:
-    API Key - 1:
+    APIKey:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            la.catalogue: Access to the basic provider catalogue
+          scopes: {}

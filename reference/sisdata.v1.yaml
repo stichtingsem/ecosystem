@@ -4,6 +4,7 @@ info:
   version: '1.0'
   description: |
     This is an API provided by the SIS in the SEM ecosystem, and is designed to enable a SIS to make the core information about teachers, learners, subjects and groups available to the rest of the ecosystem in a security and privacy cocnious way.
+    Note: At this moment Groups are defined, but not yet in scope. First we will see if we need groups at all or that they are deducted from the list of groups from students and teachers.
 
     # Events
 
@@ -14,8 +15,10 @@ info:
      - `sis.student` - A student has been created or modified   
      - `sis.student-delivery` - A students delivery information has been created or modified     
      - `sis.teacher` - A teacher has been created or modified
-     - `sis.group` - A group has been modified (this is an aggregate event) - this means that basic metadata changed, a student added/removed, a teacher added or removed or a student subject choice modified within a group.     
+     - `sis.group` - A group has been modified (this is an aggregate event) - this means that basic metadata changed, a student added/removed, a teacher added or removed or a subject choice modified within a group. Not yet implemented.     
      
+    Events about students, teachers and groups is scoped per schoolyear. Each year a new set of events is generated. A recieving system (LMS/LA/MP) should check if the events are for the current year or already for the next year.
+
     # Privacy and Scopes
      
     Data from the SIS can be sensitive, and the events and APIs available to a requesting service depend on the scopes requested and approved during setup.  The following scopes exist for the SIS, and map to the following entities and attributes:
@@ -27,9 +30,10 @@ info:
     ### Event Access
 
     |Events|Event Data|Rationale|
-    |------|---------|
+    |------|---------|----|
     |sis.student|id, eckId, name, school, groups, subjects|To enable the requesting service to maintain a copy of basic (non-PII) student profile information|
     |sis.teacher|id, eckId, name, school, groups|To enable the requesting service to maintain a copy of basic (non-PII) teacher information|
+    |sis.group|id, name, school, students, teachers, and subjects|To enable the requesting service to maintain a copy group information|
 
     ### Data Visibility
 
@@ -44,12 +48,11 @@ info:
 
     We have a principle to never send PII in events or store in an event log, so this event is only a notification.  The subscribing system must call back to retrieve the information.
      
-    > NOTE: Do we never deliver anything to teachers?
 
     ### Event Access
 
     |Events|Event Data|Rationale|
-    |------|---------|
+    |------|---------|---|
     |sis.student-delivery|id, eckId|This is a notification only, as there should be no PII sent in events - only accessed by API calls.|
 
     ### Data Visibility
@@ -65,157 +68,99 @@ servers:
     description: sisdata
 components:
   schemas:
-    school:
+    School:
       type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-      required:
-        - id
-        - name
-      title: ''
+      title: School
       x-tags:
         - school
-    student:
-      type: object
-      x-tags:
-        - student
-        - school
-        - group
-        - subject
-      title: ''
-      description: Access to non-sensitive student information for us in an LMS or LA.
       properties:
-        id:
+        schoolId:
           type: string
-        schemaVersion:
-          type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        eckid:
-          type: string
-        firstname:
-          type: string
-        surname:
-          type: string
-        surnamePrefix:
-          type: string
-        schoolYear:
-          type: string
-          description: A reference to the school year for this student.
-        school:
-          $ref: '#/components/schemas/school'
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/groupReference'
-        subjectChoices:
-          type: array
-          items:
-            $ref: '#/components/schemas/subject-choice'
-      required:
-        - id
-        - school
-      x-examples:
-        example-Student:
-          id: fdff8a426c0a4e9996d70260de623add
-          schemaVersion: 0
-          firstname: Kim
-          surname: Abrahamjan
-          surnamePrefix: de
-          schoolYear: 2020-2021
-          school:
-            id: '12345'
-            name: TestCollege
-          groups:
-            - id: ae0119c7780f40b482f27ef7f3edc1e2
-              name: W2C MM
-          subjectChoices:
-            - id: 65aad9b5acf74ab1a677095bb051fe91
-              startDate: '2020-08-01'
-              subjectCode: '0131'
-              schoolSubjectName: Aardrijkskunde
-              level: HAVO-2
-              courseCode: W_HAVO
-              courseYear: 2
-    studentReference:
-      type: object
-      x-tags:
-        - student
-      title: ''
-      description: Access to non-sensitive student information for us in an LMS or LA.
-      properties:
-        id:
-          type: string
-        eckid:
-          type: string
-        firstname:
-          type: string
-        surname:
-          type: string
-        surnamePrefix:
+        schoolName:
           type: string
       required:
-        - id
-    teacher:
-      type: object
-      x-tags:
-        - teacher
-        - group
-        - school
-      title: ''
-      properties:
-        id:
-          type: string
-        schemaVersion:
-          type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        eckid:
-          type: string
-        firstname:
-          type: string
-        surname:
-          type: string
-        surnamePrefix:
-          type: string
-        schoolYear:
-          type: string
-          description: A reference to the school year for this teacher.
-        school:
-          $ref: '#/components/schemas/school'
-        groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/groupReference'
-          description: |
-            Do we need this? This information is already available in groups. It will not be available in the beginning of the school year when the rosters are not complete. Neither LMS or LA need it to function.
-      required:
-        - id
-        - school
+        - schoolId
+        - schoolName
       x-examples:
         example-1:
-          id: 407b751eb2a44ad98ae3f7336c160fde
-          schemaVersion: 0
-          firstname: Anja
-          surname: Jong
-          surnamePrefix: de
-          schoolYear: 2020-2021
-          school:
-            id: '1234'
-            name: TestCollege
-          groups:
-            - id: 83302cc7309c497c9530537ac50248b3
-              name: W2C MM
-    teacherReference:
+          schoolId: '123456'
+          schoolName: SEMs excelent College
+    Student:
       type: object
       x-tags:
-        - teacher
-      title: ''
+        - student
+      title: Student
+      description: Access to non-sensitive student information for us in an LMS or LA.
+      x-examples:
+        example-1:
+          userId: 123456776756@assas.edu.nl
+          schemaVersion: 0
+          eckId: '12345678'
+          firstname: Jan
+          surname: Jensen
+          surnamePrefix: ''
+          schoolperiod: 2021-2022
+          school:
+            schoolId: '123456'
+            schoolName: SEMs excelent College
+          groups:
+            - groupId: vm-bb-2a
+              name: vmbo 2a
+          subjects:
+            - startDate: '2019-08-24'
+              endDate: '2019-08-24'
+              subject:
+                subjectCode: '0071'
+                schoolSubjectCode: en
+                schoolSubjectName: Engels
+                level: vmbo-bb
+                levelYear: 2
+                schoolLevelCode: onderbouw-2
+                schemaVersion: 0
       properties:
-        id:
+        userId:
           type: string
-        eckid:
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+        eckId:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        surnamePrefix:
+          type: string
+        schoolPeriod:
+          type: string
+          description: A reference to the school period for this student. (eg 2021-2021)
+        school:
+          $ref: '#/components/schemas/School'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupReference'
+        subjects:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentSubject'
+      required:
+        - userId
+        - firstname
+        - surname
+        - school
+    StudentReference:
+      type: object
+      x-tags:
+        - student
+      title: Student reference
+      description: Access to non-sensitive student information for us in an LMS or LA.
+      properties:
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        eckId:
           type: string
         firstname:
           type: string
@@ -224,8 +169,83 @@ components:
         surnamePrefix:
           type: string
       required:
-        - id
-    group:
+        - userId
+        - firstname
+        - surname
+    Teacher:
+      type: object
+      x-tags:
+        - teacher
+      title: Teacher
+      x-examples:
+        example-1:
+          userId: string
+          schemaVersion: 0
+          eckId: string
+          firstname: string
+          surname: string
+          surnamePrefix: string
+          schoolPeriod: 2021-2022
+          school:
+            schoolId: '123456'
+            schoolName: SEMs excelent College
+          groups:
+            - groupId: string
+              name: string
+      properties:
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+        eckId:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        surnamePrefix:
+          type: string
+        schoolPeriod:
+          type: string
+          description: A reference to the school period for this teacher. (eg 2021-2022)
+        school:
+          $ref: '#/components/schemas/School'
+        groups:
+          type: array
+          description: |
+            Do we need this? This information is already available in groups. It will not be available in the beginning of the school year when the rosters are not complete. Neither LMS or LA need it to function.
+          items:
+            $ref: '#/components/schemas/GroupReference'
+      required:
+        - userId
+        - firstname
+        - surname
+        - schoolPeriod
+        - school
+    TeacherReference:
+      type: object
+      x-tags:
+        - teacher
+      title: Teacher reference
+      properties:
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+        eckId:
+          type: string
+        firstname:
+          type: string
+        surname:
+          type: string
+        surnamePrefix:
+          type: string
+      required:
+        - userId
+        - firstname
+        - surname
+    Group:
       type: object
       x-examples:
         example-1:
@@ -233,8 +253,8 @@ components:
           schemaVersion: 0
           name: W2C MM
           school:
-            id: '12345'
-            name: TestCollege
+            id: '123456'
+            name: SEMs excelent College
           students:
             - id: ''
               firstname: Kim
@@ -245,7 +265,7 @@ components:
               firstname: Anja
               surname: Jong
               surnamePrefix: de
-          subjectChoices:
+          subjects:
             - id: 65aad9b5acf74ab1a677095bb051fe91
               startDate: '2020-08-01'
               subjectCode: '0131'
@@ -253,17 +273,13 @@ components:
               level: HAVO-2
               courseCode: W_HAVO
               courseYear: 2
-          schoolYear: 2020-2021
+          schoolYear: 2021-2022
       x-tags:
         - group
-        - student
-        - teacher
-        - subject
-        - school
       description: A group or other grouping of students.
-      title: group
+      title: Group
       properties:
-        id:
+        groupId:
           type: string
         schemaVersion:
           type: integer
@@ -272,93 +288,117 @@ components:
         name:
           type: string
         school:
-          $ref: '#/components/schemas/school'
+          $ref: '#/components/schemas/School'
         students:
           type: array
           items:
-            $ref: '#/components/schemas/studentReference'
+            $ref: '#/components/schemas/StudentReference'
         teachers:
           type: array
           items:
-            $ref: '#/components/schemas/teacherReference'
-        subjectChoices:
+            $ref: '#/components/schemas/TeacherReference'
+        subjects:
           type: array
           items:
-            $ref: '#/components/schemas/subject-choice'
-        schoolYear:
+            $ref: '#/components/schemas/SchoolSubject'
+        schoolPeriod:
           type: string
-          description: A reference to the school year for this group.
+          description: A reference to the school period for this group. (ex 2021-2022)
       required:
-        - id
+        - groupId
         - name
         - school
-    groupReference:
+    GroupReference:
       type: object
       x-examples: {}
       x-tags:
         - group
       description: ''
       properties:
-        id:
+        groupId:
           type: string
         name:
           type: string
       required:
-        - id
+        - groupId
         - name
-    subject-choice:
+      title: Group reference
+    SchoolSubject:
       type: object
-      title: ''
+      title: SchoolSubject
       x-tags:
-        - subject
-        - student
-      x-examples: {}
+        - schoolsubject
+      x-examples:
+        example-1:
+          subjectCode: '0071'
+          schoolSubjectCode: en
+          schoolSubjectName: Engels
+          level: vmbo-bb
+          levelYear: 2
+          schoolLevelCode: onderbouw-2
+      description: |-
+        The school subject is the combination of a subject, combined with the level of the studie the subject is part of.
+        For both the subject and the level, the officail governemnt codes and the code from the school are provided. In this way the teachers recognise their teminology, while the MP and LA can link this to the gereric official codes.
+         
+        TODO : decide which values are mendatory
       properties:
-        id:
-          type: string
-        startDate:
-          type: string
-          format: date
-          description: Start of this subject for the student. Date cannot be in the future.
-        endDate:
-          type: string
-          format: date
-          description: Start of this subject for the student. Date cannot be in the future. null if not ended
         subjectCode:
           type: string
-          description: 'Officiële elementcode, bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
+          description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
+        schoolSubjectCode:
+          type: string
+          description: code that the school gives to this subject (like 'en')
         schoolSubjectName:
           type: string
           description: Optional name of subject if different within specific school.
         level:
           type: string
           description: 'Official Level, followed by courseyear. example ''havo-1, vwo-2, etc.'''
-        courseCode:
+        levelYear:
+          type: integer
+          description: Learning year (eg 1)
+        schoolLevelCode:
           type: string
           description: 'School code of the Level/couse/study. example ''Technasium'' This gives schools a way to name the course how they want it, while we still have a link with the official level'
-        courseYear:
-          type: integer
-          description: Learning year
       required:
-        - id
+        - subjectCode
+        - schoolSubjectCode
         - schoolSubjectName
-    subject-choices:
-      type: array
-      items:
-        $ref: '#/components/schemas/subject-choice'
+        - level
+        - levelYear
+    StudentSubject:
+      title: StudentSubject
+      type: object
       x-tags:
-        - subject-choice
-      description: List of possible subject choices
-    student-delivery:
-      title: student-delivery
+        - subjectchoice
+      x-examples: {}
+      description: ''
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: 'Start of this subject for the student. (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14])'
+        endDate:
+          type: string
+          format: date
+          description: |-
+            Start of this subject for the student.
+            (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14]). null if not ended
+        subject:
+          $ref: '#/components/schemas/SchoolSubject'
+      required:
+        - startDate
+        - subject
+    StudentDelivery:
+      title: Student delivery
       type: object
       description: Access to sensitive delivery information for a student.
       x-tags:
         - student
-        - student-delivery
       properties:
-        id:
+        userId:
           type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
@@ -367,11 +407,18 @@ components:
         dateOfBirth:
           type: string
           format: date
+          description: (ISO8601)
         emailAddress:
           type: string
-        postcode:
+        zipcode:
+          type: string
+        street:
           type: string
         houseNumber:
+          type: string
+        city:
+          type: string
+        country:
           type: string
         firstname:
           type: string
@@ -384,16 +431,60 @@ components:
         surnamePrefix:
           type: string
           description: Used for delivery
+      required:
+        - userId
+        - eckid
+        - dateOfBirth
+        - emailAddress
+        - zipcode
+        - street
+        - houseNumber
+        - city
+        - country
+        - firstname
+        - surname
+    SchoolPeriod:
+      title: SchoolPeriod
+      type: object
+      x-tags:
+        - student
+      description: |-
+        A school period is the timed scope where students, teachers, subjects and groups are exchanged.
+        For each school period students and teachers are exchanged. In this way we can exchange information for a next year while the current period is still active. 
+
+        Most of the times a schoolperiod is equavalant of a school year. eg 2021-2022. In some situations a school period could be a half year period or a 2 year period. The SIS will exchange the periods for reference. 
+
+        A SIS can choose not to send events about students/teachers for the next schoolyear until that period is started. The list of SchoolSubjects should be available well before the start of a new period, so MP and LA's can prepare for that period. 
+      x-examples:
+        example-1:
+          name: 2021-2022
+          start: '2021-08-01'
+          end: '2022-07-31'
+      properties:
+        name:
+          type: string
+          description: Description of school period (eg 2021-2022 or 2022H1)
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+        start:
+          type: string
+          description: 'Start of the period (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14])'
+          format: date
+        end:
+          type: string
+          format: date
+          description: 'end of the schoolperiod (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14])'
+      required:
+        - name
   securitySchemes:
     APIKey:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: ''
+        clientCredentials:
+          tokenUrl: ''
           refreshUrl: ''
-          scopes:
-            sis.student-teacher-group: 'Access to basic student, teacher and group information.'
-            sis.student-teacher-delivery: Access to sensitive student and teacher delivery information.
+          scopes: {}
 paths:
   '/student/{id}':
     parameters:
@@ -403,8 +494,8 @@ paths:
         in: path
         required: true
     get:
-      summary: Get Student information by ID
-      tags:
+      summary: Get Student by ID
+      x-tags:
         - student
       responses:
         '200':
@@ -412,7 +503,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/student'
+                $ref: '#/components/schemas/Student'
+              examples:
+                example-1:
+                  value:
+                    userId: string
+                    schemaVersion: 0
+                    eckId: string
+                    firstname: string
+                    surname: string
+                    surnamePrefix: string
+                    schoolYear: string
+                    school:
+                      schoolId: string
+                      schoolName: string
+                    groups:
+                      - groupId: string
+                        name: string
+                    subjects:
+                      - id: string
+                        startDate: '2019-08-24'
+                        endDate: '2019-08-24'
+                        subjectCode: string
+                        schoolSubjectCode: string
+                        schoolSubjectName: string
+                        level: string
+                        courseCode: string
+                        courseYear: 0
       operationId: get-student-id
       description: 'Retrieve basic student information, including their groups and subject choices.'
       security:
@@ -433,7 +550,7 @@ paths:
         required: true
     get:
       summary: Get Teacher by ID
-      tags:
+      x-tags:
         - teacher
       responses:
         '200':
@@ -441,7 +558,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/teacher'
+                $ref: '#/components/schemas/Teacher'
       operationId: get-teacher-id
       security:
         - APIKey:
@@ -462,7 +579,7 @@ paths:
         required: true
     get:
       summary: Get group by ID
-      tags:
+      x-tags:
         - group
       responses:
         '200':
@@ -470,9 +587,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/group'
+                $ref: '#/components/schemas/Group'
       operationId: get-group-id
-      description: 'Retrieve information about a specific group by ID, this includes the teachers, students and their subject choices.'
+      description: |-
+        Retrieve information about a specific group by ID, this includes the teachers, students and their subject choices.
+
+        Note: This is defined but not yet implemented. Fisrt we will see if we can do with as we get the group information via students and teachers. Adding groups would duplicate events.
       security:
         - APIKey:
             - sis.student-teacher-group
@@ -491,46 +611,78 @@ paths:
         required: true
     get:
       summary: Get Student delivery information by ID
-      tags:
+      x-tags:
         - student
-        - student-delivery
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/student-delivery'
+                $ref: '#/components/schemas/StudentDelivery'
       operationId: get-student-id-delivery-information
       description: Retrieve privacy sensitive delivery information by ID - this entity is only available to a specific scope.
       security:
         - APIKey:
             - sis.student-teacher-delivery
-  /subjectchoices:
+  /schoolsubjects:
     parameters: []
     get:
       summary: GET Subject choices for next years
-      tags: []
+      x-tags:
+        - schoolsubject
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/subject-choices'
-      operationId: get-subjectchoices-schoolyear
+                type: array
+                items:
+                  $ref: '#/components/schemas/SchoolSubject'
+      operationId: get-schoolsubjects-schoolyear
       security:
         - APIKey:
             - sis.student-teacher-group
-      description: Get possible subject choices for next schoolyears. User to create LML lists in MP while exact student / subjectchoices re not available
+      description: Get possible subject choices for next schoolyears. User to create LML lists in MP while exact student-subject relation is not yet available
       parameters:
         - schema:
             type: string
           in: query
-          name: schoolYear
-          description: request this list for a particular schoolyear
-tags:
+          name: schoolPeriod
+          description: request this list of subject choices for a particular schoolyear (eg 2021-2022)
+  /schoolperiods:
+    get:
+      summary: Get SchoolPeriods
+      x-tags:
+        - schoolperiod
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SchoolPeriod'
+              examples:
+                example-1:
+                  value:
+                    - name: 2021-2022
+                      start: '2021-08-01'
+                      end: '2022-07-31'
+                    - name: 2022-2023
+                      start: '2022-08-01'
+                      end: '2023-07-31'
+      operationId: get-schoolperiods
+      description: |-
+        Retrieve a list of current and upcomming school periods. 
+        How many periods are given in advance is up to the SIS implementation. Only the next period makes sense at this point
+
+        Usually start and stop dates op periods are adjacent, but start and stop dates can overlap in special situations. (not to be expected in POC 2)
+x-tags:
   - name: group
   - name: student
-  - name: student-delivery
   - name: teacher
+  - name: schoolsubject
+  - name: schoolperiod

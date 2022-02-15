@@ -9,10 +9,13 @@ info:
 
     This forms the 'near real time' element of the architecture, and enables subscribers to retrieve information on all changes immediately, while still retaining full control of when that data will be subsequently processed.
 
+    The registerd url is the events API endpoint which implemented the POST /event and /events path.
+
     Notes:
       - Ideally you would have one webhook registration per subscriber, but we should allow for multiple.
       - It should be possible to filter to only events you are interested in as part of the configuration, to avoid sending events that then need to be discarded.
-      - Event filters should automatically be applied aligned with oauth scopes in place for the subscriber - e.g. don't allow events to go to a subscriber for entities that they are not allowed to access.  This restriction will be defined in the API specification for each service.
+      - Event filters should automatically be applied aligned with oauth scopes in place for the subscriber - e.g. don't allow events to go to a subscriber for entities that they are not allowed to access.
+        This restriction will be defined in the API specification for each service. 
   version: 1.0.0
   title: Generic Web Hook API
   contact:
@@ -20,13 +23,13 @@ info:
   license:
     name: MIT
     url: 'https://opensource.org/licenses/MIT'
-tags:
+x-tags:
   - name: webhooks
     description: Operations related to webhook management
 paths:
   /webhook:
     get:
-      tags:
+      x-tags:
         - webhooks
       summary: Retrieve list of webhooks
       description: retrieves list of webhooks registered
@@ -39,7 +42,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/webhooks'
     post:
-      tags:
+      x-tags:
         - webhooks
       description: creates or updates a webhook
       operationId: createUpdateWebhook
@@ -56,9 +59,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhook'
+      summary: Create or update webhook
   '/webhook/{webhookId}':
     get:
-      tags:
+      x-tags:
         - webhooks
       summary: Retrieve webhook by ID
       description: retrieves specific of webhook
@@ -77,7 +81,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/webhook'
     delete:
-      tags:
+      x-tags:
         - webhooks
       description: deletes a webhook
       operationId: deleteWebhook
@@ -90,6 +94,7 @@ paths:
       responses:
         '200':
           description: OK
+      summary: Delete a webhook
 components:
   schemas:
     webhooks:
@@ -98,17 +103,19 @@ components:
         $ref: '#/components/schemas/webhook'
       x-tags:
         - webhooks
+      title: Webhooks
     webhook:
       type: object
-      required:
-        - id
-        - url
-        - enabled_events
+      x-tags:
+        - webhooks
       properties:
         id:
           type: string
           format: uuid
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        schemaVersion:
+          type: integer
+          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         url:
           type: string
           description: The url that will be called when any of the subscribed events occur
@@ -116,10 +123,22 @@ components:
         enabled_events:
           type: array
           description: Allow filtering of events that should be sent to this endpoint
-          items:
-            type: string
           example:
             - 'la:usage'
             - 'la:results'
-      x-tags:
-        - webhooks
+          items:
+            type: string
+      required:
+        - id
+        - url
+        - enabled_events
+      title: Webhook
+  securitySchemes:
+    APIKey:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes: {}
+      description: ''
