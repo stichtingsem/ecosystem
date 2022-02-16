@@ -201,10 +201,10 @@ paths:
             schema:
               $ref: '#/components/schemas/Activation'
     parameters: []
-  /entitlements/changeentileestatus:
+  /entitlements/changelicenseestatus:
     post:
-      summary: ChangeEntileeStatus
-      operationId: post-entitlements-changeentileestatus
+      summary: ChangeLicenseeStatus
+      operationId: post-entitlements-changelicenseestatus
       responses:
         '200':
           description: |
@@ -233,7 +233,7 @@ paths:
                 required:
                   - status
       description: |-
-        This call is used to change the status of one individual entilee within an entitlement. When an entitle activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to cancelled or blocked (or back to active). 
+        This call is used to change the status of one individual licensee within an entitlement. When an entitle activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to cancelled or blocked (or back to active). 
         The LA can return several errors as result of this request. See error table.
         The LMS will accept any new status and use that to display or remove access links to the course in the LA.
 
