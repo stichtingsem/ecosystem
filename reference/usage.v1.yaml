@@ -151,9 +151,6 @@ components:
             - monthlyActivation
             - InitialActivation
           description: Type of usage report. Currently only initialActivations are implemented
-        totalForThisEntitlement:
-          type: integer
-          description: Accumulated total for this entitlement. Used when no userid or eckid is gives (anonymous)
       required:
         - entitlementId
         - schoolId
@@ -175,7 +172,6 @@ components:
         status:
           type: string
           enum:
-            - activated
             - cancelled
             - blocked
             - entiled
