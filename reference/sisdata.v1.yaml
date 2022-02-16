@@ -23,9 +23,11 @@ info:
      
     Data from the SIS can be sensitive, and the events and APIs available to a requesting service depend on the scopes requested and approved during setup.  The following scopes exist for the SIS, and map to the following entities and attributes:
 
-    `sis.student-teacher-group`
-
+    `sis.student-teacher-group` - 
     This scope enables a requestor to get basic information about a user (student or teacher) to enable that platform to present appropriate information or a basic profile for them and understand what groups or subjects they are enrolled in or teach.
+
+    `sis.school` - 
+    This scope enables a requestor to get basic information about school: periods and schoolsubjects in that period
 
     ### Event Access
 
@@ -477,7 +479,10 @@ components:
         clientCredentials:
           tokenUrl: ''
           refreshUrl: ''
-          scopes: {}
+          scopes:
+            sis.student-delivery: a scope that gives access to sensitive student information like adress
+            sis.student-teacher-group: 'a scope that gives access to student, teacher and group data'
+            sis.school: 'A scope that allows access to the basic school information : periodes and schoolsubjects in those periods'
 paths:
   '/student/{id}':
     parameters:
@@ -532,8 +537,8 @@ paths:
         - schema:
             type: string
           in: query
-          name: schoolYear
-          description: 'Request data for this student about a specific school year, if not provided, default to current.'
+          name: schoolPeriod
+          description: 'Request data for this student about a specific school period, if not provided, default to current.'
   '/teacher/{id}':
     parameters:
       - schema:
@@ -561,8 +566,8 @@ paths:
         - schema:
             type: string
           in: query
-          name: schoolYear
-          description: 'Request data for this teacher about a specific school year, if not provided, default to current.'
+          name: schoolPeriod
+          description: 'Request data for this teacher about a specific school period, if not provided, default to current.'
   '/group/{id}':
     parameters:
       - schema:
@@ -593,8 +598,8 @@ paths:
         - schema:
             type: string
           in: query
-          name: schoolYear
-          description: 'Request data for this group about a specific school year, if not provided, default to current.'
+          name: schoolPeriod
+          description: 'Request data for this group about a specific school period, if not provided, default to current.'
   '/student/{id}/delivery-information':
     parameters:
       - schema:
@@ -617,11 +622,11 @@ paths:
       description: Retrieve privacy sensitive delivery information by ID - this entity is only available to a specific scope.
       security:
         - APIKey:
-            - sis.student-teacher-delivery
+            - sis.student-delivery
   /schoolsubjects:
     parameters: []
     get:
-      summary: GET Subject choices for next years
+      summary: GET School Subjects for next years
       x-tags:
         - schoolsubject
       responses:
@@ -636,14 +641,14 @@ paths:
       operationId: get-schoolsubjects-schoolyear
       security:
         - APIKey:
-            - sis.student-teacher-group
-      description: Get possible subject choices for next schoolyears. User to create LML lists in MP while exact student-subject relation is not yet available
+            - sis.school
+      description: Get possible school subject for next schoolyears. Used to create LML lists in MP while exact student-subject relation is not yet available
       parameters:
         - schema:
             type: string
           in: query
           name: schoolPeriod
-          description: request this list of subject choices for a particular schoolyear (eg 2021-2022)
+          description: request this list of schoolsubjects for a particular school period (eg 2021-2022)
   /schoolperiods:
     get:
       summary: Get SchoolPeriods
@@ -673,6 +678,9 @@ paths:
         How many periods are given in advance is up to the SIS implementation. Only the next period makes sense at this point
 
         Usually start and stop dates op periods are adjacent, but start and stop dates can overlap in special situations. (not to be expected in POC 2)
+      security:
+        - APIKey:
+            - sis.school
 x-tags:
   - name: group
   - name: student
