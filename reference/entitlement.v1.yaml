@@ -3,12 +3,29 @@ info:
   title: Entitlement API
   version: '1.0'
   description: |
-    This is an API provided by the Marketplace in the SEM ecosystem, and is designed to enable a marketplace to make information about products that have been selected or purchased by a school or individual to be then added automatically into the LMS of the school, as well as be used by the specific Learning Application that has been purchased to ensure that all setup and provisioning has been completed in advance of access.
+    This is an API that handles the comunication of entitlements between MP, LA and LMS.
 
-    It is envisaged that the service implementing this API, also implements the generic [Events](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/events.v1.yaml) and [Webhooks](https://stichtingsem.stoplight.io/docs/sem-technology-prototype/reference/webhooks.v1.yaml) API to enable subscription to changes vs polling.
+    The Entitlements are the core of the SEM ecosystem and are created in the MP as a result of a school selecting learning material for the students. The MP creates entilements and send these to the LA to make sure students have access to the material. The entitlements are also send to the LMS so the LMS can create url/links for each student to the website of the LA.
+
+    Most of the API is synchronious as it is important that all parties share exactly the same view of the entielements. The MP is in control, the LA will report when an entitlement is activated and became a license. Both LMS and LA can request the latest status of the entitlements by the MP.
+
+    Actual usage of an entitlement can be requested via the Usage API.
+
+    This API is implemented by MP, LA and LMS, but not all parties will implement the same endpoints. 
+
+    Endpoint | provider | client | remark
+    -- | --- | --- | -----
+    POST /entitlements | LA, LMS | MP | Send new entitlements 
+    POST /entitlements/changestatus | LA, LMS | MP | Change the status of an entitlement
+    POST /entitlements/changelicenseestatus | LA, LMS | MP |change status for a specific entilee/licensee
+    POST /entitlements/firstactivation | MP | LA | Send activation per student
+    GET /entitlements | MP | LA, LMS | get entilement to check status
+    GET /entitlements/school | MP | LA, LMS | get entilements per school to check status
+
+    When a request is send to an endpoint this party does not provide : a 405 Method not allowed should be returned
 
     ## Events
-    The Entitlements APi will not use theevent mechanisme. The requests need to be handled synchroniously, so the requesting party known that the entitlements and changes to the entitlements are checked and processed immediatelly.
+    The Entitlements APi will not use the event mechanisme. The requests need to be handled synchroniously, so the requesting party known that the entitlements and changes to the entitlements are checked and processed immediatelly.
 
     ## Scopes
      
@@ -43,6 +60,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Entitlement'
+        '405':
+          description: Method Not Allowed
       operationId: get-entitlements-by-id
       description: |-
         Retrieve the full specification for an entitlement from a marketplace, always scoped per school
@@ -71,6 +90,11 @@ paths:
           schema:
             type: string
             example: active
+            enum:
+              - entitled
+              - provisioned
+              - cancelled
+              - blocked
         - in: query
           name: start
           description: 'Start point for pagination of results, defaults to 0,'
@@ -149,6 +173,8 @@ paths:
                 example-1:
                   value:
                     confirmationId: string
+        '405':
+          description: Method Not Allowed
       requestBody:
         content:
           application/json:
@@ -196,6 +222,8 @@ paths:
                     type: string
                 required:
                   - status
+        '405':
+          description: Method Not Allowed
       description: |-
         Report first activation of a student or teacher for this entitlement. 
         In addition to that the total number of provisioned, activated, blocked and cancelled are passed to the MP.
@@ -242,6 +270,8 @@ paths:
                     type: string
                 required:
                   - status
+        '405':
+          description: Method Not Allowed
       description: |-
         This call is used to change the status of one individual licensee within an entitlement. When an entitle activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to cancelled or blocked (or back to active). 
         The LA can return several errors as result of this request. See error table.
@@ -265,17 +295,17 @@ paths:
                   type: string
                   enum:
                     - blocked
-                    - active
                     - cancelled
+                    - activated
         description: ''
       security:
         - APIKey:
             - mp.entitlement
     parameters: []
-  /entitlements/changestatus:
+  /entitlements/change:
     post:
-      summary: Change Entitlement Status
-      operationId: post-entitlements-changestatus
+      summary: Change Entitlement Status or amaount
+      operationId: post-entitlements-change
       responses:
         '200':
           description: |-
@@ -299,8 +329,10 @@ paths:
                     type: string
                 required:
                   - status
+        '405':
+          description: Method Not Allowed
       description: |-
-        Change the status of an entitlement. Both Status and quantity can be changed.
+        Change the status of an entitlement. Both Status and quantity can be changed. (if omitted : no change requested)
 
         This endpoint is only implemented by the LA and LMS. The MP should give an exception.
       requestBody:
@@ -315,8 +347,9 @@ paths:
                   type: string
                   enum:
                     - blocked
-                    - active
                     - cancelled
+                    - provisioned
+                    - Entitled
                 newQuantity:
                   type: integer
               required:
@@ -325,6 +358,7 @@ paths:
       security:
         - APIKey:
             - mp.entitlement
+    parameters: []
 components:
   schemas:
     Entitlement:
@@ -355,8 +389,8 @@ components:
           enum:
             - school
             - schoolsubject
-            - entitlees
-            - individual
+            - personal
+            - schoolindividual
         expirationDate:
           type: string
           description: 'Date - time Expiration date, is the date on which the product can no longer be converted to a license. The agreement to activate the product has expired. This does not say anything about being able to use the product after activation before this date.'
@@ -365,18 +399,12 @@ components:
           $ref: '#/components/schemas/Product'
         entitlee:
           $ref: '#/components/schemas/Entitlee'
-        quantity:
-          type: integer
-          example: 100
-          format: int32
-          description: maximum quantity
         status:
           type: string
           description: 'The status of the entitlement '
           enum:
             - entitled
             - provisioned
-            - activated
             - cancelled
             - blocked
           default: entitled
@@ -405,9 +433,9 @@ components:
       description: |-
         The school as entitlee.
         This can be in 3 forms: 
-        - the school will use this entitlement for the quantitee specified. 
+        - the school will use this entitlement for the quantity specified. 
         - when entitlees is filled: the entitlees list specifies which students in the school are entitled
-        - when subject is filled: each student who has this stubject choice is entitled to this product. The LA can make this match based on sis data
+        - when schoolSubject is filled: each student who has this schoolSubject is entitled to this product. The LA can make this match based on sis data
       x-tags:
         - entitlements
       x-examples:
@@ -453,11 +481,11 @@ components:
           type: array
           description: List of students in the school who has rigth to this entitlement
           items:
-            $ref: '#/components/schemas/Individual'
+            $ref: '#/components/schemas/SchoolEntilee'
         quantity:
           type: integer
           example: 100
-          description: 'Quantity available to the school, used if no subjects provided.'
+          description: Quantity available to the school
       required:
         - schoolId
     Individual:
@@ -482,6 +510,23 @@ components:
       required:
         - display_name
         - email
+    SchoolEntilee:
+      title: SchoolEntilee
+      type: object
+      x-tags:
+        - entitlements
+      properties:
+        display_name:
+          type: string
+          description: The name of the person purchasing.
+        eckId:
+          type: string
+          description: 'If needed, the ECK-ID of the individual.'
+        userId:
+          type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
+      required:
+        - display_name
     SchoolSubject:
       title: SchoolSubject
       type: object

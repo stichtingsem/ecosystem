@@ -537,8 +537,8 @@ paths:
         - schema:
             type: string
           in: query
-          name: schoolYear
-          description: 'Request data for this student about a specific school year, if not provided, default to current.'
+          name: schoolPeriod
+          description: 'Request data for this student about a specific school period, if not provided, default to current.'
   '/teacher/{id}':
     parameters:
       - schema:
@@ -566,8 +566,8 @@ paths:
         - schema:
             type: string
           in: query
-          name: schoolYear
-          description: 'Request data for this teacher about a specific school year, if not provided, default to current.'
+          name: schoolPeriod
+          description: 'Request data for this teacher about a specific school period, if not provided, default to current.'
   '/group/{id}':
     parameters:
       - schema:
@@ -598,8 +598,8 @@ paths:
         - schema:
             type: string
           in: query
-          name: schoolYear
-          description: 'Request data for this group about a specific school year, if not provided, default to current.'
+          name: schoolPeriod
+          description: 'Request data for this group about a specific school period, if not provided, default to current.'
   '/student/{id}/delivery-information':
     parameters:
       - schema:
@@ -626,7 +626,7 @@ paths:
   /schoolsubjects:
     parameters: []
     get:
-      summary: GET Subject choices for next years
+      summary: GET School Subjects for next years
       x-tags:
         - schoolsubject
       responses:
@@ -642,13 +642,13 @@ paths:
       security:
         - APIKey:
             - sis.school
-      description: Get possible subject choices for next schoolyears. User to create LML lists in MP while exact student-subject relation is not yet available
+      description: Get possible school subject for next schoolyears. Used to create LML lists in MP while exact student-subject relation is not yet available
       parameters:
         - schema:
             type: string
           in: query
           name: schoolPeriod
-          description: request this list of subject choices for a particular schoolyear (eg 2021-2022)
+          description: request this list of schoolsubjects for a particular school period (eg 2021-2022)
   /schoolperiods:
     get:
       summary: Get SchoolPeriods
