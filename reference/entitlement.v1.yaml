@@ -423,10 +423,12 @@ components:
       x-tags:
         - entitlements
       properties:
-        ean:
+        productId:
           type: string
+          description: |
+            Unique identification of a product, like ean.
       required:
-        - ean
+        - productId
     School:
       title: School
       type: object

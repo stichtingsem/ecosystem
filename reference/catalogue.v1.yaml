@@ -91,11 +91,11 @@ paths:
       security:
         - APIKey:
             - la.cataloque
-  '/product/{ean}':
+  '/product/{productid}':
     parameters:
       - schema:
           type: string
-        name: ean
+        name: productid
         in: path
         required: true
     get:
@@ -109,7 +109,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Product'
       operationId: get-product-ean
-      description: Get a specific product by EAN
+      description: Get a specific product by productid
       security:
         - APIKey:
             - la.cataloque
@@ -122,10 +122,12 @@ components:
       x-tags:
         - catalogue
       properties:
-        ean:
+        productId:
           type: string
-          description: |
-            The unique EAN for this product.
+          description: |-
+            The unique identifier for this product. 
+
+            "Indien dit afwijkt van EAN moet de uitgever vaststellen dat dit niet binnen het EAN domein gebruikt wordt. Dit omdat de EAN een relatie heeft met de verkoopbare eenheid / niveau"
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
@@ -229,7 +231,7 @@ components:
             Product will be removed from cataloque. This field gives insigth when that day will be so consumers can anticipate on this.(ISO 8601)
           format: date
       required:
-        - ean
+        - productId
         - type
         - name
         - models
