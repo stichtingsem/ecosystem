@@ -1,7 +1,7 @@
 # Abstract
 A typical school uses a broad range of learning materials from several educational publishers or educational platform suppliers. The SEM Ecosystem sets a standard for the exchange of data between all parties that play a key role in the order and access of these (digital) learning materials within schools. Parties involved are amongst others providers of student information systems, learning managemenst systems, distribution and fulfillment, and (digital) learning materials.
 
-All information is available on our [Public Github Repository](https://github.com/stichtingsem/ecosystem/). This repository is an initiative of the Stichting Samenwerkende Educatieve Marktpartijen (SEM) and is based upon the [principles](https://github.com/stichtingsem/ecosystem/principles.md) defined in the working document [Moving from a chain to an ecosystem](https://github.com/stichtingsem/ecosystem/blob/master/documentation/documents/).
+All information is available on our [Public Github Repository](https://github.com/stichtingsem/ecosystem/). This repository is an initiative of the Stichting Samenwerkende Educatieve Marktpartijen (SEM) and is based upon the [principles](https://github.com/stichtingsem/ecosystem/blob/master/documentation/principles.md) defined in the working document [Moving from a chain to an ecosystem](https://github.com/stichtingsem/ecosystem/blob/master/documentation/documents/).
 
 ## API Specification
 
