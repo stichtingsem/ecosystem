@@ -6,30 +6,46 @@ info:
   title: Consent API
   description: |-
     Consent-flow for third party-consent:
+
     __Introduction__
-    
+
     When two parties agree to exchange data, they will define their roles and with this a list of scopes will be defined and saved alongside the client credentials. Also a callbackurl is registered alongside the client, where an update-message about the consent or consent-request can be sent. 
-    
-    Consent always has to be given in both systems that are involved. For example: both in the SIS and in the MP a user with the access role to allow data sharing (ie. security officer) has to give consent before the SIS can share their data with the MP (or other systems).
-    
+
+    Consent always has to be given in both systems that are involved. For example: both in the SIS and in the MP a user with the access role to allow data sharing (ie. security officer) has to give consent before the SIS can share their data with the MP (or other systems). The consent APi is used to inform the other party of an api about the consent status.
+
+    The complete consent consists of 2 statuses: producer and consumer status. both parties will have their own identification. both parties can request the status of the api from the other partie for support purpose.
+
+    A consent is given for an API, most of the times including the schoolid whose data is exchanged.
+
+    Consent can be denied or revoked. This status change is send to the other party to stop sending data and show in the UI that the other partie has no longer consent and that need to be handled.
+
+    When both parties have given consent, or re-given consent, the consumer can request the producer to handle the inital sync: send all relevant events needed to get up-to-date. For a LA that could mean sending all products, for a SIS sending all students and teachers of the current year once as event. (events can be send in batches)
+
     __Technical description for initial consent__
-    
-    An application (A) will ask for a token at the IDP (using the client_credentials flow) without a specific scope but for a specific digitalDeliveryId and can do an HTTP POST request to ask consent (#redirectToApiSpec). A UUID for this consent-request will be returned. This flow will be asynchronous, the application is done for now.
-    
-    __Consent-request resource__
-    
-    Application (A) can check the status of their consent-request by doing an HTTP GET request with the consent-request-uuid as a queryparam. Status can be Pending, Accepted or Declined.
-    
-    __Consent resource__ 
-    
-    Application (A) can check which schools have given consent in both applications by doing an HTTP GET request to ask if a specific digitalDeliveryId has given consent. Status can be Active or Revoked.
-    
-    In the other application (B) the currently open consent-requests will be made visible to users with the access role to allow data sharing (ie. security officer). The user accepts the consent-request and a consent is created. If the user declines the consent-request no consent is created. In both cases an update-message is (optionally) sent to the registered callbackurl.
+
+    An application (A) will ask for a token at the IDP (using the client_credentials flow) without a specific scope and can do an HTTP POST request to ask consent (#redirectToApiSpec). A referenceid is passed in the request, the referenceid of the other party is returned. The other party will create a content record for this api/client/[school] combination and set its own status at Pending.
+    This flow will be asynchronous, the application is done for now.
+
+    __Consent resource__
+
+    Application (A) can check the status of their consent by doing an HTTP GET request with the consent-referenceid as a queryparam. Status can be Pending, Accepted, Revoked or Declined.
+
+    __Consent update__ 
+
+    In the other application (B) the currently open consent-requests will be made visible to users with the access role to allow data sharing (ie. security officer). If the user accepts or declines the consent-request the status is updated and an update-message is (optionally) sent to the other party.
     The user can also revoke a prior given consent. This can be done in both application A & B. An updatemessage will than also be send to the callbackurl of the other application.
-    
-    __Token for digideliveryId__
-    
-    When requesting a token on the oauth2 token resource using the client_credentials a queryparameter containing the identifier for the school.
+
+    Only when both parties consent status is in state 'Accepted' the authentication server will grand request for a token to be used in other API calls.
+
+    __Initial Sync__
+    The producing party can request an initial sync for a consent that is in 'Accepted' state. This could also be used when there are doubts that both parties have the same data processed, but should be used in exceptional situations, not as part of a standard flow.
+
+    ## Events
+    The consent APi uses no Events. 
+
+    ## Scopes 
+    The consent API does not use scopes (it is there to negotiate that scopes for other API calls are available...)
+
         
   contact:
     email: jorim.van.der.wijngaard@topicus.nl
@@ -39,88 +55,207 @@ tags:
   - name: consentrequest
     description: Operations to request data access (consent)
 paths:
-  /consentrequest:
+  /consentupdate:
     post:
-      description: Allows an application to request access to data of a new school (digideliveryid) and scope.
+      description: |
+        Allows an application to request access to data of a new school (digideliveryid) and api.
+
+        Example: the MP request consent to recieve SIS data from the SIS on behalve of a school
+        The SIS will not give a dircet answer, but wait until the school admin logs in, gets the request presented in the UI and gives consent.
       tags:
         - consentrequest
-      operationId: requestConsent
+      operationId: request-consent-update
       requestBody:
-        description: 'ConsentRequest for data acces to a digitaldeliveryid'
+        description: ConsentRequest for data acces to an api for a school
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/consentrequest"
+              $ref: '#/components/schemas/ConsentUpdate'
       responses:
         '200':
-          description: OK, returned consentrequest will now contain a id.
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine, consent object has all the details
+            1 - API value not allowed for this party combination
+            2 - ReferenceId alraedy used for different API/school combination
+            x - <to be defined>
+
+            99- Other, see statusMessage for details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/consentrequest'
-      summary: ''
-  /consentrequest/{consentRequestId}:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  statusMessage:
+                    type: string
+                  consent:
+                    $ref: '#/components/schemas/Consent'
+        '':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consent'
+      summary: Request Consent update
+    parameters: []
+  '/consent/{referenceId}':
     get:
       description: Resource to check status of requested consent
       tags:
         - consentrequest
       operationId: requestConsentStatus
-      parameters:
-        - name: consentRequestId
-          in: path
-          description: id of the ConsentRequest posted
-          schema:
-            type: string
-            format: uuid
-          required: true
       responses:
         '200':
-          description: OK, returned consentrequest can be checked for status 
+          description: 'OK, returned consentrequest can be checked for status'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/consentrequest'
-        '404':
-          description: NOT FOUND, consentrequest unavailable
-      summary: ''
-  /consent:
+                $ref: '#/components/schemas/Consent'
+      summary: Get
+    parameters:
+      - schema:
+          type: string
+        name: referenceId
+        in: path
+        required: true
+        description: get consent information based on own referenceId
+  '/consents/{schoolid}':
     get:
-      description: Resource to check if a school (based on digideliveryid) has given consent to access data. This resource can be used to check if a school has given consent without a prior consentrequest from the application itself.
+      description: Resource to check if a school (based on schoolid) has given consent to access data. This resource can be used to check if a school has given consent without a prior consentrequest from the application itself.
       tags:
         - consent
-      operationId: getConsent
+      operationId: getConsents
       responses:
         '200':
-          description: OK, returned consentrequest can be checked for status 
+          description: 'OK, returned consentrequest can be checked for status'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/consent'
-        '404':
-          description: NOT FOUND, consent unavailable
-      summary: ''
+                $ref: '#/components/schemas/Consent'
+      summary: Get Consents by schoolid
+    parameters:
+      - schema:
+          type: string
+        name: schoolid
+        in: path
+        required: true
+        description: id of the school to filter all consents
+  '/requestsync/{referenceId}':
+    parameters:
+      - schema:
+          type: string
+        name: referenceId
+        in: path
+        required: true
+        description: consent identified by own referenceId
+    post:
+      summary: Request initial sync
+      tags: []
+      responses:
+        '200':
+          description: |-
+            OK, the request is processed 
+
+            status - Message
+            0 - All fine
+            1 - Consent does not exist
+            2 - Consent is not both way accepted
+            x - <to be defined>
+
+            99- Other, see statusMessage for details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  statusMessage:
+                    type: string
+                required:
+                  - status
+                  - statusMessage
+      operationId: post-requestsync-referenceId
+      description: |
+        Request a initial sync by sending all events needed to creatine a start situation. after that the following events will keep the data in sync.
+
+        Initial sync can only be requested for data like sis (student/teacher), catalogue (products), course (courses), but not for usage or progress (yet)
 components:
   schemas:
-    consentrequest:
+    Consent:
       type: object
       x-tags:
         - consentrequest
-      description: TBD
+      description: A model that describes the consent between 2 parties. It contains 2 id's and 2 statusses and is valid for an API (and most of the time for one school)
+      title: Consent
       properties:
-        id:
+        producerId:
           type: string
           description: Field will be ignored in the post request and generated by backend
-          format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-        status: 
+        consumerId:
           type: string
-          format: enum [PENDING, ACCEPTED, DECLINED, REVOKED]
-    consent:
+        schoolId:
+          type: string
+          description: SchoolID for which the consent is requested
+        api:
+          type: string
+          enum:
+            - catalogue-api
+            - course-api
+            - entitlement-api
+            - usage-api
+            - progress-api
+        producerStatus:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - declined
+            - revoked
+        consumerStatus:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - declined
+            - revoked
+      required:
+        - producerId
+        - consumerId
+        - api
+        - producerStatus
+        - consumerStatus
+    ConsentUpdate:
       type: object
       x-tags:
         - consent
-      description: TBD
+      description: 'A model that describes the consent update from one party to another. Could be the first update, so the receiving party can check if it already has a consent for this API for this school from this client.'
+      title: ConsentUpdate
       properties:
-        status: 
+        referenceId:
           type: string
-          format: enum [ACTIVE, REVOKED]
+          description: ReferenceId from the requesting party.
+        schoolId:
+          type: string
+          description: SchoolID for which the consent is requested
+        api:
+          type: string
+          enum:
+            - catalogue-api
+            - course-api
+            - entitlement-api
+            - usage-api
+            - progress-api
+        newStatus:
+          type: string
+          enum:
+            - accepted
+            - declined
+            - revoked
+      required:
+        - referenceId
+        - api
+        - newStatus
