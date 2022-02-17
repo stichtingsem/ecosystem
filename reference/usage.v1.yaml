@@ -186,14 +186,14 @@ components:
         entitleeUsageList:
           type: array
           items:
-            $ref: '#/components/schemas/EntileeUsage'
+            $ref: '#/components/schemas/EntitleeUsage'
       required:
         - entitlementId
         - schoolId
         - status
         - entitleeUsageList
-    EntileeUsage:
-      title: EntileeUsage
+    EntitleeUsage:
+      title: EntitleeUsage
       type: object
       properties:
         userId:
@@ -216,11 +216,11 @@ components:
             - blocked
         frequencyOfUsage:
           type: integer
-          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+          description: 'optional: Indicator how often the entitlee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
       required:
         - userId
         - firstUsed
-      description: Usage details per entilee. Only entilee's that have activated the entitlement are added in this list.
+      description: Usage details per entitlee. Only entitlee's that have activated the entitlement are added in this list.
     IndividualUsage:
       title: IndividualUsage
       type: object
@@ -264,7 +264,7 @@ components:
             - blocked
         frequencyOfUsage:
           type: integer
-          description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+          description: 'optional: Indicator how often the entitlee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
       required:
         - entitlementId
   securitySchemes:

@@ -17,7 +17,7 @@ info:
     -- | --- | --- | -----
     POST /entitlements | LA, LMS | MP | Send new entitlements 
     POST /entitlements/changestatus | LA, LMS | MP | Change the status of an entitlement
-    POST /entitlements/changelicenseestatus | LA, LMS | MP |change status for a specific entilee/licensee
+    POST /entitlements/changelicenseestatus | LA, LMS | MP |change status for a specific entitlee/licensee
     POST /entitlements/firstactivation | MP | LA | Send activation per student
     GET /entitlements | MP | LA, LMS | get entilement to check status
     GET /entitlements/school | MP | LA, LMS | get entilements per school to check status
@@ -483,7 +483,7 @@ components:
           type: array
           description: List of students in the school who has rigth to this entitlement
           items:
-            $ref: '#/components/schemas/SchoolEntilee'
+            $ref: '#/components/schemas/SchoolEntitlee'
         quantity:
           type: integer
           example: 100
@@ -512,8 +512,8 @@ components:
       required:
         - display_name
         - email
-    SchoolEntilee:
-      title: SchoolEntilee
+    SchoolEntitlee:
+      title: SchoolEntitlee
       type: object
       x-tags:
         - entitlements
