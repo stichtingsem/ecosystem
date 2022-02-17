@@ -1,0 +1,223 @@
+plugins {
+    id "org.openapi.generator" version "5.4.0"
+    id "java"
+}
+
+group = 'org.semconnector.api'
+version = '1.0.0-SNAPSHOT'
+sourceCompatibility = '11'
+
+
+repositories {
+    mavenCentral()
+}
+
+task generateJava {
+    dependsOn 'generateCatalogueApiJava'
+    dependsOn 'generateCourseApiJava'
+    dependsOn 'generateEntitlementsApiJava'
+    dependsOn 'generateEventsApiJava'
+    dependsOn 'generateSisDataApiJava'
+    dependsOn 'generateUsageApiJava'
+    dependsOn 'generateWebhooksApiJava'
+}
+
+task generateCatalogueApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    inputSpec = "$rootDir/../../reference/catalogue.v1.yaml"
+    outputDir = "$buildDir/generated/java/"
+    apiPackage = "org.sem.api.catalogue.api"
+    modelPackage = "org.sem.api.catalogue.model"
+    invokerPackage = "org.sem.api.catalogue.client"
+    configOptions = [
+            dateLibrary: "java8",
+            library    : "resttemplate",
+            toApiName  : "CatalogueApi"
+
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+    skipValidateSpec = false
+}
+
+task generateCourseApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    inputSpec = "$rootDir/../../reference/course.v1.yaml"
+    outputDir = "$buildDir/generated/java/"
+    apiPackage = "org.sem.api.course.api"
+    modelPackage = "org.sem.api.course.model"
+    invokerPackage = "org.sem.api.course.client"
+    configOptions = [
+            dateLibrary: "java8",
+            library    : "resttemplate",
+            toApiName  : "CourseApi"
+
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+    skipValidateSpec = false
+}
+
+task generateEntitlementsApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "spring"
+    inputSpec = "$rootDir/../../reference/entitlement.v1.yaml"
+    outputDir = "$buildDir/generated/java/"
+    apiPackage = "org.sem.api.entitlement.api"
+    modelPackage = "org.sem.api.entitlement.model"
+    invokerPackage = "org.sem.api.entitlement.client"
+    configOptions = [
+            dateLibrary: "java8"
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+    skipValidateSpec = false
+}
+
+task generateEventsApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    inputSpec = "$rootDir/../../reference/events.v1.yaml"
+    outputDir = "$buildDir/generated/java/"
+    apiPackage = "org.sem.api.events.api"
+    modelPackage = "org.sem.api.events.model"
+    invokerPackage = "org.sem.api.events.client"
+    configOptions = [
+            dateLibrary: "java8",
+            library    : "resttemplate",
+            toApiName  : "CourseApi"
+
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+    skipValidateSpec = false
+}
+
+task generateSisDataApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    inputSpec = "$rootDir/../../reference/sisdata.v1.yaml"
+    outputDir = "$buildDir/generated/java/"
+    apiPackage = "org.sem.api.sisdata.api"
+    modelPackage = "org.sem.api.sisdata.model"
+    invokerPackage = "org.sem.api.sisdata.client"
+    configOptions = [
+            dateLibrary: "java8",
+            library    : "resttemplate",
+            toApiName  : "SisdatasApi"
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+    skipValidateSpec = false
+}
+
+task generateUsageApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    inputSpec = "$rootDir/../../reference/usage.v1.yaml"
+    outputDir = "$buildDir/generated/java/"
+    apiPackage = "org.sem.api.usage.api"
+    modelPackage = "org.sem.api.usage.model"
+    invokerPackage = "org.sem.api.usage.client"
+    configOptions = [
+            dateLibrary: "java8",
+            library    : "resttemplate",
+            toApiName  : "UsageApi"
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+    skipValidateSpec = false
+}
+
+task generateWebhooksApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "java"
+    inputSpec = "$rootDir/../../reference/webhooks.v1.yaml"
+    outputDir = "$buildDir/generated/java/"
+    apiPackage = "org.sem.api.webhooks.api"
+    modelPackage = "org.sem.api.webhooks.model"
+    invokerPackage = "org.sem.api.webhooks.client"
+    configOptions = [
+            dateLibrary: "java8",
+            library    : "resttemplate",
+            toApiName  : "WebhooksApi"
+    ]
+    globalProperties = [
+            modelDocs: "false"
+    ]
+    skipValidateSpec = false
+}
+
+task generatePHP {
+    dependsOn 'generateCatalogueApiPHP'
+    dependsOn 'generateCourseApiPHP'
+    dependsOn 'generateEntitlementsApiPHP'
+    dependsOn 'generateEventsApiPHP'
+    dependsOn 'generateSisDataApiPHP'
+    dependsOn 'generateUsageApiPHP'
+    dependsOn 'generateWebhooksApiPHP'
+}
+
+task generateCatalogueApiPHP(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "php"
+    inputSpec = "$rootDir/../../reference/catalogue.v1.yaml"
+    outputDir = "$buildDir/generated/php/"
+    apiPackage = "org.sem.api.catalogue.api"
+    modelPackage = "org.sem.api.catalogue.model"
+    invokerPackage = "org.sem.api.catalogue.client"
+}
+
+task generateCourseApiPHP(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "php"
+    inputSpec = "$rootDir/../../reference/course.v1.yaml"
+    outputDir = "$buildDir/generated/php/"
+    apiPackage = "org.sem.api.course.api"
+    modelPackage = "org.sem.api.course.model"
+    invokerPackage = "org.sem.api.course.client"
+}
+
+task generateEntitlementsApiPHP(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "php"
+    inputSpec = "$rootDir/../../reference/entitlement.v1.yaml"
+    outputDir = "$buildDir/generated/php"
+    apiPackage = "org.sem.api.entitlement.api"
+    modelPackage = "org.sem.api.entitlement.model"
+    invokerPackage = "org.sem.api.entitlement.client"
+}
+
+task generateEventsApiPHP(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "php"
+    inputSpec = "$rootDir/../../reference/events.v1.yaml"
+    outputDir = "$buildDir/generated/php/"
+    apiPackage = "org.sem.api.events.api"
+    modelPackage = "org.sem.api.events.model"
+    invokerPackage = "org.sem.api.events.client"
+}
+
+task generateSisDataApiPHP(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "php"
+    inputSpec = "$rootDir/../../reference/sisdata.v1.yaml"
+    outputDir = "$buildDir/generated/php/"
+    apiPackage = "org.sem.api.sisdata.api"
+    modelPackage = "org.sem.api.sisdata.model"
+    invokerPackage = "org.sem.api.sisdata.client"
+}
+
+task generateUsageApiPHP(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "php"
+    inputSpec = "$rootDir/../../reference/usage.v1.yaml"
+    outputDir = "$buildDir/generated/php/"
+    apiPackage = "org.sem.api.usage.api"
+    modelPackage = "org.sem.api.usage.model"
+    invokerPackage = "org.sem.api.usage.client"
+}
+
+task generateWebhooksApiPHP(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "php"
+    inputSpec = "$rootDir/../../reference/webhooks.v1.yaml"
+    outputDir = "$buildDir/generated/php/"
+    apiPackage = "org.sem.api.webhooks.api"
+    modelPackage = "org.sem.api.webhooks.model"
+    invokerPackage = "org.sem.api.webhooks.client"
+}

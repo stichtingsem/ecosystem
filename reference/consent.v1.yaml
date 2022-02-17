@@ -1,0 +1,126 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://example.stichtingsem.org/api'
+info:
+  version: 1.0.0
+  title: Consent API
+  description: |-
+    Consent-flow for third party-consent:
+    __Introduction__
+    
+    When two parties agree to exchange data, they will define their roles and with this a list of scopes will be defined and saved alongside the client credentials. Also a callbackurl is registered alongside the client, where an update-message about the consent or consent-request can be sent. 
+    
+    Consent always has to be given in both systems that are involved. For example: both in the SIS and in the MP a user with the access role to allow data sharing (ie. security officer) has to give consent before the SIS can share their data with the MP (or other systems).
+    
+    __Technical description for initial consent__
+    
+    An application (A) will ask for a token at the IDP (using the client_credentials flow) without a specific scope but for a specific digitalDeliveryId and can do an HTTP POST request to ask consent (#redirectToApiSpec). A UUID for this consent-request will be returned. This flow will be asynchronous, the application is done for now.
+    
+    __Consent-request resource__
+    
+    Application (A) can check the status of their consent-request by doing an HTTP GET request with the consent-request-uuid as a queryparam. Status can be Pending, Accepted or Declined.
+    
+    __Consent resource__ 
+    
+    Application (A) can check which schools have given consent in both applications by doing an HTTP GET request to ask if a specific digitalDeliveryId has given consent. Status can be Active or Revoked.
+    
+    In the other application (B) the currently open consent-requests will be made visible to users with the access role to allow data sharing (ie. security officer). The user accepts the consent-request and a consent is created. If the user declines the consent-request no consent is created. In both cases an update-message is (optionally) sent to the registered callbackurl.
+    The user can also revoke a prior given consent. This can be done in both application A & B. An updatemessage will than also be send to the callbackurl of the other application.
+    
+    __Token for digideliveryId__
+    
+    When requesting a token on the oauth2 token resource using the client_credentials a queryparameter containing the identifier for the school.
+        
+  contact:
+    email: jorim.van.der.wijngaard@topicus.nl
+tags:
+  - name: consent
+    description: Operations related to data access consent
+  - name: consentrequest
+    description: Operations to request data access (consent)
+paths:
+  /consentrequest:
+    post:
+      description: Allows an application to request access to data of a new school (digideliveryid) and scope.
+      tags:
+        - consentrequest
+      operationId: requestConsent
+      requestBody:
+        description: 'ConsentRequest for data acces to a digitaldeliveryid'
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/consentrequest"
+      responses:
+        '200':
+          description: OK, returned consentrequest will now contain a id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consentrequest'
+      summary: ''
+  /consentrequest/{consentRequestId}:
+    get:
+      description: Resource to check status of requested consent
+      tags:
+        - consentrequest
+      operationId: requestConsentStatus
+      parameters:
+        - name: consentRequestId
+          in: path
+          description: id of the ConsentRequest posted
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: OK, returned consentrequest can be checked for status 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consentrequest'
+        '404':
+          description: NOT FOUND, consentrequest unavailable
+      summary: ''
+  /consent:
+    get:
+      description: Resource to check if a school (based on digideliveryid) has given consent to access data. This resource can be used to check if a school has given consent without a prior consentrequest from the application itself.
+      tags:
+        - consent
+      operationId: getConsent
+      responses:
+        '200':
+          description: OK, returned consentrequest can be checked for status 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/consent'
+        '404':
+          description: NOT FOUND, consent unavailable
+      summary: ''
+components:
+  schemas:
+    consentrequest:
+      type: object
+      x-tags:
+        - consentrequest
+      description: TBD
+      properties:
+        id:
+          type: string
+          description: Field will be ignored in the post request and generated by backend
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        status: 
+          type: string
+          format: enum [PENDING, ACCEPTED, DECLINED, REVOKED]
+    consent:
+      type: object
+      x-tags:
+        - consent
+      description: TBD
+      properties:
+        status: 
+          type: string
+          format: enum [ACTIVE, REVOKED]
