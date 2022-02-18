@@ -17,7 +17,7 @@ info:
 
     A consent is given for an API, most of the times including the schoolid whose data is exchanged.
 
-    Consent can be denied or revoked. This status change is send to the other party to stop sending data and show in the UI that the other partie has no longer consent and that need to be handled.
+    Consent can be accepted, denied or revoked. This status change is send to the other party to stop sending data and show in the UI that the other partie has no longer consent and that need to be handled.
 
     When both parties have given consent, or re-given consent, the consumer can request the producer to handle the inital sync: send all relevant events needed to get up-to-date. For a LA that could mean sending all products, for a SIS sending all students and teachers of the current year once as event. (events can be send in batches)
 
@@ -61,7 +61,7 @@ paths:
         Allows an application to request access to data of a new school (digideliveryid) and api.
 
         Example: the MP request consent to recieve SIS data from the SIS on behalve of a school
-        The SIS will not give a dircet answer, but wait until the school admin logs in, gets the request presented in the UI and gives consent.
+        The SIS will not give a direct answer, but wait until the school admin logs in, gets the request presented in the UI and gives consent.
       tags:
         - consentrequest
       operationId: request-consent-update
