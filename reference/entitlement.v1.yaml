@@ -539,9 +539,9 @@ components:
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
-        schoolSubjectCode:
+        schoolSubjectAbbr:
           type: string
-          description: 'Code that the school gives: like ''en'''
+          description: 'Abbriviation that the school gives: like ''en'''
         schoolSubjectName:
           type: string
           description: 'School description of this subject, may differ from standard. like ''queens english'''
@@ -551,12 +551,16 @@ components:
         levelYear:
           type: integer
           description: Learning year (eg 1)
-        schoolLevelCode:
+        schoolLevel:
           type: string
-          description: 'School code of the Level/couse/study. example ''Technasium'' This gives schools a way to name the course how they want it, while we still have a link with the official level'
+          description: 'School code of the Level. example ''Technasium'' This gives schools a way to name how they want it, while we still have a link with the official level'
       required:
         - subjectCode
+        - schoolSubjectAbbr
+        - schoolSubjectName
         - level
+        - levelYear
+        - schoolLevel
     Entitlements:
       title: Entitlements
       type: array

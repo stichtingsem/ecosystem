@@ -320,7 +320,10 @@ components:
       properties:
         level:
           type: string
-          description: Government level - e.g. havo-1
+          description: 'Government level - e.g. havo, vwo'
+        levelYear:
+          type: integer
+          description: Learning year (eg 1)
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
