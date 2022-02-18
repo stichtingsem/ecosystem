@@ -199,11 +199,19 @@ components:
         eckId:
           type: string
         status:
-          $ref: '#/components/schemas/Status'
-        usage:
-          $ref: '#/components/schemas/Usage'
+          type: string
+          description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
+          enum:
+            - activated
+            - cancelled
+            - blocked
+        frequencyOfUsage:
+          type: integer
+          description: 'optional: Indicator how often the entitlee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
       required:
         - userId
+        - firstUsed
+      description: Usage details per entitlee. Only entitlee's that have activated the entitlement are added in this list.
     IndividualUsage:
       title: IndividualUsage
       type: object

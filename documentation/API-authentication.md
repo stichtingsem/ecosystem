@@ -1,6 +1,5 @@
 # Authentication in the API's
 > Note: there is discussion how we can support NL Edukoppeling for SaaS Vendor https://github.com/stichtingsem/ecosystem/issues/9
-> So the rest of this document is prelimenary until that is settled
 
 ## Authentication
 For authentication of API calls we will initially use auth2 tokens in the rest calls.
@@ -14,18 +13,15 @@ This is an industry standard (See https://oauth.net/2/) and is supported by many
 
 For more details: see [API-authentication-token](API-authentication-token.md)
 
-
+Each party will implement its own AUTH Server and publish the url of the token endpoint
 # School identity
 Many calls are made on behalf of the school (after consent). The school will be incuded as claim in the oauth token.
 
 For each call the api endpoint knows which party did the call and on behalf of which school
 
 
-> To be discussed: Until now the preference is the schoolidentity is part of the token, so the authentication server can do the check if the school has give consent to process the data n behalf of the school
-> 
-> Alternative is that the schoolidentity becomes part of the data or part of the url or that there is an endpoint per school
-
 For more details: see [API-authentication-token](API-authentication-token.md)
+
 
 
 
