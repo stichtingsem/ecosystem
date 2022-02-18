@@ -211,7 +211,6 @@ components:
       required:
         - userId
         - firstUsed
-      description: Usage details per entitlee. Only entitlee's that have activated the entitlement are added in this list.
     IndividualUsage:
       title: IndividualUsage
       type: object
