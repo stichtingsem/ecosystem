@@ -37,22 +37,4 @@ For more information on authentication and authorization: See [API authenticatio
 If a party plays multiple roles (like LA and MP), the party must implement multiple API's 
 
 
-## SIS Gateway
-The Learning Application will implement 1 API's and will send Events for these to other parties. As the SIS will not recieve events, the event hook api is not implemented
-
-![architecture](diagrams/Saas_Vendor_Infrastructure-SIS_Vendor_Gateway.drawio.svg)
-
-## MP Gateway
-The Learning Application will implement 2 API's (entitlements and eventhooks) and will  recieve Events for these to other parties for Students, Usage and Catalogue.
-
-![architecture](diagrams/Saas_Vendor_Infrastructure-MP_Gateway.drawio.svg)
-
-## LMS Gateway
-The LMS will implement no API's and will and will recieve Events from other parties for Students, Entitlements, Usage, Catalogue, Course 
-
-![architecture](diagrams/Saas_Vendor_Infrastructure-LMS_Vendor_Gateway.drawio.svg)
-
-## LA Gateway
-The Learning Application will implement 4 API's and will send Events for these to other parties. It will send events for usage
-
-![architecture](diagrams/Saas_Vendor_Infrastructure-LA_Gateway.drawio.svg)
+See [implementation Guides](implementation-guide.md)

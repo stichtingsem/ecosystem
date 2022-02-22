@@ -30,3 +30,12 @@ The LA needs/should to implement the folowing:
 * send usage information events to MP
 * send progress events to LMS
 * respond to change entitlement requests from the MP
+
+
+
+# TODO : Add more details
+
+## LA Gateway
+The Learning Application will implement 5 API's and will send Events for these to other parties. It will send events for usage, cataloque, course, progress
+
+![architecture](diagrams/Saas_Vendor_Infrastructure-LA_Gateway.drawio.svg)

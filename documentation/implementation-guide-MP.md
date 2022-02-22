@@ -28,4 +28,9 @@ The MP needs/should to implement the folowing:
 
 * Implement UX to show school admin the overview and usage of entitlements/licenses
 
-## TODO : more details
+# TODO : more details
+
+## MP Gateway
+The Learning Application will implement 3 API's (entitlements, entitlements and events) and will  recieve Events for these to other parties for Students, Usage and Catalogue.
+
+![architecture](diagrams/Saas_Vendor_Infrastructure-MP_Gateway.drawio.svg)

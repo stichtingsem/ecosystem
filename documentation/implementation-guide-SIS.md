@@ -19,4 +19,9 @@ The SIS needs/should to implement the folowing:
 * Send events about updates on students and teachers. (incl changes in Subjects and groups)
 
 
-## TODO : more details
+# TODO : more details
+
+## SIS Gateway
+The SIS Application will implement 2 API's and will send Events for these to other parties. As the SIS will not recieve events, the event hook api is not implemented
+
+![architecture](diagrams/Saas_Vendor_Infrastructure-SIS_Vendor_Gateway.drawio.svg)
