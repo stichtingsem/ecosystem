@@ -91,7 +91,7 @@ The Market Place is in charge of the digital fulfilment and triggers the above a
 
 ### [OA.4 Initial Activation](documentation/use-cases/oa-4-initial-activation.md): the initial activation of a digital learning material by a User
 
-After the start date, users are allowed to activate the digital learning material. At the initial login of a new user, the Learning Application checks if the user is entitled to activate the product. For each of the Entitlement variants this check differs:
+After the start date, users are allowed to activate the digital learning material. A user logs in through [Kennisnet's Entree Federatie](https://www.kennisnet.nl/entree-federatie/) single sign-on service which federates the authentication of the user to the school's Identity Provider (IDP) through the use of SAML. The IDP has previously received the user's ECK iD from the school's SIS. Accompanied by other attributes (such as the user's name and school identification) the IDP sends the user's ECK iD in the SAML response to Entree, which in turn forwards it to the Learning Application. At the initial login of a new user, the Learning Application checks if the user is entitled to activate the product. For each of the Entitlement variants this check differs:
 
 | Variant | Entitlement validation|
 |---|---|
