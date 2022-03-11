@@ -36,7 +36,7 @@ servers:
 components:
   schemas:
     SimpleProgress:
-      title: SimpleProgressStatement
+      title: SimpleProgress
       type: object
       x-examples:
         example-1:
@@ -50,20 +50,27 @@ components:
           timestamp: '20220112T02:55:12'
           additionalInfo: ':)'
           detailsUrl: 'https://course.publisher.com/analisys/1234566/eck1'
+      description: ''
       properties:
         id:
           type: string
+          description: Unique id
         schemaVersion:
           type: integer
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         eckId:
           type: string
-          description: The eckid of the student for which the progress is reported.
+          description: |-
+            The eckid of the student for which the progress is reported.
+            one of userid or eckId is required.
         userId:
           type: string
-          description: The id of the student for which the progress is reported. userid. (nledupersonrealId or nledupersonprofileId)
+          description: |-
+            The id of the student for which the progress is reported. userid. (nledupersonrealId or nledupersonprofileId)
+            one of userid or eckId is required.
         assignableUnitId:
           type: string
+          description: unit for which progress is reported. This is strongly linked to the id's in the course API (CMI5e)
         courseId:
           type: string
           description: Optional id of the course.
@@ -88,13 +95,15 @@ components:
         detailsUrl:
           type: string
           description: Deeplink to the page of the LA where a teacher can get details on this progress/result.
-        entitlementId:
-          type: string
-          description: 'optional: the entitlement when known'
+        pleaseFollowup:
+          type: boolean
+          description: |-
+            Boolean to indicate that the additional info and detailsUrl are provided as an invite to have a closer look at this progress. (follow url for more details)
+            This can be used to show a list of signals that the teacher should followup
       required:
         - id
-        - eckId
-        - userId
+        - assignableUnitId
+        - courseId
         - status
         - timestamp
   securitySchemes:
