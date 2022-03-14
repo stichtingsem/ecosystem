@@ -5,7 +5,7 @@ For example the SIS sends events on behalve of a school to the LMS. For each sch
 Next to the identities a scope to access data can optionally be requested and if consent has been given, will be added as a scope in the token defined below. In this way a token can only be used for the API it is intended and which the school has given consent.
 
 The way a token will be requested will be part of the specification here. A token will be requested with OAuth2 client_credentials flow using one optional (only when requesting in school context) custom queryparameter. The name of this queryparameter is `schoolidentifier` and currently contains the digideliveryid of the school. 
-The token given out will be used for the context API call with contxt of this school. 
+The token given out will be used for the context API call with context of this school. 
 
 The format of the content of the access_token is not part of the standard but just a recommendation on how to save schoolcontext to a token, which then can be used in your backend system to check actual permissions for this context. We recommend the bearer access_token to be a Signed JWT with at least the following properties:
 
@@ -15,11 +15,11 @@ The format of the content of the access_token is not part of the standard but ju
 * iss = issuer, identifier of the idp, mostly base url
 * schoolidenfier = digideliveryid requested (and validated by the idp for existence)
 
-More properties can be added as needed by the idp for correct handling of client's authrosation. (recommended to add `exp` for expiry, `iat` of moment of issue).
+More properties can be added as needed by the idp for correct handling of client's authorisation. (recommended to add `exp` for expiry, `iat` of moment of issue).
 
 Adding all these properties allow us to validate a token with the public key of the idp, potentially without doing a database roundtrip. In the API resources the schoolidentifier can be consumed from the token and used to calculate the permissions available for this school in the API.
 
-An example of a token request could be: (to be discussed in #43)
+An example of a token request could be:
 POST /token HTTP/1.1
 Host: server.example.com
 Content-Type: application/x-www-form-urlencoded
