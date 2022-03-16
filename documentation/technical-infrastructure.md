@@ -2,7 +2,7 @@
 
 ## Key technical principles
 
-Based on the technical principles described in [Technical principles](technical-princples.md), the SEM architecture is based on direct communication between parties with no central components. That implies that all parties will implement and publish a standard API. Which API is dependent on the ROLE the party plays.
+Based on the technical principles described in [Technical principles](technical-principles.md), the SEM architecture is based on direct communication between parties with no central components. That implies that all parties will implement and publish a standard API. Which API is dependent on the ROLE the party plays.
 
 
 # The big Picture
