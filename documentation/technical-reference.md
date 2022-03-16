@@ -2,7 +2,7 @@
 
 ## Key technical principles
 
-The SEM implementation is based on these 9 Technical principles. See : [principles](techinal-principles.md)
+The SEM implementation is based on these 9 Technical principles. See : [principles](technical-principles.md)
 
 ## Architecture
 
