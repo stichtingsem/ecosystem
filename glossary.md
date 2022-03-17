@@ -34,10 +34,13 @@
 | OIDC | OpenID-Connect access and approval flow to enable access to API’s from one service to another |
 | IdP | Identity Provider for Single Sign On (SSO) |
 | LA | Learning Application |
+| SIS | Student Information System, a system that administers key information within a school or group of schools |
 | LAS | Leerlingadministratiesysteem is the Dutch name for Student Information System |
 | LMC | Learning Material Coordinator (Leermiddelencoördinator in Dutch), an individual responsible for collating the needs of the teachers across departments in a school, and creating the list of material (mandatory and optional) that is then ordered for the school for a given school year.|
 | LML | Learning Material List (Leermiddelenlijst in Dutch), a composed list of learning materials intended for a specific course, group or class |
-| LMS / ELO | Learning Management System |
+| LMS | Learning Management System |
 | School Catalogue | Aggregated catalogue for a school created based on the contract that the school has signed with a Sales Agent. |
 | Usage | TO BE DEFINED |
 | Progress | TO BE DEFINED |
+| License | TO BE DEFINED |
+| Entitlement | TO BE DEFINED |
