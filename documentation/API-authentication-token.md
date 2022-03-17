@@ -31,7 +31,6 @@ And if the token request was successful, the token response could be:
 "access_token":"[ACCESS_TOKEN]",
 "token_type":"Bearer",
 "expires_in":86400,
-"schoolidentifier": "digideliveryid"
 }
 
 Validity of the token
