@@ -182,6 +182,8 @@ paths:
               $ref: '#/components/schemas/Entitlements'
             examples: {}
       description: |-
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: AcceptEntitlement, ChangeEntitlement, with corresponding EntitlementProvisionedConfirmation, EntilementLinkReadyConfirmation, EntitlementCancelledConfirmation, EntitlementBlockedConfirmation*
+         
         The entitlement endpoint POST request is the request to send a entitlement or update of the entitlement from the MP to the LA or LMS.
         This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
 
