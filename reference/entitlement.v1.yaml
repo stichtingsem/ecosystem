@@ -139,7 +139,7 @@ paths:
   /entitlements:
     post:
       summary: AcceptEntitlement
-      operationId: post-entitlements
+      operationId: accept-entitlements
       responses:
         '200':
           description: |-
@@ -155,20 +155,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'Result status (0=OK, see list with Errors)'
-                  statusMessage:
-                    type: string
-                  entitlementConfirmationId:
-                    type: string
-                    description: 'A confirmation Id '
-                  processDate:
-                    type: string
-                    description: Date time of moment processing by the LA
-                    format: date-time
+                $ref: '#/components/schemas/EntitlementConfirmation'
               examples:
                 example-1:
                   value:
@@ -179,68 +166,49 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Entitlements'
+              $ref: '#/components/schemas/NewEntitlementEvent'
             examples: {}
       description: |-
-        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: AcceptEntitlement, ChangeEntitlement, with corresponding EntitlementProvisionedConfirmation, EntilementLinkReadyConfirmation, EntitlementCancelledConfirmation, EntitlementBlockedConfirmation*
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation*
          
-        The entitlement endpoint POST request is the request to send a entitlement or update of the entitlement from the MP to the LA or LMS.
+        The entitlement endpoint POST request is the request to send a new entitlement from the MP to the LA or LMS.
         This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
 
         This endpoint is only implemented by the LA and LMS. The MP should give an exception.
       security:
         - APIKey:
             - mp.entitlement
-  /entitlements/firstactivation:
-    post:
-      summary: Report activation
-      operationId: post-activation
-      x-tags:
-        - entitlements
+    patch:
+      summary: AcceptEntitlementChange
+      operationId: accept-entitlements-change
       responses:
         '200':
-          description: |
-            OK, the request is processed.
-
-            status - Message
-            0 - All fine
-            1 - Entilement not found for this school
-            2 - Entitlement not in right state for this action
-            3 - This UserId is unknown
-            4 - This EckId is unknown
-            5 - This user is not entitled to the entitlement. Activation refused
-            6 - activationDate is not a valid date
-            7 - activationDate is not within the allowed timeframe.
-            99- Other, see statusMessage for details
+          description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'Result status (0=OK, see list with Errors)'
-                  statusMessage:
-                    type: string
-                required:
-                  - status
-        '405':
-          description: Method Not Allowed
+                $ref: '#/components/schemas/EntitlementConfirmation'
       description: |-
-        Report first activation of a student or teacher for this entitlement. 
-        In addition to that the total number of provisioned, activated, blocked and cancelled are passed to the MP.
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation*
+         
+        The entitlement endpoint POST request is the request to send a update for an entitlement from the MP to the LA or LMS.
+        This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
 
-
-        This API is only implemented by the MP. LMS and LA will give an exception
+        This endpoint is only implemented by the LA and LMS. The MP should give an exception.
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Activation'
-      security:
-        - APIKey:
-            - la.entitlement.activation
-    parameters: []
+              $ref: '#/components/schemas/ChangeEntitlementEvent'
+        description: |-
+          OK, the request is processed 
+
+          status - Message
+          0 - All fine
+          2 - Entitlement not in right state for this action
+          3 - Cannot change status, see statusMessage for details
+          4 - NewQuantity is not an acceptable value
+          99- Other, see statusMessage for details
   /entitlements/changelicenseestatus:
     post:
       summary: ChangeLicenseeStatus
@@ -263,18 +231,12 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'Result status (0=OK, see list with Errors)'
-                  statusMessage:
-                    type: string
-                required:
-                  - status
+                $ref: '#/components/schemas/ChangeLicenseeStatusConfirmation'
         '405':
           description: Method Not Allowed
       description: |-
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: ChangeLicenseeStatusEvent, with corresponding ChangeLicenseeStatusConfirmation*
+
         This call is used to change the status of one individual licensee within an entitlement. When an entitle activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to cancelled or blocked (or back to active). 
         The LA can return several errors as result of this request. See error table.
         The LMS will accept any new status and use that to display or remove access links to the course in the LA.
@@ -285,77 +247,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                entitlement:
-                  type: string
-                userId:
-                  type: string
-                eckId:
-                  type: string
-                newStatus:
-                  type: string
-                  enum:
-                    - blocked
-                    - cancelled
-                    - activated
-        description: ''
-      security:
-        - APIKey:
-            - mp.entitlement
-    parameters: []
-  /entitlements/change:
-    post:
-      summary: Change Entitlement Status or amount
-      operationId: post-entitlements-change
-      responses:
-        '200':
-          description: |-
-            OK, the request is processed 
-
-            status - Message
-            0 - All fine
-            2 - Entitlement not in right state for this action
-            3 - Cannot change status, see statusMessage for details
-            4 - NewQuantity is not an acceptable value
-            99- Other, see statusMessage for details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'Result status (0=OK, see list with Errors)'
-                  statusMessage:
-                    type: string
-                required:
-                  - status
-        '405':
-          description: Method Not Allowed
-      description: |-
-        Change the status of an entitlement. Both Status and quantity can be changed. (if omitted : no change requested)
-
-        This endpoint is only implemented by the LA and LMS. The MP should give an exception.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                entitlementId:
-                  type: string
-                newStatus:
-                  type: string
-                  enum:
-                    - blocked
-                    - cancelled
-                    - provisioned
-                    - Entitled
-                newQuantity:
-                  type: integer
-              required:
-                - entitlementId
+              $ref: '#/components/schemas/ChangeLicenseeStatusEvent'
         description: ''
       security:
         - APIKey:
@@ -578,43 +470,79 @@ components:
       oneOf:
         - $ref: '#/components/schemas/School'
         - $ref: '#/components/schemas/Individual'
-    Activation:
-      title: Activation
+    NewEntitlementEvent:
+      title: NewEntitlementEvent
       type: object
-      x-tags:
-        - entitlements
-      description: |-
-        Initial activation for a student/teacher based on a entitlement.
-        In addition the new totals for this entitlement are supplied.
       properties:
-        entitlementId:
+        entitlementReferenceID:
           type: string
-        schemaVersion:
-          type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        userId:
+        Entitlement:
+          $ref: '#/components/schemas/Entitlement'
+    ChangeEntitlementEvent:
+      title: ChangeEntitlementEvent
+      type: object
+      properties:
+        entitlementReferenceID:
           type: string
-          description: userid. (nledupersonrealId or nledupersonprofileId)
-        eckId:
+        changedEntilement:
+          $ref: '#/components/schemas/Entitlement'
+    EntitlementConfirmation:
+      title: EntilementLinkReadyConfirmation
+      type: object
+      properties:
+        entitlementReferenceID:
           type: string
-        activationDate:
+        productID:
+          type: string
+        entitlementReceiveID:
+          type: string
+        processedTimestamp:
           type: string
           format: date-time
-          description: ISO8601
-        newTotals:
-          type: object
-          properties:
-            provisioned:
-              type: integer
-            activated:
-              type: integer
-            blocked:
-              type: integer
-            cancelled:
-              type: integer
-      required:
-        - entitlementId
-        - activationDate
+        success:
+          type: boolean
+        status:
+          type: integer
+        statusMessage:
+          type: string
+    ChangeLicenseeStatusEvent:
+      title: ChangeLicenseeEvent
+      type: object
+      properties:
+        entitlementAndLicenseeReferenceID:
+          type: string
+        entitlementId:
+          type: string
+        userid:
+          type: string
+        eckId:
+          type: string
+        newLicenseStatus:
+          type: string
+          enum:
+            - active
+            - blocked
+    ChangeLicenseeStatusConfirmation:
+      title: ChangeLicenseeStatusConfirmation
+      type: object
+      properties:
+        entitlementAndLicenseeReferenceID:
+          type: string
+        entitlementId:
+          type: string
+        productID:
+          type: string
+        entitlementAndLicenseeReceiveID:
+          type: string
+        processedtimestamp:
+          type: string
+          format: date-time
+        success:
+          type: boolean
+        status:
+          type: integer
+        statusMessage:
+          type: string
   securitySchemes:
     APIKey:
       type: oauth2
