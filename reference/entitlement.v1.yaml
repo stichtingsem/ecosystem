@@ -358,7 +358,7 @@ components:
         schoolId:
           type: string
           description: |
-            The ID for the school
+            The Id for the school
         schoolName:
           type: string
           description: The name for the school
@@ -474,7 +474,7 @@ components:
       title: NewEntitlementEvent
       type: object
       properties:
-        entitlementReferenceID:
+        entitlementReferenceId:
           type: string
         Entitlement:
           $ref: '#/components/schemas/Entitlement'
@@ -482,23 +482,30 @@ components:
       title: ChangeEntitlementEvent
       type: object
       properties:
-        entitlementReferenceID:
+        entitlementReferenceId:
           type: string
         changedEntilement:
           $ref: '#/components/schemas/Entitlement'
     EntitlementConfirmation:
-      title: EntilementLinkReadyConfirmation
+      title: EntitlementConfirmation
       type: object
       properties:
-        entitlementReferenceID:
+        entitlementReferenceId:
           type: string
-        productID:
+        productId:
           type: string
-        entitlementReceiveID:
+        entitlementReceiveId:
           type: string
         processedTimestamp:
           type: string
           format: date-time
+        newEntitlementStatus:
+          type: string
+          enum:
+            - provisioned
+            - link-ready
+            - cancelled
+            - blocked
         success:
           type: boolean
         status:
@@ -509,7 +516,7 @@ components:
       title: ChangeLicenseeEvent
       type: object
       properties:
-        entitlementAndLicenseeReferenceID:
+        entitlementAndLicenseeReferenceId:
           type: string
         entitlementId:
           type: string
@@ -526,13 +533,13 @@ components:
       title: ChangeLicenseeStatusConfirmation
       type: object
       properties:
-        entitlementAndLicenseeReferenceID:
+        entitlementAndLicenseeReferenceId:
           type: string
         entitlementId:
           type: string
-        productID:
+        productId:
           type: string
-        entitlementAndLicenseeReceiveID:
+        entitlementAndLicenseeReceiveId:
           type: string
         processedtimestamp:
           type: string

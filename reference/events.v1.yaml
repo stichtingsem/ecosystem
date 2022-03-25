@@ -35,6 +35,15 @@ info:
     `la.usage.first` | la.usage | A student or teacher used a entitlement for the first time
     `la.usage.ongoing` | la.usage | A student or teacher used an entitlement
     `la.simpleprogress` | la.progress | progress event when a student finishes a part of a course
+
+    after POC phase 2 we will use the following events as well:
+    Event type | Scope needed | Description
+    -- | -- | --
+    `mp.entitlement.new` | mp.entitlement | A new entitlement
+    `mp.entitlement.change` | mp.entitlement | A changed entitlement
+    `mp.entitlement.confirmation` | mp.entitlement | A confirmation of an entitlement (provisioned, 
+    `mp.entitlement.entilee.change` | mp.entitlement | A confirmation of an entitlement
+    `mp.entitlement.entilee.change.confirmation` | mp.entitlement | A confirmation of an change of an entilee in a entitlement
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
@@ -102,6 +111,7 @@ paths:
             - la.progress
             - sis.student-teacher-group
             - sis.student-teacher-delivery
+            - mp.entitlement
     post:
       summary: Receive Events
       operationId: post-events
@@ -149,6 +159,7 @@ paths:
             - la.progress
             - sis.student-teacher-group
             - sis.student-teacher-delivery
+            - mp.entitlement
   /event:
     post:
       summary: Receive one event
@@ -184,6 +195,7 @@ paths:
             - la.progress
             - sis.student-teacher-group
             - sis.student-teacher-delivery
+            - mp.entitlement
 components:
   schemas:
     Events:
@@ -228,6 +240,20 @@ components:
           type: string
           example: la.usage
           description: Type of the event
+          enum:
+            - la.cataloque
+            - la.course
+            - sis.student
+            - sis.student-delivery
+            - sis.teacher
+            - mp.entitlement.new
+            - mp.entitlement.change
+            - mp.entitlement.confirmation
+            - mp.entitlement.entilee.change
+            - mp.entitlement.entilee.change.confirmation
+            - la.usage.first
+            - la.usage.ongoing
+            - la.simpleprogress
         objectId:
           type: string
           description: Id of the events data
@@ -265,8 +291,12 @@ components:
         - $ref: ./course.v1.yaml#/components/schemas/Course
         - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
         - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
-        - properties: {}
-          nullable: true
+        - $ref: ./entitlement.v1.yaml#/components/schemas/NewEntitlementEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeEntitlementEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementConfirmation
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeStatusEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeStatusConfirmation
+        - nullable: true
   securitySchemes:
     APIKey:
       type: oauth2
@@ -282,3 +312,4 @@ components:
             sis.school: ''
             sis.student-teacher-group: ''
             sis.student-teacher-delivery: ''
+            mp.entitlement: ''
