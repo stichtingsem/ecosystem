@@ -144,8 +144,13 @@ components:
           description: |
             Status of product
           enum:
-            - active
-            - not-for-sale
+            - not-yet-available
+            - limited-available
+            - available
+            - temporary-not-available
+            - no-longer-available
+            - will-never-be-available
+            - not-available-or-usable
         name:
           type: string
           description: A short name
