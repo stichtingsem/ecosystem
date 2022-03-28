@@ -89,7 +89,7 @@ paths:
           description: Filter by status
           schema:
             type: string
-            example: active
+            example: provisioned
             enum:
               - entitled
               - provisioned
@@ -156,10 +156,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EntitlementConfirmation'
-              examples:
-                example-1:
-                  value:
-                    confirmationId: string
+              examples: {}
         '405':
           description: Method Not Allowed
       requestBody:
@@ -169,7 +166,8 @@ paths:
               $ref: '#/components/schemas/NewEntitlementEvent'
             examples: {}
       description: |-
-        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation*
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation. The name of the objects in the body and response are already name ..event.. *
+
          
         The entitlement endpoint POST request is the request to send a new entitlement from the MP to the LA or LMS.
         This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
@@ -189,7 +187,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EntitlementConfirmation'
       description: |-
-        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation*
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation. The name of the objects in the body and response are already name ..event.. **
          
         The entitlement endpoint POST request is the request to send a update for an entitlement from the MP to the LA or LMS.
         This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
@@ -411,18 +409,17 @@ components:
       type: object
       x-tags:
         - entitlements
+      description: |
+        Student that recieves this entitlement (fixed on name)
       properties:
-        display_name:
-          type: string
-          description: The name of the person purchasing.
         eckId:
           type: string
-          description: 'If needed, the ECK-ID of the individual.'
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         userId:
           type: string
           description: userid. (nledupersonrealId or nledupersonprofileId)
-      required:
-        - display_name
     SchoolSubject:
       title: SchoolSubject
       type: object
@@ -473,11 +470,18 @@ components:
     NewEntitlementEvent:
       title: NewEntitlementEvent
       type: object
+      description: A new entitlement is send from the MP to the LA and LMS
       properties:
         entitlementReferenceId:
           type: string
-        Entitlement:
+          description: |-
+            ReferenceId for this request.
+            Must be unique for this changea partiy recieves another event with the same ReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+        newEntitlement:
           $ref: '#/components/schemas/Entitlement'
+      required:
+        - entitlementReferenceId
+        - newEntitlement
     ChangeEntitlementEvent:
       title: ChangeEntitlementEvent
       type: object
@@ -486,13 +490,19 @@ components:
           type: string
         changedEntilement:
           $ref: '#/components/schemas/Entitlement'
+      required:
+        - entitlementReferenceId
+        - changedEntilement
     EntitlementConfirmation:
       title: EntitlementConfirmation
       type: object
       properties:
         entitlementReferenceId:
           type: string
+          description: The ReferenceId that was part of the request should be echo's here
         productId:
+          type: string
+        entitlementId:
           type: string
         entitlementReceiveId:
           type: string
@@ -502,6 +512,7 @@ components:
         newEntitlementStatus:
           type: string
           enum:
+            - entitled
             - provisioned
             - link-ready
             - cancelled
@@ -512,6 +523,50 @@ components:
           type: integer
         statusMessage:
           type: string
+      required:
+        - entitlementReferenceId
+        - productId
+        - entitlementId
+        - entitlementReceiveId
+        - processedTimestamp
+        - newEntitlementStatus
+        - success
+        - status
+    ChangeLicenseeStatusConfirmation:
+      title: ChangeLicenseeStatusConfirmation
+      type: object
+      properties:
+        entitlementAndLicenseeReferenceId:
+          type: string
+        entitlementId:
+          type: string
+        productId:
+          type: string
+        entitlementAndLicenseeReceiveId:
+          type: string
+        processedtimestamp:
+          type: string
+          format: date-time
+        newLicenseStatus:
+          type: string
+          enum:
+            - active
+            - blocked
+        success:
+          type: boolean
+        status:
+          type: integer
+        statusMessage:
+          type: string
+      required:
+        - entitlementAndLicenseeReferenceId
+        - entitlementId
+        - productId
+        - entitlementAndLicenseeReceiveId
+        - processedtimestamp
+        - newLicenseStatus
+        - success
+        - status
     ChangeLicenseeStatusEvent:
       title: ChangeLicenseeEvent
       type: object
@@ -529,27 +584,6 @@ components:
           enum:
             - active
             - blocked
-    ChangeLicenseeStatusConfirmation:
-      title: ChangeLicenseeStatusConfirmation
-      type: object
-      properties:
-        entitlementAndLicenseeReferenceId:
-          type: string
-        entitlementId:
-          type: string
-        productId:
-          type: string
-        entitlementAndLicenseeReceiveId:
-          type: string
-        processedtimestamp:
-          type: string
-          format: date-time
-        success:
-          type: boolean
-        status:
-          type: integer
-        statusMessage:
-          type: string
   securitySchemes:
     APIKey:
       type: oauth2

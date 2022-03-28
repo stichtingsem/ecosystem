@@ -238,7 +238,7 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         type:
           type: string
-          example: la.usage
+          example: la.usage.first
           description: Type of the event
           enum:
             - la.cataloque
@@ -249,8 +249,8 @@ components:
             - mp.entitlement.new
             - mp.entitlement.change
             - mp.entitlement.confirmation
-            - mp.entitlement.entilee.change
-            - mp.entitlement.entilee.change.confirmation
+            - mp.entitlement.entitlee.change
+            - mp.entitlement.entitlee.confirmation
             - la.usage.first
             - la.usage.ongoing
             - la.simpleprogress
@@ -276,7 +276,6 @@ components:
         - id
         - type
         - created
-        - url
     EventData:
       title: EventData
       description: Data of event object.  (dependent on type in event).
