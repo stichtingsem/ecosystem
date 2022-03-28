@@ -156,7 +156,6 @@ components:
           description: Type of usage report. Currently only initialActivations are implemented
       required:
         - entitlementId
-        - schoolId
         - usageDate
         - usageType
     EntitlementUsage:
@@ -199,18 +198,11 @@ components:
         eckId:
           type: string
         status:
-          type: string
-          description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
-          enum:
-            - activated
-            - cancelled
-            - blocked
-        frequencyOfUsage:
-          type: integer
-          description: 'optional: Indicator how often the entitlee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+          $ref: '#/components/schemas/Status'
+        usage:
+          $ref: '#/components/schemas/Usage'
       required:
         - userId
-        - firstUsed
     IndividualUsage:
       title: IndividualUsage
       type: object
@@ -267,7 +259,6 @@ components:
           description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
           enum:
             - activated
-            - cancelled
             - blocked
         validUntil:
           type: string
