@@ -41,9 +41,9 @@ info:
     -- | -- | --
     `mp.entitlement.new` | mp.entitlement | A new entitlement
     `mp.entitlement.change` | mp.entitlement | A changed entitlement
-    `mp.entitlement.confirmation` | mp.entitlement | A confirmation of an entitlement (provisioned, 
-    `mp.entitlement.entilee.change` | mp.entitlement | A confirmation of an entitlement
-    `mp.entitlement.entilee.change.confirmation` | mp.entitlement | A confirmation of an change of an entilee in a entitlement
+    `mp.entitlement.confirmation` | mp.entitlement | A confirmation of an entitlement
+    `mp.entitlement.entitlee.change` | mp.entitlement | A request to change status of one school entitlee
+    `mp.entitlement.entitlee.change.confirmation` | mp.entitlement | A confirmation of an change of an entitlee in a entitlement
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'

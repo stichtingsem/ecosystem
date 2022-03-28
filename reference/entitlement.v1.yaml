@@ -7,7 +7,9 @@ info:
 
     The Entitlements are the core of the SEM ecosystem and are created in the MP as a result of a school selecting learning material for the students. The MP creates entilements and send these to the LA to make sure students have access to the material. The entitlements are also send to the LMS so the LMS can create url/links for each student to the website of the LA.
 
-    Most of the API is synchronious as it is important that all parties share exactly the same view of the entielements. The MP is in control, the LA will report when an entitlement is activated and became a license. Both LMS and LA can request the latest status of the entitlements by the MP.
+    _*Status POC2: Most of the API is synchronious as it is important that all parties share exactly the same view of the entitlements. After POC2 there will be a change to event based flows where the POST endpoints will be replaced by events and confirmation events *_
+
+    The MP is in control, the LA will report when an entitlement is activated and became a license via the usage API. Both LMS and LA can request the latest status of the entitlements by the MP.
 
     Actual usage of an entitlement can be requested via the Usage API.
 
@@ -16,9 +18,8 @@ info:
     Endpoint | provider | client | remark
     -- | --- | --- | -----
     POST /entitlements | LA, LMS | MP | Send new entitlements 
-    POST /entitlements/changestatus | LA, LMS | MP | Change the status of an entitlement
+    PATCH /entitlements | LA, LMS | MP | Change the status of an entitlement
     POST /entitlements/changelicenseestatus | LA, LMS | MP |change status for a specific entitlee/licensee
-    POST /entitlements/firstactivation | MP | LA | Send activation per student
     GET /entitlements | MP | LA, LMS | get entilement to check status
     GET /entitlements/school | MP | LA, LMS | get entilements per school to check status
 
@@ -32,7 +33,6 @@ info:
     Data from in the entitlements can be sensitive, and the APIs available to a requesting service depend on the scopes requested and approved during setup.  The following scopes exist for the Entitlements, and map to the following entities and attributes:
 
     `mp.entitlement` - scope that allows MP to send entitlements and updates, allows LA,LMS to retrieve entitlements
-    `la.entitlement.activation` - scope that allows a LA to send first activation
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
@@ -593,7 +593,6 @@ components:
           refreshUrl: ''
           scopes:
             mp.entitlement: scope needed to request entitlement from the mp
-            la.entitlement.activation: scope needed to send entitlement and updates to an LA
       description: ''
 x-tags:
   - name: entitlements
