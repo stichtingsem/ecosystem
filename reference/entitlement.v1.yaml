@@ -163,7 +163,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewEntitlementEvent'
+              $ref: '#/components/schemas/EntitlementEvent'
             examples: {}
       description: |-
         *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation. The name of the objects in the body and response are already name ..event.. *
@@ -198,7 +198,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChangeLicenseeStatusConfirmation'
+                $ref: '#/components/schemas/EntitlementConfirmation'
         '405':
           description: Method Not Allowed
       description: |-
@@ -214,7 +214,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChangeLicenseeStatusEvent'
+              $ref: '#/components/schemas/ChangeLicenseeEvent'
         description: ''
       security:
         - APIKey:

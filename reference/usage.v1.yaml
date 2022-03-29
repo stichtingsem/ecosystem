@@ -131,7 +131,7 @@ components:
       description: |-
         This is an API provided by the LA in the SEM ecosystem, and is designed to enable a MP to make the usage information about teachers and learners of product available to the rest of the ecosystem in a security and privacy concious way.
 
-        In POC2 we will only use the initial activation usageType. In later pahse we could send an event at the end of each week or month an license is used to bill for pay-per-use models.
+        In POC2 we will only use the initial activation usageType. In later phase we could send an event at the end of each week or month an license is used to bill for pay-per-use models.
       properties:
         entitlementId:
           type: string
@@ -157,6 +157,10 @@ components:
             - weekly-usage
             - unique-usage
           description: Type of usage report. Currently only initialActivations are implemented
+        expirationDate:
+          type: string
+          format: date-time
+          description: Expiration date of this license
       required:
         - entitlementId
         - usageDate
@@ -262,7 +266,7 @@ components:
           enum:
             - activated
             - blocked
-        validUntil:
+        expirationDate:
           type: string
           format: date
           description: |
