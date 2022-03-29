@@ -128,8 +128,10 @@ components:
     UsageEvent:
       title: Usage API event
       type: object
-      description: |
+      description: |-
         This is an API provided by the LA in the SEM ecosystem, and is designed to enable a MP to make the usage information about teachers and learners of product available to the rest of the ecosystem in a security and privacy concious way.
+
+        In POC2 we will only use the initial activation usageType. In later pahse we could send an event at the end of each week or month an license is used to bill for pay-per-use models.
       properties:
         entitlementId:
           type: string
@@ -138,6 +140,7 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         schoolId:
           type: string
+          description: not required for individual entitlement
         userId:
           type: string
           description: userid. (nledupersonrealId or nledupersonprofileId)
@@ -149,10 +152,10 @@ components:
         usageType:
           type: string
           enum:
-            - uniqueActivation
-            - weeklyActivation
-            - monthlyActivation
             - InitialActivation
+            - monthly-usage
+            - weekly-usage
+            - unique-usage
           description: Type of usage report. Currently only initialActivations are implemented
       required:
         - entitlementId
@@ -174,17 +177,17 @@ components:
         status:
           type: string
           enum:
+            - entitled
+            - provisioned
+            - link-ready
             - cancelled
             - blocked
-            - entiled
-            - provisioned
         licenses:
           type: array
           items:
             $ref: '#/components/schemas/License'
       required:
         - entitlementId
-        - schoolId
         - status
         - licenses
     License:
@@ -197,12 +200,11 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
+          description: eckId of user. (userId or eckId is required)
         status:
           $ref: '#/components/schemas/Status'
         usage:
           $ref: '#/components/schemas/Usage'
-      required:
-        - userId
     IndividualUsage:
       title: IndividualUsage
       type: object
@@ -256,7 +258,7 @@ components:
       properties:
         status:
           type: string
-          description: The status of the entitlement for this entitlee. Only added after the first activation for this entitlee.
+          description: The status of the license for this licensee. Only added after the first activation for this entitlee.
           enum:
             - activated
             - blocked

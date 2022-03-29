@@ -4,7 +4,7 @@ servers:
 info:
   version: 1.0.0
   title: Generic Event Stream API
-  description: |
+  description: |-
     The proposed architecture for the new ecosystem is based on an Event model, where each provider of data to the ecosystem provides a mechanism for other participants to securely subscribe to events that are of interest to them.
 
     The Event API is the mechanism, in conjunction with the Webhook API, that enables this event based notification mechanism to function reliably.  It enables subscribers to request events from the provider, and paginate through to the last place that it received a message.
@@ -39,11 +39,12 @@ info:
     after POC phase 2 we will use the following events as well:
     Event type | Scope needed | Description
     -- | -- | --
-    `mp.entitlement.new` | mp.entitlement | A new entitlement
-    `mp.entitlement.change` | mp.entitlement | A changed entitlement
+    `mp.entitlement` | mp.entitlement | A new entitlement
     `mp.entitlement.confirmation` | mp.entitlement | A confirmation of an entitlement
-    `mp.entitlement.entitlee.change` | mp.entitlement | A request to change status of one school entitlee
-    `mp.entitlement.entitlee.change.confirmation` | mp.entitlement | A confirmation of an change of an entitlee in a entitlement
+    `mp.entitlement.entitlee.` | mp.entitlement | A request to change status of one school entitlee
+    `mp.entitlement.entitlee.confirmation` | mp.entitlement | A confirmation of an change of an entitlee in a entitlement
+
+    events should only be processed once.
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
@@ -290,11 +291,10 @@ components:
         - $ref: ./course.v1.yaml#/components/schemas/Course
         - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
         - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
-        - $ref: ./entitlement.v1.yaml#/components/schemas/NewEntitlementEvent
-        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeEntitlementEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementEvent
         - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementConfirmation
-        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeStatusEvent
-        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeStatusConfirmation
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeConfirmation
         - nullable: true
   securitySchemes:
     APIKey:
