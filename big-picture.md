@@ -70,7 +70,7 @@ The SEM Ecosystem describes all required interactions between all Roles within t
 
 ![services](documentation/diagrams/process-diagrams-oa-overview.svg)
 
-The figure shows all key activities of the six main actors within the SEM Ecosystem: Buyer, User, Market Place, Learning Application, Student Information System, and Learning Management System. Each main actor has its own swimming lane (as rows). The flow consists of five processes.
+The figure shows all key activities of the seven main actors within the SEM Ecosystem: Buyer, User, Market Place, Learning Application, Student Information System, Learning Management System, and Identity Provider. Each main actor has its own swimming lane (as rows). The flow consists of five processes.
 
 ### [OA.1 School Order](documentation/use-cases/oa-1-school-order.md) and [OA.2 Individual Order](documentation/use-cases/oa-2-individual-order.md): the purchase of learning materials by a School or Individual as Buyer
 

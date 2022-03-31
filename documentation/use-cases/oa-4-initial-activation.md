@@ -33,6 +33,10 @@ In this process a [User](../roles/user.md) activates a digital learning material
 | OA4.9 | New Activation for Entitlement | Entitlements<br>Students | The Learning Management System listens to the Usage API and receives an InitialActivation Event from the Learning Application. This allows the Learning Management System to update the activation dashboard for the school or the User. | Activation dashboards are updated |
 | OA4.10 | No provisioned entitlement found<br>Validation failure | The User is not allowed to activate the digital learning material. The Learning Application offers support options to the User. | N.A. |
 
+## Priority in registering a new Licensee to an Entitlement
+
+  - SchoolIndidividual and Personal entitlements have a higher priority than the open ended School and SchoolSubject Entitlements.
+  - In case there are more than one open ended School or SchoolSubject Entitlement for the product and the school, the Learning Application is allowed to determine its own priority in registering the new Licensee to one of the available Entitlements.
 
 ## Preconditions
 
