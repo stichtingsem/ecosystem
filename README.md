@@ -47,7 +47,8 @@ All organisations offering products and/or services to Dutch schools are welcome
 |---|---|---|---|
 | 0.1 | 2 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) |
 | 0.2 | 7 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) |
-| 1.1 | 15 February 2022 | UNDER REVIEW | [@kvoer](https://github.com/kvoer) |
+| 1.1 | 15 February 2022 | REJECTED | [@kvoer](https://github.com/kvoer) |
+| 1.1 | 31 March 2022 | UNDER REVIEW | [@kvoer](https://github.com/kvoer) |
 
 ## Contributors
 

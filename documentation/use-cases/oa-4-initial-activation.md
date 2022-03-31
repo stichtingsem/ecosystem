@@ -38,6 +38,7 @@ In this process a [User](../roles/user.md) activates a digital learning material
 
   - Product links are available on the learning material list of the user
   - Start date of the entitlement has passed
+  - ActivationUntilDate of the entitlement has not passed yet
   - Digital learning material is provisioned by the Learning Application
   - User is able to login using an Identify Provider that shares the eck_id of the user and digideliveryid of the school
 
