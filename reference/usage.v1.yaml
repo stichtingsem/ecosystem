@@ -186,6 +186,9 @@ components:
             - link-ready
             - cancelled
             - blocked
+        totalQuantity:
+          type: integer
+          description: total quantity that can be activated for this entitlement
         licenses:
           type: array
           items:
@@ -250,12 +253,17 @@ components:
         firstUsed:
           type: string
           description: Date - time that the entitlement becomes active on the moment that the user access the product for the firsttime. can be null if never activated
+          format: date-time
         lastUsed:
           type: string
           description: Date - time that the product is used for the last time. Even if the prduct's license periode within this entitlement has expired
+          format: date-time
         frequencyOfUsage:
           type: integer
           description: 'optional: Indicator how often the entilee has used the product (count at moment of login). Exact number is not so relevant, just a good indication to see if the product is actually used or just activated.'
+      required:
+        - firstUsed
+        - lastUsed
     Status:
       title: Status
       type: object
@@ -268,9 +276,12 @@ components:
             - blocked
         expirationDate:
           type: string
-          format: date
+          format: date-time
           description: |
             Moment the license expires
+      required:
+        - status
+        - expirationDate
   securitySchemes:
     APIKey:
       type: oauth2

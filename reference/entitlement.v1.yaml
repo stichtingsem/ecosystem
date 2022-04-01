@@ -17,8 +17,7 @@ info:
 
     Endpoint | provider | client | remark
     -- | --- | --- | -----
-    POST /entitlements | LA, LMS | MP | Send new entitlements 
-    PATCH /entitlements | LA, LMS | MP | Change the status of an entitlement
+    POST /entitlements | LA, LMS | MP | Send a new or updated entitlements
     POST /entitlements/changelicenseestatus | LA, LMS | MP |change status for a specific entitlee/licensee
     GET /entitlements | MP | LA, LMS | get entilement to check status
     GET /entitlements/school | MP | LA, LMS | get entilements per school to check status
@@ -26,7 +25,7 @@ info:
     When a request is send to an endpoint this party does not provide : a 405 Method not allowed should be returned
 
     ## Events
-    The Entitlements APi will not use the event mechanisme. The requests need to be handled synchroniously, so the requesting party known that the entitlements and changes to the entitlements are checked and processed immediatelly.
+    After POC2: The Entitlements APi will use the event mechanisme. The MP will send the sttaus of the entitlement to LA and LMS. At some moments the LMS and LA need to respond with a confirmation event that the entilement or changes are recieved and process.
 
     ## Scopes
      
@@ -198,7 +197,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EntitlementConfirmation'
+                $ref: '#/components/schemas/ChangeLicenseeConfirmation'
         '405':
           description: Method Not Allowed
       description: |-
@@ -505,6 +504,9 @@ components:
           description: |-
             Confirmation of the next proposed status. 
             Example: after provisioned the LMS can propose link-ready
+        'newEntitlementQuantity ':
+          type: integer
+          description: new total quantity for this entitlement
         success:
           type: boolean
           description: |
