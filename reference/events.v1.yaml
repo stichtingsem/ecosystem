@@ -4,7 +4,7 @@ servers:
 info:
   version: 1.0.0
   title: Generic Event Stream API
-  description: |
+  description: |-
     The proposed architecture for the new ecosystem is based on an Event model, where each provider of data to the ecosystem provides a mechanism for other participants to securely subscribe to events that are of interest to them.
 
     The Event API is the mechanism, in conjunction with the Webhook API, that enables this event based notification mechanism to function reliably.  It enables subscribers to request events from the provider, and paginate through to the last place that it received a message.
@@ -35,6 +35,16 @@ info:
     `la.usage.first` | la.usage | A student or teacher used a entitlement for the first time
     `la.usage.ongoing` | la.usage | A student or teacher used an entitlement
     `la.simpleprogress` | la.progress | progress event when a student finishes a part of a course
+
+    after POC phase 2 we will use the following events as well:
+    Event type | Scope needed | Description
+    -- | -- | --
+    `mp.entitlement` | mp.entitlement | A new entitlement
+    `mp.entitlement.confirmation` | mp.entitlement | A confirmation of an entitlement
+    `mp.entitlement.entitlee.` | mp.entitlement | A request to change status of one school entitlee
+    `mp.entitlement.entitlee.confirmation` | mp.entitlement | A confirmation of an change of an entitlee in a entitlement
+
+    events should only be processed once.
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
@@ -102,6 +112,7 @@ paths:
             - la.progress
             - sis.student-teacher-group
             - sis.student-teacher-delivery
+            - mp.entitlement
     post:
       summary: Receive Events
       operationId: post-events
@@ -149,6 +160,7 @@ paths:
             - la.progress
             - sis.student-teacher-group
             - sis.student-teacher-delivery
+            - mp.entitlement
   /event:
     post:
       summary: Receive one event
@@ -184,6 +196,7 @@ paths:
             - la.progress
             - sis.student-teacher-group
             - sis.student-teacher-delivery
+            - mp.entitlement
 components:
   schemas:
     Events:
@@ -226,8 +239,22 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         type:
           type: string
-          example: la.usage
+          example: la.usage.first
           description: Type of the event
+          enum:
+            - la.cataloque
+            - la.course
+            - sis.student
+            - sis.student-delivery
+            - sis.teacher
+            - mp.entitlement.new
+            - mp.entitlement.change
+            - mp.entitlement.confirmation
+            - mp.entitlement.entitlee.change
+            - mp.entitlement.entitlee.confirmation
+            - la.usage.first
+            - la.usage.ongoing
+            - la.simpleprogress
         objectId:
           type: string
           description: Id of the events data
@@ -250,7 +277,6 @@ components:
         - id
         - type
         - created
-        - url
     EventData:
       title: EventData
       description: Data of event object.  (dependent on type in event).
@@ -265,8 +291,11 @@ components:
         - $ref: ./course.v1.yaml#/components/schemas/Course
         - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
         - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
-        - properties: {}
-          nullable: true
+        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementConfirmation
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeConfirmation
+        - nullable: true
   securitySchemes:
     APIKey:
       type: oauth2
@@ -282,3 +311,4 @@ components:
             sis.school: ''
             sis.student-teacher-group: ''
             sis.student-teacher-delivery: ''
+            mp.entitlement: ''

@@ -43,11 +43,12 @@ All organisations offering products and/or services to Dutch schools are welcome
 
 ## Version history
 
-| Version | Date issues | Status | Author |
-|---|---|---|---|
-| 0.1 | 2 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) |
-| 0.2 | 7 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) |
-| 1.1 | 15 February 2022 | UNDER REVIEW | [@kvoer](https://github.com/kvoer) |
+| Version | Date | Status | Author | Comment |
+|---|---|---|---|---|
+| 0.1 | 2 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) | |
+| 0.2 | 7 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) | |
+| 1.1 | 15 February 2022 | REJECTED | [@kvoer](https://github.com/kvoer) | Change of Entitlement API to synchronous exchange mechanism not approved |
+| 1.1 | 1 April 2022 | Approved | [@kvoer](https://github.com/kvoer) | Entitlement API redefined based on Events Driven Architecture<br>For the PoC in Q2, Entitlements based on POST endpoints |
 
 ## Contributors
 
@@ -56,7 +57,6 @@ This standard is developed by members from [Stichting SEM](www.stichtingsem.org)
 | Name | Organization | Role | Alias |
 |---|---|---|---|
 | Clifton Cunningham | Infinitas Learning | Initiator | [@cliftonc](https://github.com/cliftonc) |
-| Carl Verhoest | Infinitas Learning | Member Technical Track | |
 | Danny Pronk | The Learning Network | Member Technical Track | [@dpronk](https://github.com/dpronk) |
 | Elias Hassing | Infinitas Learning | Lead Functional Track | [@eliashassing154](https://github.com/eliashassing154) |
 | Edwin Verwoerd | Iddink Group | Member Technical & Administrative Track | [@edwinverwoerd](https://github.com/edwinverwoerd) |
