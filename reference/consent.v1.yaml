@@ -44,11 +44,13 @@ info:
     The consent APi uses no Events. 
 
     ## Scopes 
-    The consent API does not use scopes (it is there to negotiate that scopes for other API calls are available...)
-
+    The consent API uses a scopes to call consent request
+    `consent` - scope that allows the a party to call the consent API
         
   contact:
-    email: jorim.van.der.wijngaard@topicus.nl
+    name: Stichting SEM
+    url: 'https://stichtingsem.org/'
+    email: ' jorim.van.der.wijngaard@topicus.nl'
 tags:
   - name: consent
     description: Operations related to data access consent
@@ -100,6 +102,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Consent'
       summary: Request Consent update
+      security:
+        - APIKey:
+            - consent
     parameters: []
   '/consent/{referenceId}':
     get:
@@ -115,6 +120,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Consent'
       summary: Get
+      security:
+        - APIKey:
+            - consent
     parameters:
       - schema:
           type: string
@@ -136,6 +144,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Consent'
       summary: Get Consents by schoolid
+      security:
+        - APIKey:
+            - consent
     parameters:
       - schema:
           type: string
@@ -183,6 +194,9 @@ paths:
         Request a initial sync by sending all events needed to creatine a start situation. after that the following events will keep the data in sync.
 
         Initial sync can only be requested for data like sis (student/teacher), catalogue (products), course (courses), but not for usage or progress (yet)
+      security:
+        - APIKey:
+            - consent
 components:
   schemas:
     Consent:
@@ -259,3 +273,12 @@ components:
         - referenceId
         - api
         - newStatus
+  securitySchemes:
+    APIKey:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes:
+            consent: ''

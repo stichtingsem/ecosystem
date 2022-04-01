@@ -45,6 +45,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhooks'
+      security:
+        - APIKey:
+            - webhooks
     post:
       x-tags:
         - webhooks
@@ -80,6 +83,9 @@ paths:
                   webhook:
                     $ref: '#/components/schemas/webhook'
       summary: Create or update webhook
+      security:
+        - APIKey:
+            - webhooks
   '/webhook/{webhookId}':
     get:
       x-tags:
@@ -100,6 +106,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/webhook'
+      security:
+        - APIKey:
+            - webhooks
     delete:
       x-tags:
         - webhooks
@@ -115,6 +124,9 @@ paths:
         '200':
           description: OK
       summary: Delete a webhook
+      security:
+        - APIKey:
+            - webhooks
 components:
   schemas:
     webhooks:
@@ -161,5 +173,6 @@ components:
         clientCredentials:
           tokenUrl: ''
           refreshUrl: ''
-          scopes: {}
+          scopes:
+            webhooks: ''
       description: ''
