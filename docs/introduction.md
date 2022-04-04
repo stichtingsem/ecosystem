@@ -15,10 +15,9 @@ Each Party in the SEM Ecosystem provides and consumes APIs according to their ro
 | [SIS Data](https://stichtingsem.stoplight.io/docs/ecosystem/reference/sisdata.v1.yaml) | SIS | MP, LA, LMS | |
 | [Catalogue Data](https://stichtingsem.stoplight.io/docs/ecosystem/reference/catalogue.v1.yaml) | LA | MP, LMS | |
 | [Course Data](https://stichtingsem.stoplight.io/docs/ecosystem/reference/coursee.v1.yaml) | LA | LMS | |
-| [Recieve Entitlements](https://stichtingsem.stoplight.io/docs/ecosystem/reference/entitlement.v1.yaml) | LA, LMS | MP | The LA and LMS recieve entitlements from the MP. This is transactional. |
-| [Entitlements](https://stichtingsem.stoplight.io/docs/ecosystem/reference/entitlement.v1.yaml) | MP | LMS, LA | Entitlements can be checked at the MP, First activation |
+| [Entitlement](https://stichtingsem.stoplight.io/docs/ecosystem/reference/entitlement.v1.yaml) | MP | LMS, LA | Entitlement communication require a confirmation event reply from the LMS and LA |
 | [Usage](https://stichtingsem.stoplight.io/docs/ecosystem/reference/usage.v1.yaml) | LA | MP, LMS | |
-| [Progress](https://stichtingsem.stoplight.io/docs/ecosystem/reference/progress.v1.yaml) | LA | LMS | To be defined |
+| [Progress](https://stichtingsem.stoplight.io/docs/ecosystem/reference/progress.v1.yaml) | LA | LMS | |
 | Results | LA | LMS, SIS | To be defined |
 
 ## Further reading
