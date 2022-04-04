@@ -12,14 +12,14 @@ info:
     The registerd url is the events API endpoint which implemented the POST /event and /events path.
 
     Notes:
-      - Ideally you would have one webhook registration per subscriber, but we should allow for multiple.
-      
-    events that then need to be discarded.
+      - Ideally you would have one webhook registration per subscriber, but we should allow for multiple events that then need to be discarded.
       - Event filters should automatically be applied aligned with oauth scopes in place for the subscriber - e.g. don't allow events to go to a subscriber for entities that they are not allowed to access.
         This restriction will be defined in the API specification for each service. 
         
-    ## security and Scope
-    The endpoints do not require specific scopes to register eventhooks for certain types. the registration can continue, but events will only be send if consent is given and the proper scopes can be acquired by the event sender. 
+
+    ## Scopes 
+    The webhook API uses a scopes to call webhook request
+    `sem.webhook` - scope that allows the a party to call the webhook API
   version: 1.0.0
   title: Generic Web Hook API
   contact:
@@ -47,7 +47,7 @@ paths:
                 $ref: '#/components/schemas/webhooks'
       security:
         - APIKey:
-            - webhooks
+            - sem.webhooks
     post:
       x-tags:
         - webhooks
@@ -85,7 +85,7 @@ paths:
       summary: Create or update webhook
       security:
         - APIKey:
-            - webhooks
+            - sem.webhooks
   '/webhook/{webhookId}':
     get:
       x-tags:
@@ -108,7 +108,7 @@ paths:
                 $ref: '#/components/schemas/webhook'
       security:
         - APIKey:
-            - webhooks
+            - sem.webhooks
     delete:
       x-tags:
         - webhooks
@@ -126,7 +126,7 @@ paths:
       summary: Delete a webhook
       security:
         - APIKey:
-            - webhooks
+            - sem.webhooks
 components:
   schemas:
     webhooks:
@@ -174,5 +174,5 @@ components:
           tokenUrl: ''
           refreshUrl: ''
           scopes:
-            webhooks: ''
+            sem.webhooks: ''
       description: ''

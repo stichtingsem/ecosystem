@@ -45,7 +45,7 @@ info:
 
     ## Scopes 
     The consent API uses a scopes to call consent request
-    `consent` - scope that allows the a party to call the consent API
+    `sem.consent` - scope that allows the a party to call the consent API
         
   contact:
     name: Stichting SEM
@@ -104,7 +104,7 @@ paths:
       summary: Request Consent update
       security:
         - APIKey:
-            - consent
+            - sem.consent
     parameters: []
   '/consent/{referenceId}':
     get:
@@ -122,7 +122,7 @@ paths:
       summary: Get
       security:
         - APIKey:
-            - consent
+            - sem.consent
     parameters:
       - schema:
           type: string
@@ -146,7 +146,7 @@ paths:
       summary: Get Consents by schoolid
       security:
         - APIKey:
-            - consent
+            - sem.consent
     parameters:
       - schema:
           type: string
@@ -196,7 +196,7 @@ paths:
         Initial sync can only be requested for data like sis (student/teacher), catalogue (products), course (courses), but not for usage or progress (yet)
       security:
         - APIKey:
-            - consent
+            - sem.consent
 components:
   schemas:
     Consent:
@@ -281,4 +281,4 @@ components:
           tokenUrl: ''
           refreshUrl: ''
           scopes:
-            consent: ''
+            sem.consent: ''
