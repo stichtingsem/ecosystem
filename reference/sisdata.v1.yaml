@@ -348,30 +348,37 @@ components:
         - schoolsubject
       x-examples:
         example-1:
+          id: a50cf922-5bd6-419d-a50b-a39ac5e5b48f
           subjectCode: '0071'
           schoolSubjectCode: en
           schoolSubjectName: Engels
-          level: vmbo-bb
+          level: VO-VMBO-BB
           levelYear: 2
           schoolLevelCode: onderbouw-2
       description: |-
-        The school subject is the combination of a subject, combined with the level of the studie the subject is part of.
-        For both the subject and the level, the officail governemnt codes and the code from the school are provided. In this way the teachers recognise their teminology, while the MP and LA can link this to the gereric official codes.
+        The school subject is the combination of a subject, combined with the level of the study the subject is part of.
+        For both the subject and the level, the official government codes and the code from the school are provided. In this way the teachers recognise their teminology, while the MP and LA can link this to the generic official codes.
          
         TODO : decide which values are mendatory
       properties:
+        id:
+          type: string
+          description: Meaningless uuid/guid chosen by the SIS 
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
         schoolSubjectAbbr:
           type: string
-          description: Abbriviation that the school gives to this subject (like 'en')
+          description: Abbreviation that the school gives to this subject (like 'en')
         schoolSubjectName:
           type: string
           description: Optional name of subject if different within specific school.
         level:
           type: string
-          description: 'Official Level. example ''havo, vwo, etc.'''
+          description: |-
+            Official Level. 
+            Allowed values are: VO-PRO, VO-VMBO-BB, VO-VMBO-KB, VO-VMBO-GL, VO-VMBO-TL, VO-HAVO, VO-VWO 
+            As specified here: https://lod.onderwijsregistratie.nl/api/catalogus/v1/klasse?subject=http://lod.onderwijsregistratie.nl/cat/cdm/def/NiveauVO-v03.2'
         levelYear:
           type: integer
           description: Learning year (eg 1)
