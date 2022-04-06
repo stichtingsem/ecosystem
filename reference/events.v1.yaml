@@ -35,6 +35,7 @@ info:
     `la.usage.first` | la.usage | A student or teacher used a entitlement for the first time
     `la.usage.ongoing` | la.usage | A student or teacher used an entitlement
     `la.simpleprogress` | la.progress | progress event when a student finishes a part of a course
+    `la.simpleresult` | la.result| result event when a student takes a test or exam
 
     after POC phase 2 we will use the following events as well:
     Event type | Scope needed | Description
@@ -113,6 +114,7 @@ paths:
             - sis.student-teacher-group
             - sis.student-teacher-delivery
             - mp.entitlement
+            - la.results
     post:
       summary: Receive Events
       operationId: post-events
@@ -161,6 +163,7 @@ paths:
             - sis.student-teacher-group
             - sis.student-teacher-delivery
             - mp.entitlement
+            - la.results
   /event:
     post:
       summary: Receive one event
@@ -197,6 +200,7 @@ paths:
             - sis.student-teacher-group
             - sis.student-teacher-delivery
             - mp.entitlement
+            - la.results
 components:
   schemas:
     Events:
@@ -255,6 +259,7 @@ components:
             - la.usage.first
             - la.usage.ongoing
             - la.simpleprogress
+            - la.simpleresult
         objectId:
           type: string
           description: Id of the events data
@@ -295,6 +300,7 @@ components:
         - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementConfirmation
         - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeEvent
         - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeConfirmation
+        - $ref: ./results.v1.yaml#/components/schemas/SimpleResult
         - nullable: true
   securitySchemes:
     APIKey:
@@ -312,3 +318,4 @@ components:
             sis.student-teacher-group: ''
             sis.student-teacher-delivery: ''
             mp.entitlement: ''
+            la.results: ''
