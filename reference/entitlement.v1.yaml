@@ -396,6 +396,9 @@ components:
       x-tags:
         - entitlements
       properties:
+        id:
+          type: string
+          description: Meaningless uuid/guid chosen by the SIS
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
