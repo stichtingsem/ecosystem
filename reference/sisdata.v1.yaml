@@ -363,7 +363,7 @@ components:
       properties:
         id:
           type: string
-          description: Meaningless uuid/guid chosen by the SIS 
+          description: Meaningless uuid/guid chosen by the SIS
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
@@ -386,6 +386,7 @@ components:
           type: string
           description: 'School name of the Level. example ''Technasium'' This gives schools a way to name how they want it, while we still have a link with the official level'
       required:
+        - id
         - schoolSubjectAbbr
         - schoolSubjectName
         - level

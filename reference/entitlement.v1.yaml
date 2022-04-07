@@ -418,6 +418,7 @@ components:
           type: string
           description: 'School code of the Level. example ''Technasium'' This gives schools a way to name how they want it, while we still have a link with the official level'
       required:
+        - id
         - subjectCode
         - schoolSubjectAbbr
         - schoolSubjectName
