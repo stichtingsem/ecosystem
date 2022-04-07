@@ -36,16 +36,21 @@ components:
       type: object
       x-examples:
         example-1:
-          id: 123-bigstring-or-guid-does-not-matter-but-uniquu-for-this-progres-statement
+          id: id-dat-niet-uit-maakt-3534426
           schemaVersion: 0
-          studentEckId: eck1
-          studentId: '12345'
-          assignableUnitId: '1234566'
-          courseId: english-22-high
-          status: completed
-          timestamp: '20220112T02:55:12'
-          additionalInfo: ':)'
-          detailsUrl: 'https://course.publisher.com/analisys/1234566/eck1'
+          assessmentId: 34-123-666-222-33333
+          assessmentName: ProefExamen nederlands
+          eckId: eck1
+          userId: 12345@edu.nl
+          status: final
+          assessmentDateTime: '2019-08-24T14:15:22Z'
+          schoolSubjectId: '63542987645344'
+          additionalInfo: ''
+          result: '7.6'
+          resultType: 1.0-10.0
+          employees:
+            userId: abj@edu.nl
+            eckId: eck-T123
       description: A description of a simple result statement that an LA will send to the LMS
       properties:
         id:
