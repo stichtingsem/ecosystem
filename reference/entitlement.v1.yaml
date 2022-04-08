@@ -408,22 +408,29 @@ components:
         schoolSubjectName:
           type: string
           description: 'School description of this subject, may differ from standard. like ''queens english'''
-        level:
-          type: string
-          description: 'Official Level. example ''havo, vwo, etc.''. Todo : add link to offical code/list'
-        levelYear:
-          type: integer
-          description: Learning year (eg 1)
+        levels:
+          type: object
+          description: 'List of official levels this study and subject combination. could be multiple in case of schoollevel "Brugklas", "onderbouw", etc'
+          properties:
+            level:
+              type: string
+              description: |-
+                Official Level. 
+                Allowed values are: VO-PRO, VO-VMBO-BB, VO-VMBO-KB, VO-VMBO-GL, VO-VMBO-TL, VO-HAVO, VO-VWO 
+                As specified here: https://lod.onderwijsregistratie.nl/api/catalogus/v1/klasse?subject=http://lod.onderwijsregistratie.nl/cat/cdm/def/NiveauVO-v03.2'
+            levelYear:
+              type: integer
+              description: Learning year (eg 1)
+          required:
+            - level
+            - levelYear
         schoolLevel:
           type: string
-          description: 'School code of the Level. example ''Technasium'' This gives schools a way to name how they want it, while we still have a link with the official level'
+          description: 'School name of the Level. example ''HAVO-2'',''Technasium-1'' This gives schools a way to name how they want it, while we still have a link with the official level'
       required:
         - id
-        - subjectCode
         - schoolSubjectAbbr
         - schoolSubjectName
-        - level
-        - levelYear
         - schoolLevel
     Entitlements:
       title: Entitlements
