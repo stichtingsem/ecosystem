@@ -17,7 +17,7 @@ Please contact stichting SEM to be included in this directory.
 | Iddink group | Magister | LMS | < tbd > | - | Edwin.verwoerd@iddinkgroup.nl |
 | Iddink group | Magister | SIS | < tbd > | - | Edwin.verwoerd@iddinkgroup.nl |
 | Iddink group | Leermiddelen | MP |  < tbd > | - | Edwin.verwoerd@iddinkgroup.nl |
-| Noordhoff | Noordhoff Uitgevers | LA |  < tbd > | - |
+| Noordhoff | Noordhoff Uitgevers | LA | https://sem.acc.noordhoff.nl/api | https://identity.acc.noordhoff.nl/connect/token | hhaarsma@infinitaslearning.com |
 | Osingadejong | Osingadejong | MP | < tbd >| - |
 | The Learning Network | TLN | MP | < tbd >| - 
 | Topicus | SOM2Day | LMS |  < tbd > | - |
