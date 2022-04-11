@@ -335,11 +335,14 @@ components:
           items:
             type: object
             properties:
-              schoolSubject:
-                $ref: '#/components/schemas/SchoolSubject'
+              schoolSubjectId:
+                type: string
+                description: Meaningless uuid/guid chosen by the SIS
               quantity:
                 type: integer
                 description: Quantity selected or purchased.
+            required:
+              - schoolSubjectId
         entitlees:
           type: array
           description: List of students in the school who has rigth to this entitlement
