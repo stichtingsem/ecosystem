@@ -502,6 +502,7 @@ paths:
       - schema:
           type: string
         name: id
+        description: 'UUID chosen by the SIS to refer to a student. This identifier is only published by the SIS as part of the url sent in an earlier event about this student. This identifier is only to be used within the context of requestparameter for this resource, not as a broader identifier of the student.'
         in: path
         required: true
     get:
@@ -557,6 +558,7 @@ paths:
       - schema:
           type: string
         name: id
+        description: 'UUID chosen by the SIS to refer to a teacher. This identifier is only published by the SIS as part of the url sent in an earlier event about this teacher. This identifier is only to be used within the context of requestparameter for this resource, not as a broader identifier of the teacher.'
         in: path
         required: true
     get:
@@ -618,6 +620,7 @@ paths:
       - schema:
           type: string
         name: id
+        description: 'UUID chosen by the SIS to refer to a student. This identifier is only published by the SIS as part of the url sent in an earlier event about this student. This identifier is only to be used within the context of requestparameter for this resource, not as a broader identifier of the student.'
         in: path
         required: true
     get:
