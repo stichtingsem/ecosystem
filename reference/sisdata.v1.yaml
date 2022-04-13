@@ -108,15 +108,18 @@ components:
           groups:
             - groupId: vm-bb-2a
               name: vmbo 2a
-          subjects:
+          schoolSubjects:
             - startDate: '2019-08-24'
               endDate: '2019-08-24'
               subject:
                 subjectCode: '0071'
                 schoolSubjectCode: en
                 schoolSubjectName: Engels
-                level: vmbo-bb
-                levelYear: 2
+                levels:
+                  - level: HAVO
+                    levelYear: 1
+                  - level: VWO
+                    levelYear: 1
                 schoolLevelCode: onderbouw-2
                 schemaVersion: 0
       properties:
@@ -128,6 +131,7 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         eckId:
           type: string
+          description: eckId
         firstname:
           type: string
         surname:
@@ -164,9 +168,9 @@ components:
               - schoolSubject
               - startDate
       required:
-        - userId
         - firstname
         - surname
+        - schoolPeriod
         - school
     StudentReference:
       type: object
@@ -356,15 +360,14 @@ components:
             - level: VO-VMBO-BB
               levelYear: 2
           schoolLevel: onderbouw-2
-      description: |-
+      description: |
         The school subject is the combination of a subject, combined with the level of the study the subject is part of.
         For both the subject and the level, the official government codes and the code from the school are provided. In this way the teachers recognise their teminology, while the MP and LA can link this to the generic official codes.
          
-        TODO : decide which values are mendatory
       properties:
         id:
           type: string
-          description: Meaningless uuid/guid chosen by the SIS
+          description: 'SchoolsubjectId: Meaningless uuid/guid chosen by the SIS'
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
@@ -393,10 +396,14 @@ components:
               levelYear:
                 type: integer
                 description: Learning year (eg 1)
+            required:
+              - level
+              - levelYear
       required:
         - id
         - schoolSubjectAbbr
         - schoolSubjectName
+        - schoolLevel
     StudentDelivery:
       title: Student delivery
       type: object

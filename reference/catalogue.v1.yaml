@@ -242,6 +242,7 @@ components:
         - models
         - defaultAccessUrl
         - shortDescription
+        - FirstPublishedDate
     BusinessModel:
       title: BusinessModel
       type: object

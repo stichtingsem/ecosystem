@@ -50,7 +50,7 @@ info:
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
-    email: ' jorim.van.der.wijngaard@topicus.nl'
+    email: 'jorim.van.der.wijngaard@topicus.nl'
 tags:
   - name: consent
     description: Operations related to data access consent
@@ -96,11 +96,6 @@ paths:
                     type: string
                   consent:
                     $ref: '#/components/schemas/Consent'
-        '':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Consent'
       summary: Request Consent update
       security:
         - APIKey:
