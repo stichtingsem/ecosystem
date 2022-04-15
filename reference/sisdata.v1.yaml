@@ -131,7 +131,9 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         eckId:
           type: string
-          description: eckId
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -184,6 +186,9 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -191,7 +196,6 @@ components:
         surnamePrefix:
           type: string
       required:
-        - userId
         - firstname
         - surname
     Teacher:
@@ -223,6 +227,9 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -241,7 +248,6 @@ components:
           items:
             $ref: '#/components/schemas/GroupReference'
       required:
-        - userId
         - firstname
         - surname
         - schoolPeriod
@@ -257,6 +263,9 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -264,7 +273,6 @@ components:
         surnamePrefix:
           type: string
       required:
-        - userId
         - firstname
         - surname
     Group:
@@ -532,23 +540,25 @@ paths:
                     firstname: string
                     surname: string
                     surnamePrefix: string
-                    schoolYear: string
+                    schoolPeriod: string
                     school:
                       schoolId: string
                       schoolName: string
                     groups:
                       - groupId: string
                         name: string
-                    subjects:
-                      - id: string
+                    schoolSubjects:
+                      - schoolSubject:
+                          id: string
+                          subjectCode: string
+                          schoolSubjectAbbr: string
+                          schoolSubjectName: string
+                          schoolLevel: string
+                          levels:
+                            - level: string
+                              levelYear: 0
                         startDate: '2019-08-24'
                         endDate: '2019-08-24'
-                        subjectCode: string
-                        schoolSubjectCode: string
-                        schoolSubjectName: string
-                        level: string
-                        courseCode: string
-                        courseYear: 0
       operationId: get-student-id
       description: 'Retrieve basic student information, including their groups and subject choices.'
       security:

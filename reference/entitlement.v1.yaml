@@ -617,13 +617,21 @@ components:
           type: string
         userid:
           type: string
+          description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         newLicenseStatus:
           type: string
           enum:
             - activated
             - blocked
+      required:
+        - entitlementAndLicenseeReferenceId
+        - entitlementId
+        - newLicenseStatus
   securitySchemes:
     APIKey:
       type: oauth2
