@@ -373,9 +373,6 @@ components:
         userId:
           type: string
           description: userid. (nledupersonrealId or nledupersonprofileId)
-      required:
-        - display_name
-        - email
     SchoolEntitlee:
       title: SchoolEntitlee
       type: object
