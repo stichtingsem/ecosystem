@@ -199,7 +199,7 @@ Every Student has an array of SchoolSubjects that specifies all SchoolSubjects t
 - In the event a Student stops following a SchoolSubject (SchoolSubject is removed from the array of SchoolSubjects of this Student), the LMS checks if the School has purchased learning materials for this specific SchoolSubject. If this is the case, the LMS removes the links (access urls) for all learning materials that are not activated yet by the Student. If the Student did activate the product, the Student is still allowed to use the product. The Ecosystem does not prescribe any further action by the LMS. A possible implementation could be to archive the link for this student, as the product is not relevant for the student anymore.
 - To preserve the integrity of SchoolSubjects in the Ecosystem, the values subjectCode, level, and levelYear of SchoolSubjects are not allowed to change.
 
-### Catalogue API specifc regulations
+### Catalogue API specific regulations
 
 The Catalogue API specifies all products of a Learning Application that are for sale. It is crucial that the integrity of this data is consistent and unchanged. After the product is sold to the customer, the product and its conditions are not allowed to change anymore. For this reason we added the following specific regulations for Product data:
 
