@@ -49,6 +49,7 @@ All organisations offering products and/or services to Dutch schools are welcome
 | 0.2 | 7 December 2021 | DRAFT | [@kvoer](https://github.com/kvoer) | |
 | 1.1 | 15 February 2022 | REJECTED | [@kvoer](https://github.com/kvoer) | Change of Entitlement API to synchronous exchange mechanism not approved |
 | 1.1 | 1 April 2022 | Approved | [@kvoer](https://github.com/kvoer) | Entitlement API redefined based on Events Driven Architecture<br>For the PoC in Q2, Entitlements based on POST endpoints |
+| 1.2 | 22 April 2022 | Approved | [@kvoer](https://github.com/kvoer) | Non-happy flows and regulations for mutations approved in steering committee. |
 
 ## Contributors
 
