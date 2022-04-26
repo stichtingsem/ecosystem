@@ -23,7 +23,7 @@ task generateJava {
 }
 
 task generateCatalogueApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-    generatorName = "java"
+    generatorName = "jaxrs-cxf"
     inputSpec = "$rootDir/../../reference/catalogue.v1.yaml"
     outputDir = "$buildDir/generated/java/"
     apiPackage = "org.sem.api.catalogue.api"
@@ -42,7 +42,7 @@ task generateCatalogueApiJava(type: org.openapitools.generator.gradle.plugin.tas
 }
 
 task generateCourseApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-    generatorName = "java"
+    generatorName = "jaxrs-cxf"
     inputSpec = "$rootDir/../../reference/course.v1.yaml"
     outputDir = "$buildDir/generated/java/"
     apiPackage = "org.sem.api.course.api"
@@ -61,7 +61,7 @@ task generateCourseApiJava(type: org.openapitools.generator.gradle.plugin.tasks.
 }
 
 task generateEntitlementsApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-    generatorName = "spring"
+    generatorName = "jaxrs-cxf"
     inputSpec = "$rootDir/../../reference/entitlement.v1.yaml"
     outputDir = "$buildDir/generated/java/"
     apiPackage = "org.sem.api.entitlement.api"
@@ -77,7 +77,7 @@ task generateEntitlementsApiJava(type: org.openapitools.generator.gradle.plugin.
 }
 
 task generateEventsApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-    generatorName = "java"
+    generatorName = "jaxrs-cxf"
     inputSpec = "$rootDir/../../reference/events.v1.yaml"
     outputDir = "$buildDir/generated/java/"
     apiPackage = "org.sem.api.events.api"
@@ -96,7 +96,7 @@ task generateEventsApiJava(type: org.openapitools.generator.gradle.plugin.tasks.
 }
 
 task generateSisDataApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-    generatorName = "java"
+    generatorName = "jaxrs-cxf"
     inputSpec = "$rootDir/../../reference/sisdata.v1.yaml"
     outputDir = "$buildDir/generated/java/"
     apiPackage = "org.sem.api.sisdata.api"
@@ -114,7 +114,7 @@ task generateSisDataApiJava(type: org.openapitools.generator.gradle.plugin.tasks
 }
 
 task generateUsageApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-    generatorName = "java"
+    generatorName = "jaxrs-cxf"
     inputSpec = "$rootDir/../../reference/usage.v1.yaml"
     outputDir = "$buildDir/generated/java/"
     apiPackage = "org.sem.api.usage.api"
@@ -132,7 +132,7 @@ task generateUsageApiJava(type: org.openapitools.generator.gradle.plugin.tasks.G
 }
 
 task generateWebhooksApiJava(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
-    generatorName = "java"
+    generatorName = "jaxrs-cxf"
     inputSpec = "$rootDir/../../reference/webhooks.v1.yaml"
     outputDir = "$buildDir/generated/java/"
     apiPackage = "org.sem.api.webhooks.api"
