@@ -238,6 +238,7 @@ components:
       required:
         - productId
         - type
+        - status
         - name
         - models
         - defaultAccessUrl

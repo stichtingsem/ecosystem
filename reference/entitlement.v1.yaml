@@ -331,7 +331,7 @@ components:
             The Id for the school
         schoolSubjects:
           type: array
-          description: 'List of chools subject . when filled: each student who has this school stubject is entitled to this product. The LA can make this match based on sis data'
+          description: 'List of school subjects. when filled: each student who has this school stubject is entitled to this product. The LA can make this match based on sis data'
           items:
             type: object
             properties:
