@@ -23,7 +23,8 @@ info:
 
     __Technical description for initial consent__
 
-    An application (A) will ask for a token at the IDP (using the client_credentials flow) without a specific scope and can do an HTTP POST request to ask consent (#redirectToApiSpec). A referenceid is passed in the request, the referenceid of the other party is returned. The other party will create a content record for this api/client/[school] combination and set its own status at Pending.
+    An application (A) will ask for a token at the IDP (using the client_credentials flow) without a specific scope and can do an HTTP POST request to ask consent (#redirectToApiSpec). A referenceid is passed in the request, the referenceid of the other party is returned. The other party will create a content record for this api/client/[school] combination and set its own status at Pending. The receiving party can/should merge the records based on api/client/[school].
+
     This flow will be asynchronous, the application is done for now.
 
     __Consent resource__
@@ -50,7 +51,7 @@ info:
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
-    email: 'jorim.van.der.wijngaard@topicus.nl'
+    email: jorim.van.der.wijngaard@topicus.nl
 tags:
   - name: consent
     description: Operations related to data access consent
@@ -151,14 +152,20 @@ paths:
         in: path
         required: true
         description: id of the school to filter all consents
-  '/requestsync/{consumerreferenceId}':
+  '/requestsync/{api}':
     parameters:
       - schema:
           type: string
-        name: consumerreferenceId
+          enum:
+            - catalogue-api
+            - course-api
+            - entitlement-api
+            - usage-api
+            - progress-api
+            - sis-api
         in: path
         required: true
-        description: consent identified by consumerreferenceId
+        name: api
     post:
       summary: Request initial sync
       tags: []
@@ -261,6 +268,7 @@ components:
             - entitlement-api
             - usage-api
             - progress-api
+            - sis-api
         newStatus:
           type: string
           enum:
