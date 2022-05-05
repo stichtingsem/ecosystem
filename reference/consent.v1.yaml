@@ -61,10 +61,10 @@ paths:
   /consentupdate:
     post:
       description: |
-        Allows an application to request access to data of a new school (digideliveryid) and api.
+        Allows an application to inform the other party of the status of the consent of a (new) school (digideliveryid) and api.
 
-        Example: the MP request consent to recieve SIS data from the SIS on behalve of a school
-        The SIS will not give a direct answer, but wait until the school admin logs in, gets the request presented in the UI and gives consent.
+        Example: the MP will update his consent to recieve SIS data from the SIS on behalve of a school to the SIS
+        The SIS will not give a direct answer, but wait until the school admin logs in, gets the request presented in the UI and gives consent. When the the consent in the SIS is updated, the MP is updated of the status change for consent for this api
       tags:
         - consentrequest
       operationId: request-consent-update
@@ -97,7 +97,7 @@ paths:
                     type: string
                   consent:
                     $ref: '#/components/schemas/Consent'
-      summary: Request Consent update
+      summary: Inform Consent update
       security:
         - APIKey:
             - sem.consent
