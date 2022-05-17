@@ -36,6 +36,6 @@ The LA needs/should to implement the folowing:
 # TODO : Add more details
 
 ## LA Gateway
-The Learning Application will implement 5 API's and will send Events for these to other parties. It will send events for usage, cataloque, course, progress
+The Learning Application will implement 5 API's and will send Events for these to other parties. It will send events for usage, catalogue, course, progress
 
 ![architecture](diagrams/Saas_Vendor_Infrastructure-LA_Gateway.drawio.svg)

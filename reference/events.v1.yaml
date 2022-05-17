@@ -27,7 +27,7 @@ info:
 
     Event type | Scope needed | Description
     -- | -- | --
-    `la.cataloque` | la.catalogue | A product in the cataloque has been created or modified or deleted  
+    `la.catalogue` | la.catalogue | A product in the catalogue has been created or modified or deleted  
     `la.course` | la.course | A course has changed
     `sis.student` | sis.student-teacher-group | A student has been created or modified   
     `sis.student-delivery` | sis.student-teacher-delivery | A students delivery information has been created or modified     
@@ -242,7 +242,7 @@ components:
           example: la.usage.first
           description: Type of the event
           enum:
-            - la.cataloque
+            - la.catalogue
             - la.course
             - sis.student
             - sis.student-delivery
