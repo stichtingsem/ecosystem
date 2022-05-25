@@ -130,7 +130,7 @@ components:
             "Indien dit afwijkt van EAN moet de uitgever vaststellen dat dit niet binnen het EAN domein gebruikt wordt. Dit omdat de EAN een relatie heeft met de verkoopbare eenheid / niveau"
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         type:
           type: string
           description: |
