@@ -13,7 +13,7 @@ The format of the content of the access_token is not part of the standard but ju
 * aud = audience, client_id of the oauthclient that requested the token
 * scope = scope available for this oauthclient
 * iss = issuer, identifier of the idp, mostly base url
-* schoolidenfier = digideliveryid requested (and validated by the idp for existence)
+* schoolidentifier = digideliveryid requested (and validated by the idp for existence) (Note: this was in previous examples schoolid ! This might have caused confusion)
 
 More properties can be added as needed by the idp for correct handling of client's authorisation. (recommended to add `exp` for expiry, `iat` of moment of issue).
 
@@ -24,7 +24,7 @@ POST /token HTTP/1.1
 Host: server.example.com
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=client_credentials&client_id=[CLIENT_ID]&client_secret=[CLIENT_SECRET]&schoolid=[DIGI_DELIVERY_ID]
+grant_type=client_credentials&client_id=[CLIENT_ID]&client_secret=[CLIENT_SECRET]&schoolid=[DIGI_DELIVERY_ID]&schoolidentifier=[DIGI_DELIVERY_ID]
 And if the token request was successful, the token response could be:
 
 {
