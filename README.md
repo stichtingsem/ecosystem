@@ -52,6 +52,7 @@ All organisations offering products and/or services to Dutch schools are welcome
 | 1.2 | 22 April 2022 | Approved | [@kvoer](https://github.com/kvoer) | Non-happy flows and regulations for mutations approved in steering committee. |
 | 1.2 | 26 April 2022 | Approved | [@mcginkel](https://github.com/mcginkel) | catalogue: is now status mandatory |
 | 1.2 | 29 April 2022 | Approved | [@jorimvdw](https://github.com/jorimvdw) | consent API: doc update, requestsync now with api parameter iso consumerrefid |
+| 1.2 | 25 may 2022 | Approved | [@kvoer](https://github.com/kvoer) | Simple Result API added |
 
 ## Contributors
 
