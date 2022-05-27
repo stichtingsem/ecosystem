@@ -246,6 +246,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LevelSubjects'
+      required:
+        - courseid
+        - tile
+        - lastpublishedversion
     LevelSubjects:
       title: LevelSubjects
       type: object

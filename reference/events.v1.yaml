@@ -96,7 +96,7 @@ paths:
             type: number
           in: query
           name: createdAfter
-          description: timestamp to filter on events created after a certain moment
+          description: timestamp to filter on events created after a certain moment (unix epoch, seconds after 1 jan 1970)
       responses:
         '200':
           description: OK

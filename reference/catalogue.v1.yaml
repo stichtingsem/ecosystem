@@ -238,10 +238,12 @@ components:
       required:
         - productId
         - type
+        - status
         - name
         - models
         - defaultAccessUrl
         - shortDescription
+        - FirstPublishedDate
     BusinessModel:
       title: BusinessModel
       type: object

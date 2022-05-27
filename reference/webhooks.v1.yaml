@@ -3,6 +3,11 @@ servers:
   - url: 'https://example.stichtingsem.org/api'
 info:
   description: |-
+    NOTE : THE WEBHOOK API IS PROBABLY DEPRECATED/OBSOLETE.
+    An alternative for POC2: have the events endpoint fixed per party, just like the other endpoints. When consent is given the events are send automaticly to the endpoint.
+
+
+
     The proposed architecture for the new ecosystem is based on an Event model, where each provider of data to the ecosystem provides a mechanism for other participants to securely subscribe to events that are of interest to them.
 
     The Webhook API is the mechanism, in conjunction with the Event API, that enables this event based notification mechanism to function reliably.  It enables subscribers to create a webhook registration with the provider, so that the provider can send a POST to the provided URL when an event occurs.

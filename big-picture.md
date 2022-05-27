@@ -147,17 +147,86 @@ For the exchange of data between Market Place and Learning Application no consen
 
 Each Party in the Ecosystem is responsible for the integrity of data exchanged within their own APIs. For example the Student Information System is responsible for the integrity of all student data. Whenever data changes at the source, the providing role shares these updates with all other Parties that are subscribed to its API. We foresee changes on the following data objects:
 
-| Object | New | Update | Delete | Status Change | API | Providing Party | Consuming Party |
-|---|---|---|---|---|---|---|---|
-| Student | X | X | X | - | SIS | SIS | MP, LMS, LA |
-| StudentDelivery | X | X | X | - | SIS API | SIS | MP |
-| Teacher | X | X | X | - | SIS | SIS API | MP, LMS, LA |
-| SchoolSubject | X | X | X | - | SIS API | SIS | MP, LMS, LA |
-| Product | X | X | X | X | Catalogue API | LA | MP, LMS |
-| Course | X | X | X | X | Course API | LA | LMS |
-| Entitlement | - | X | - | X | Entitlement API | MP | LA, LMS |
-| Usage | - | X | - | - | Usage API | LA | MP, LMS |
-| SimpleProgress | - | X | X | X | Progress API | LA | LMS |
-| SimpleResult | - | X | X | - | Results API | LA | LMS, SIS |
+| Object | New | Update | Delete | Status/Version Change | API | Providing Party | Consuming Party | Comment |
+|---|---|---|---|---|---|---|---|---|
+| Entitlement | - | - | - | - | Entitlement API | MP | LA, LMS | Mutations on Entitlements are not allowed. Changes require one of the four non-happy flows as stated above |
+| Usage | X | X | - | - | Usage API | LA | MP, LMS | The Usage API is a reporting API. Only changes to Usage information are broadcasted. All other information (status and amounts) is only available via the GET endpoints |
+| Student | X | X | X | - | SIS | SIS | MP, LMS, LA | |
+| StudentDelivery | X | X | X | - | SIS API | SIS | MP | |
+| SchoolSubject | - | - | - | - | SIS API | SIS | MP, LMS, LA | SchoolSubjects are included as an attribute of the Student information object |
+| Teacher | X | X | X | - | SIS | SIS API | MP, LMS, LA | |
+| Product | X | X | X | X | Catalogue API | LA | MP, LMS | |
+| Course | X | X | X | X (version) | Course API | LA | LMS | |
+| SimpleProgress | - | X | X | X | Progress API | LA | LMS | To be specified |
+| SimpleResult | - | X | X | X | Results API | LA | LMS, SIS | To be specified |
 
-For each of the mutations shown in the above table we have to specify the expected behavior of the receiving Party in a detailed flow. As we work through any pilot and implementation we will specify and expand these mutation processes.
+The table above specficies all allowed mutations of data objects in the Ecosystem. For these mutations we work with the following set of general regulations and API specific regulations.
+
+### General regulations for mutating data
+
+The Ecosystem uses Events to communicate changes in data from the providing party to the consuming parties. These events are triggered immediately after the change is processed by the providing party. This allows all consuming parties to also change the information in their own systems and keep the data in sync. In this mutation process we work according to the following general agreements:
+
+- If data of a data object changes, immediately thereafter an event is triggered by the producing party to all consuming parties that have consent to receive the (changed) data.
+- All Events have a unique id, type, timestamp, and an optional url that can be called to get the data object for the event.
+- The new data object is included in the Event with the final state of all its attributes.
+- In case of the deletion of a data object the boolean isDeleteEvent is set to True.
+- Information objects in the Ecosystem include unique identifiers. These identifiers are all globally unique identifiers and are not allowed to change.
+
+### Entitlement API specific regulations
+
+Entitlements specify transactional information about Learning Application's products sold by the Market Place. For audit and compliance reasons the Entitlement data object is not allowed to change. The only exceptions are the four Non-happy Cancel, Block, and Return flows as specified above.
+
+### Usage API specific regulations
+
+The Usage API can be seen as a reporting API for the Learning Application, Market Place and the Learning Management System. Within the API the GetEntitlementUsage and GetIndividualUsage endpoints give insight in the status, amount, and usage information about a specific entitlement of individual as registered by the Learning Application. This is especially useful in customer support or administrative processes. We agreed upon the following regulations:
+
+- The Usage API sends events about actual usage of the product by a Licensee.
+- After activating a product for an Entitlee, an InitialActivation event is send for this new Licensee for this product and Entitlement.
+- Based on bilateral agreements further usage data is exchanged with the Market Place and or Learning Management System. For example in case of a monthly subscription, the monthly active usage data can be exchanged.
+- Updates of the status of an Entitlement, the total amount provisioned for an Entitlement or the status of a Licensee are not exchanged within the Usage API. This information is already exchanged within the Entitlement API as described in the Cancel, Block, and return flows. Exchanging these changes within the Usage API would lead to duplicate information flows and as consequence noise or misinterpretation by the parties in the Ecosystem. As stated above, the Usage API does include these status and amount information in the getEntitlementUsage and getIndividualUsage endpoints for support and administration processes.
+
+### SIS API specific regulations
+
+Up to date information about Students (including StudentDelivery and SchoolSubjects) and Teachers is crucial for the correct functioning of the data exchanges within the Ecosystem. In almost all data objects a reference is made to a student and/or teacher. We therefore agreed upon the following regulations:
+
+- For a Student and Teacher the attributes school (including schoolId and schoolName) and SchoolPeriod are not allowed to change.
+- This implies that for the next schoolperiod all Students and Teachers are send again with their new SchoolPeriod value. This is for example the case by the start of the schoolyear.
+
+Every Student has an array of SchoolSubjects that specifies all SchoolSubjects that a specific Student follows during the given SchoolPeriod. This data is crucial for the Entitlement variant SchoolSubject. The data is used to grant access to Entitlees that follow the specified SchoolSubject(s). For this reason we added the following regulations regarding new or updated SchoolSubject information for Students:
+
+- In the event of a new Student, the LMS checks if the School has purchased learning materials for the SchoolSubjects this new Student follows. If this is the case, the links (access urls) are added to the Learning Material List of this Student.
+- In the event a Student follows a new SchoolSubject (New SchoolSubject is added to the array of SchoolSubjects of this Student), the LMS checks if the School has purchased learning materials for this specific SchoolSubject. If this is the case, the links (access urls) are added to the Learning Material List of this student.
+- In the event a Student stops following a SchoolSubject (SchoolSubject is removed from the array of SchoolSubjects of this Student), the LMS checks if the School has purchased learning materials for this specific SchoolSubject. If this is the case, the LMS removes the links (access urls) for all learning materials that are not activated yet by the Student. If the Student did activate the product, the Student is still allowed to use the product. The Ecosystem does not prescribe any further action by the LMS. A possible implementation could be to archive the link for this student, as the product is not relevant for the student anymore.
+- To preserve the integrity of SchoolSubjects in the Ecosystem, the values subjectCode, level, and levelYear of SchoolSubjects are not allowed to change.
+
+### Catalogue API specific regulations
+
+The Catalogue API specifies all products of a Learning Application that are for sale. It is crucial that the integrity of this data is consistent and unchanged. After the product is sold to the customer, the product and its conditions are not allowed to change anymore. For this reason we added the following specific regulations for Product data:
+
+- Type, Business Models, and the reference to the Course API are not allowed to change. The only exception being error corrections, in all other cases a new Product is added to the Catalogue.
+- Based on the status of the product, the date attributes are required to fill and are (not) allowed to change. The dates have the following definitions:
+	- FirstPublishedDate: Date the product came to market.
+	- DepreciationDate: Date the LA communication that a the product will be replaced by a follow-up version
+	- SupportedUntilate: Final date the product can be sold by a Market Place.
+	- EndOfLifeDate: Final date the product can be fulfilled by a Market Place.
+
+| Status | Description | Follow-up status | FirstPublishedDate | DepreciationDate | SupportedUntilDate | EndOfLifeDate |
+|---|---|---|---|---|---|---|
+| not-yet-available | Product can be sold, but cannot be fulfilled yet. | available, will-never-be-available, limited-avialable | Required<br>Date is in the future<br>Updates allowed | - | - | - |
+| available | Product can be sold and used. | limited-available, temporary-not-available, no-longer-available |Required<br>Date in the past<br>Updates not allowed | Optional<br>Date in the future<br>Updates allowed | Optional<br>Date in the future<br>Updates allowed | Optional<br>Date in the future<br>Updates allowed |
+| limited-available | Product can be sold, but physical stock is low and finite. | available, no-longer-available |Required<br>Date in the past<br>Updates not allowed | Required<br>Date in the past<br>Updates not allowed<br>Date the product changed to status limited-available | Required<br>Date in the future<br>Updates allowed | Required<br>Date in the future<br>Updates allowed |
+| temporary-not-available | Product can be sold, but until further notice not fulfilled. | available, no-longer-available | Required<br>Date in the past<br>Updates not allowed | Optional<br>Date in the future<br>Updates allowed | Optional<br>Date in the future<br>Updates allowed | Optional<br>Date in the future<br>Updates allowed |
+| no-longer-available | Product cannot be sold anymore. Only activated Licensees are able to use the product. | not-available-or-usable| Required<br>Date in the past<br>Updates not allowed | Optional<br>Date in the past<br>Updates not allowed | Optional<br>Date in the past<br>Updates not allowed | Required<br>Date in the past<br>Updates not allowed |
+| not-available-or-usable | Product cannot be sold anymore and all Licenses are expired. Support also ended. | n.a. | Required<br>Date in the past<br>Updates not allowed | Optional<br>Date in the past<br>Updates not allowed | Optional<br>Date in the past<br>Updates not allowed | Required<br>Date in the past<br>Updates not allowed |
+| will-never-be-available | Product will never come to market. | n.a. | Optional<br>Updates not allowed | Optional<br>Updates not allowed | Optional<br>Updates not allowed | Optional<br>Updates not allowed |
+
+### Course API specific regulations
+
+The Course API specifies all units within a learning material. For this API we specified the following specific regulations:
+- During the school year it is not desirable to change this information, as students are following these units. In practice, learning applications publish new content during the schoolyear (extend the Course with new blocks or units).
+- The changes in the Course should not lead to a different product. As explained under the Catalogue API, customers bought a specific product with a reference to underlying Course content. To ensure the integrity of this product, the Course definition and content should not vary for customers that bought and/or use the product.
+- Every change in the Course is reported including an update of the PublicationDate and the Version attributes.
+
+### Progress and Results API specific regulations
+
+There are no additional regulations for the progress and results API specified yet.

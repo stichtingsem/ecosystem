@@ -108,15 +108,18 @@ components:
           groups:
             - groupId: vm-bb-2a
               name: vmbo 2a
-          subjects:
+          schoolSubjects:
             - startDate: '2019-08-24'
               endDate: '2019-08-24'
               subject:
                 subjectCode: '0071'
                 schoolSubjectCode: en
                 schoolSubjectName: Engels
-                level: vmbo-bb
-                levelYear: 2
+                levels:
+                  - level: HAVO
+                    levelYear: 1
+                  - level: VWO
+                    levelYear: 1
                 schoolLevelCode: onderbouw-2
                 schemaVersion: 0
       properties:
@@ -128,6 +131,9 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -164,9 +170,9 @@ components:
               - schoolSubject
               - startDate
       required:
-        - userId
         - firstname
         - surname
+        - schoolPeriod
         - school
     StudentReference:
       type: object
@@ -180,6 +186,9 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -187,7 +196,6 @@ components:
         surnamePrefix:
           type: string
       required:
-        - userId
         - firstname
         - surname
     Teacher:
@@ -219,6 +227,9 @@ components:
           description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -237,7 +248,6 @@ components:
           items:
             $ref: '#/components/schemas/GroupReference'
       required:
-        - userId
         - firstname
         - surname
         - schoolPeriod
@@ -253,6 +263,9 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         eckId:
           type: string
+          description: |-
+            the ECK-ID of the individual.
+            (either eckId or userId is required)
         firstname:
           type: string
         surname:
@@ -260,7 +273,6 @@ components:
         surnamePrefix:
           type: string
       required:
-        - userId
         - firstname
         - surname
     Group:
@@ -352,18 +364,18 @@ components:
           subjectCode: '0071'
           schoolSubjectCode: en
           schoolSubjectName: Engels
-          level: VO-VMBO-BB
-          levelYear: 2
-          schoolLevelCode: onderbouw-2
-      description: |-
+          levels:
+            - level: VO-VMBO-BB
+              levelYear: 2
+          schoolLevel: onderbouw-2
+      description: |
         The school subject is the combination of a subject, combined with the level of the study the subject is part of.
         For both the subject and the level, the official government codes and the code from the school are provided. In this way the teachers recognise their teminology, while the MP and LA can link this to the generic official codes.
          
-        TODO : decide which values are mendatory
       properties:
         id:
           type: string
-          description: Meaningless uuid/guid chosen by the SIS 
+          description: 'SchoolsubjectId: Meaningless uuid/guid chosen by the SIS'
         subjectCode:
           type: string
           description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
@@ -373,23 +385,33 @@ components:
         schoolSubjectName:
           type: string
           description: Optional name of subject if different within specific school.
-        level:
-          type: string
-          description: |-
-            Official Level. 
-            Allowed values are: VO-PRO, VO-VMBO-BB, VO-VMBO-KB, VO-VMBO-GL, VO-VMBO-TL, VO-HAVO, VO-VWO 
-            As specified here: https://lod.onderwijsregistratie.nl/api/catalogus/v1/klasse?subject=http://lod.onderwijsregistratie.nl/cat/cdm/def/NiveauVO-v03.2'
-        levelYear:
-          type: integer
-          description: Learning year (eg 1)
         schoolLevel:
           type: string
-          description: 'School name of the Level. example ''Technasium'' This gives schools a way to name how they want it, while we still have a link with the official level'
+          description: 'School name of the Level. example ''HAVO-2'',''Technasium-1'' This gives schools a way to name how they want it, while we still have a link with the official level'
+        levels:
+          type: array
+          description: 'List of official levels this study and subject combination. could be multiple in case of schoollevel "Brugklas", "onderbouw", etc'
+          items:
+            type: object
+            description: 'List of official levels this study and subject combination. could be multiple in case of schoollevel "Brugklas", "onderbouw", etc'
+            properties:
+              level:
+                type: string
+                description: |-
+                  Official Level. 
+                  Allowed values are: VO-PRO, VO-VMBO-BB, VO-VMBO-KB, VO-VMBO-GL, VO-VMBO-TL, VO-HAVO, VO-VWO 
+                  As specified here: https://lod.onderwijsregistratie.nl/api/catalogus/v1/klasse?subject=http://lod.onderwijsregistratie.nl/cat/cdm/def/NiveauVO-v03.2'
+              levelYear:
+                type: integer
+                description: Learning year (eg 1)
+            required:
+              - level
+              - levelYear
       required:
+        - id
         - schoolSubjectAbbr
         - schoolSubjectName
-        - level
-        - levelYear
+        - schoolLevel
     StudentDelivery:
       title: Student delivery
       type: object
@@ -495,6 +517,7 @@ paths:
       - schema:
           type: string
         name: id
+        description: 'UUID chosen by the SIS to refer to a student. This identifier is only published by the SIS as part of the url sent in an earlier event about this student. This identifier is only to be used within the context of requestparameter for this resource, not as a broader identifier of the student.'
         in: path
         required: true
     get:
@@ -517,23 +540,25 @@ paths:
                     firstname: string
                     surname: string
                     surnamePrefix: string
-                    schoolYear: string
+                    schoolPeriod: string
                     school:
                       schoolId: string
                       schoolName: string
                     groups:
                       - groupId: string
                         name: string
-                    subjects:
-                      - id: string
+                    schoolSubjects:
+                      - schoolSubject:
+                          id: string
+                          subjectCode: string
+                          schoolSubjectAbbr: string
+                          schoolSubjectName: string
+                          schoolLevel: string
+                          levels:
+                            - level: string
+                              levelYear: 0
                         startDate: '2019-08-24'
                         endDate: '2019-08-24'
-                        subjectCode: string
-                        schoolSubjectCode: string
-                        schoolSubjectName: string
-                        level: string
-                        courseCode: string
-                        courseYear: 0
       operationId: get-student-id
       description: 'Retrieve basic student information, including their groups and subject choices.'
       security:
@@ -550,6 +575,7 @@ paths:
       - schema:
           type: string
         name: id
+        description: 'UUID chosen by the SIS to refer to a teacher. This identifier is only published by the SIS as part of the url sent in an earlier event about this teacher. This identifier is only to be used within the context of requestparameter for this resource, not as a broader identifier of the teacher.'
         in: path
         required: true
     get:
@@ -611,6 +637,7 @@ paths:
       - schema:
           type: string
         name: id
+        description: 'UUID chosen by the SIS to refer to a student. This identifier is only published by the SIS as part of the url sent in an earlier event about this student. This identifier is only to be used within the context of requestparameter for this resource, not as a broader identifier of the student.'
         in: path
         required: true
     get:
