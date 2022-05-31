@@ -27,7 +27,7 @@ info:
 
     Event type | Scope needed | Description
     -- | -- | --
-    `la.cataloque` | la.catalogue | A product in the cataloque has been created or modified or deleted  
+    `la.catalogue` | la.catalogue | A product in the catalogue has been created or modified or deleted  
     `la.course` | la.course | A course has changed
     `sis.student` | sis.student-teacher-group | A student has been created or modified   
     `sis.student-delivery` | sis.student-teacher-delivery | A students delivery information has been created or modified     
@@ -153,7 +153,7 @@ paths:
           Body contains a list of events so multiple events can be send in one request. Events can only be grouped in the same request if they are for the same school.
           Oldest events first.
 
-          Events are processed asynchronisous. The request should a response with status=0 as indication that the events are received in good order, not processed in good order. The only reason to reject events is when there is no consent/authorization to deliver events from that type for a school
+          Events are processed asynchronously. The request should a response with status=0 as indication that the events are received in good order, not processed in good order. The only reason to reject events is when there is no consent/authorization to deliver events from that type for a school
       security:
         - APIKey:
             - la.catalogue
@@ -189,7 +189,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Event'
-        description: 'Events are processed asynchronisous. The request should return a 200-OK as indication that the event is received in good order, not processed in good order.'
+        description: 'Events are processed asynchronously. The request should return a 200-OK as indication that the event is received in good order, not processed in good order.'
       description: Endpoint to receive one event. These are registered by the webhook api.
       security:
         - APIKey:
@@ -240,13 +240,13 @@ components:
           description: Unique id of an event
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         type:
           type: string
           example: la.usage.first
           description: Type of the event
           enum:
-            - la.cataloque
+            - la.catalogue
             - la.course
             - sis.student
             - sis.student-delivery

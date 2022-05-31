@@ -137,7 +137,7 @@ components:
           type: string
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         schoolId:
           type: string
           description: not required for individual entitlement
@@ -175,7 +175,7 @@ components:
           type: string
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         schoolId:
           type: string
         status:
@@ -225,7 +225,7 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         entitlementUsageList:
           type: array
           items:

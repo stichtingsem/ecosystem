@@ -24,7 +24,7 @@ The LA needs/should to implement the folowing:
   * [S.3 Setup of Learning Management System for a new Learning Application (Catalogue and Course)]
 * Receive events about school students and teachers
 * send events about product updates to all parties that have registered a webhook and have given consent
-* recieve entitlements from the MP
+* receive entitlements from the MP
 * allow students to access your methods
   * if this is the first time a student uses your product: send activation to MP
 * send usage information events to MP
@@ -36,6 +36,6 @@ The LA needs/should to implement the folowing:
 # TODO : Add more details
 
 ## LA Gateway
-The Learning Application will implement 5 API's and will send Events for these to other parties. It will send events for usage, cataloque, course, progress
+The Learning Application will implement 5 API's and will send Events for these to other parties. It will send events for usage, catalogue, course, progress
 
 ![architecture](diagrams/Saas_Vendor_Infrastructure-LA_Gateway.drawio.svg)

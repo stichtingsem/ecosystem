@@ -234,7 +234,7 @@ components:
             attribute: true
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         tile:
           type: string
         description:

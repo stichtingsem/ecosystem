@@ -14,14 +14,14 @@ The MP needs/should to implement the folowing:
 * Create a UI for a school administrator to 
   * give consent to receive data from a SIS
   * give consent to send data to a LMS
-  * give consent to recieve/send data from several LA's
+  * give consent to receive/send data from several LA's
 * Receive events about school students and teachers
 * Retrieve product information from each LA's catalogue and subscribe to updates
-* recieve events about product updates
+* receive events about product updates
 * create something to create entitlements for a school
 * send the entitlements to the LA's
 * when the entitlements to the LMS'
-* recieve first activation requests from LA
+* receive first activation requests from LA
 * receive events about usage from the LA's
 
 * implement process of changing entitlements, sending updates to LA's and LMS
@@ -31,6 +31,6 @@ The MP needs/should to implement the folowing:
 # TODO : more details
 
 ## MP Gateway
-The Learning Application will implement 3 API's (entitlements, entitlements and events) and will  recieve Events for these to other parties for Students, Usage and Catalogue.
+The Learning Application will implement 3 API's (entitlements, entitlements and events) and will  receive Events for these to other parties for Students, Usage and Catalogue.
 
 ![architecture](diagrams/Saas_Vendor_Infrastructure-MP_Gateway.drawio.svg)

@@ -9,7 +9,7 @@ Each Party in the SEM Ecosystem provides and consumes APIs according to their ro
 
 | API Definition | Service Provider | Services Consuming | Remarks |
 |---|---|---|---|
-| [Events](https://stichtingsem.stoplight.io/docs/ecosystem/reference/events.v1.yaml) | all | all | All parties can send or recieve events |
+| [Events](https://stichtingsem.stoplight.io/docs/ecosystem/reference/events.v1.yaml) | all | all | All parties can send or receive events |
 | [Webhooks](https://stichtingsem.stoplight.io/docs/ecosystem/reference/events.v1.yaml) | all | all | |
 | [Consent](https://stichtingsem.stoplight.io/docs/ecosystem/reference/consent.v1.yaml) | SIS, LA, MP | SIS: MP, LA, LMS<br>LA: LMS, SIS<br>MP: LMS | |
 | [SIS Data](https://stichtingsem.stoplight.io/docs/ecosystem/reference/sisdata.v1.yaml) | SIS | MP, LA, LMS | |

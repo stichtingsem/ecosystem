@@ -128,7 +128,7 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         eckId:
           type: string
           description: |-
@@ -224,7 +224,7 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         eckId:
           type: string
           description: |-
@@ -313,7 +313,7 @@ components:
           type: string
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
           default: 0
         name:
           type: string
@@ -424,7 +424,7 @@ components:
           description: userid. (nledupersonrealId or nledupersonprofileId)
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         eckid:
           type: string
         dateOfBirth:
@@ -489,7 +489,7 @@ components:
           description: Description of school period (eg 2021-2022 or 2022H1)
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         start:
           type: string
           description: 'Start of the period (full-date format  RFC3339 https://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14])'

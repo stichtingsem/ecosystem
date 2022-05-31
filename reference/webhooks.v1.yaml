@@ -152,7 +152,7 @@ components:
           example: d290f1ee-6c54-4b01-90e6-d701748f0851
         schemaVersion:
           type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
+          description: 'schema version of this event/object. Start with 0, increment when we have changes, so we know how to deserialise.'
         url:
           type: string
           description: The url that will be called when any of the subscribed events occur
