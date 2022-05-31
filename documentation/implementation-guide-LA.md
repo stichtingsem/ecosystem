@@ -8,7 +8,6 @@ The LA needs/should to implement the folowing:
 * Setup with all SIS, MP and LA parties that you do business with.
 * Implement API endpoints
   * Events api endpoint
-  * Webhook client to register with SIS
   * Consent flow API 
   * Usage API
   * Catalogue API
