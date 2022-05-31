@@ -8,7 +8,6 @@ The SIS needs/should to implement the folowing:
 * Setup with alls LMS, MP and LA parties that you do business with.
 * Implement API endpoints
   * Events api client to send events
-  * Webhook API to recieve webhooks from LMS, MP and LA's
   * Consent flow API 
 * Create a UI for a school administrator to
   * display consent request from LA,MP,LMS
