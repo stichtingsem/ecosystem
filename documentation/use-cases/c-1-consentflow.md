@@ -12,7 +12,7 @@ The school must give consent for the following data exchanges:
 - LA to LMS (Usage, Progress & Results)
 - LA to SIS (Results)
 
-To streamline this process we developed the consent-api. The core principal is when consent is given (or revoked), the other party is notified of this change. For this purpose an optional endpoint is available. For example: if consent is revoked in the SIS to share data with a MP, the MP recieves notification that this happened.
+To streamline this process we developed the consent-api. The core principal is when consent is given (or revoked), the other party is notified of this change. For this purpose an optional endpoint is available. For example: if consent is revoked in the SIS to share data with a MP, the MP receives notification that this happened.
 
 Example scenarios: SIS to MP, LM & LA
 

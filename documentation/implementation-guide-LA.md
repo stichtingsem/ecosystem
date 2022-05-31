@@ -24,7 +24,7 @@ The LA needs/should to implement the folowing:
   * [S.3 Setup of Learning Management System for a new Learning Application (Catalogue and Course)]
 * Receive events about school students and teachers
 * send events about product updates to all parties that have registered a webhook and have given consent
-* recieve entitlements from the MP
+* receive entitlements from the MP
 * allow students to access your methods
   * if this is the first time a student uses your product: send activation to MP
 * send usage information events to MP

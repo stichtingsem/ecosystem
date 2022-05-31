@@ -17,8 +17,8 @@ The LMS needs/should to implement the folowing:
   * give consent to reciev data from several LA's
 * Receive events about school students and teachers
 * Retrieve product information from each LA's catalogue and subscribe to updates
-* recieve events about product updates
-* recieve entitlements from the MP 
+* receive events about product updates
+* receive entitlements from the MP 
   * show links for students
   * retrieve course information from LA for used products
 * receive events about progress from the LA's and display
@@ -27,6 +27,6 @@ The LMS needs/should to implement the folowing:
 
 
 ## LMS Gateway
-The LMS will implement 3 API's and will and will recieve Events from other parties for Students, Entitlements, Usage, Catalogue, Course 
+The LMS will implement 3 API's and will and will receive Events from other parties for Students, Entitlements, Usage, Catalogue, Course 
 
 ![architecture](diagrams/Saas_Vendor_Infrastructure-LMS_Vendor_Gateway.drawio.svg)

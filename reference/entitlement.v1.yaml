@@ -25,7 +25,7 @@ info:
     When a request is send to an endpoint this party does not provide : a 405 Method not allowed should be returned
 
     ## Events
-    After POC2: The Entitlements APi will use the event mechanisme. The MP will send the sttaus of the entitlement to LA and LMS. At some moments the LMS and LA need to respond with a confirmation event that the entilement or changes are recieved and process.
+    After POC2: The Entitlements APi will use the event mechanisme. The MP will send the sttaus of the entitlement to LA and LMS. At some moments the LMS and LA need to respond with a confirmation event that the entilement or changes are received and process.
 
     ## Scopes
      
@@ -379,7 +379,7 @@ components:
       x-tags:
         - entitlements
       description: |
-        Student that recieves this entitlement (fixed on name)
+        Student that receives this entitlement (fixed on name)
       properties:
         eckId:
           type: string
@@ -475,7 +475,7 @@ components:
           type: string
           description: |-
             ReferenceId for this request.
-            Must be unique for this change. If a party recieves another event with the same ReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+            Must be unique for this change. If a party receives another event with the same ReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
         entitlement:
           $ref: '#/components/schemas/Entitlement'
       required:
@@ -494,7 +494,7 @@ components:
 
         The entitlementReferenceId, entitlementId are echoed back to the MP, with a new entitlementReceiveId.
 
-        Events (or Post requests) are only handled ones. If an event with the simular entitlementReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementReceiveId. In this way the MP can validate that the response is processed only once.
+        Events (or Post requests) are only handled ones. If an event with the simular entitlementReferenceId is received the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementReceiveId. In this way the MP can validate that the response is processed only once.
 
         status - Message
         0 - All fine
@@ -560,7 +560,7 @@ components:
 
         The entitlementAndLicenseeReferenceId, entitlementId are echoed back to the MP, with a new entitlementAndLicenseeReceiveId.
 
-        Events (or Post requests) are only handled ones. If an event with the simular entitlementAndLicenseeReferenceIdis recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseeReceiveId. In this way the MP can validate that the response is processed only once.
+        Events (or Post requests) are only handled ones. If an event with the simular entitlementAndLicenseeReferenceIdis received the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseeReceiveId. In this way the MP can validate that the response is processed only once.
 
         status - Message
         0 - All fine
