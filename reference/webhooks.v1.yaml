@@ -157,7 +157,7 @@ components:
           type: string
           description: The url that will be called when any of the subscribed events occur
           example: 'http://lms.nl/api/webhook'
-        enabled_events:
+        enabledEvents:
           type: array
           description: Allow filtering of events that should be sent to this endpoint
           example:
@@ -168,7 +168,7 @@ components:
       required:
         - id
         - url
-        - enabled_events
+        - enabledEvents
       title: Webhook
       description: Definition of a webhook. The school identity is part of the auth token
   securitySchemes:
