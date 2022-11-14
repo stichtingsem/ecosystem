@@ -89,14 +89,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  statusMessage:
-                    type: string
-                  consent:
-                    $ref: '#/components/schemas/Consent'
+                $ref: '#/components/schemas/ConsentUpdateResponse'
       summary: Inform Consent update
       security:
         - APIKey:
@@ -184,15 +177,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                  statusMessage:
-                    type: string
-                required:
-                  - status
-                  - statusMessage
+                $ref: '#/components/schemas/RequestInitialSyncResponse'
       operationId: post-requestsync-referenceId
       description: |
         Request a initial sync by sending all events needed to creatine a start situation. after that the following events will keep the data in sync.
@@ -279,6 +264,25 @@ components:
         - referenceId
         - api
         - newStatus
+    ConsentUpdateResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        statusMessage:
+          type: string
+        consent:
+          $ref: '#/components/schemas/Consent'
+    RequestInitialSyncResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        statusMessage:
+          type: string
+      required:
+        - status
+        - statusMessage
   securitySchemes:
     APIKey:
       type: oauth2

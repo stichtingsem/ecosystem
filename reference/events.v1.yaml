@@ -127,19 +127,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: id of the event
-                    status:
-                      type: integer
-                      description: 'Result status (0=OK, see list with Errors)'
-                    statusMessage:
-                      type: string
-                  required:
-                    - id
-                    - status
+                  $ref: '#/components/schemas/PostEventsResponse'
       description: |
         Endpoint to receive events. These are registered by the webhook api.
       requestBody:
@@ -175,15 +163,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'Result status (0=OK, see list with Errors)'
-                  statusMessage:
-                    type: string
-                required:
-                  - status
+                $ref: '#/components/schemas/PostEventResponse'
       requestBody:
         content:
           application/json:
@@ -302,6 +282,30 @@ components:
         - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeConfirmation
         - $ref: ./results.v1.yaml#/components/schemas/SimpleResult
         - nullable: true
+    PostEventsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: id of the event
+        status:
+           type: integer
+           description: 'Result status (0=OK, see list with Errors)'
+        statusMessage:
+          type: string
+      required:
+        - id
+        - status
+    PostEventResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: 'Result status (0=OK, see list with Errors)'
+        statusMessage:
+          type: string
+      required:
+        - status
   securitySchemes:
     APIKey:
       type: oauth2
