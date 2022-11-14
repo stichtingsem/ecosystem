@@ -33,6 +33,7 @@ info:
 servers:
   - url: 'https://example.stichtingsem.org/api'
     description: course
+paths: {}
 components:
   schemas:
     SimpleProgress:
