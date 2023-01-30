@@ -48,7 +48,7 @@ components:
       type: object
       title: School
       x-tags:
-        - school
+        - School
       properties:
         schoolId:
           type: string
@@ -565,7 +565,6 @@ components:
       type: object
       title: School subject
       x-tags:
-        - Student
         - SchoolSubject
       x-examples:
         example-1:
@@ -649,9 +648,6 @@ components:
       title: School period
       type: object
       x-tags:
-        - Student
-        - Teacher
-        - Group
         - SchoolPeriod
       description: |-
         A school period is the timed scope where students, teachers, subjects and groups are exchanged.
@@ -914,7 +910,7 @@ paths:
         required: true
         description: id of the requested resource.
     get:
-      summary: GET SchoolSubjects
+      summary: GET SchoolSubject by ID
       x-tags:
         - SchoolSubject
       responses:
@@ -984,6 +980,7 @@ paths:
         - OAuth2:
             - sis.school
 x-tags:
+  - name: School
   - name: Student
   - name: StudentDelivery
   - name: Teacher
