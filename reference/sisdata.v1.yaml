@@ -66,7 +66,7 @@ components:
     Student:
       type: object
       x-tags:
-        - student
+        - Student
       title: Student
       description: Access to general student information.
       x-examples:
@@ -171,7 +171,7 @@ components:
     Class:
       type: object
       x-tags:
-        - student
+        - Student
       x-examples:
         example-1:
           classId: 34dcee7b-a8a5-42e6-a620-42ca8035d798
@@ -193,7 +193,7 @@ components:
     Study:
       type: object
       x-tags:
-        - student
+        - Student
       x-examples:
         example-1:
           studyCode: 0170
@@ -259,7 +259,7 @@ components:
     StudentReference:
       type: object
       x-tags:
-        - student
+        - Student
       title: Student reference
       properties:
         eckId:
@@ -293,7 +293,7 @@ components:
       type: object
       description: Access to delivery information for a student.
       x-tags:
-        - student
+        - StudentDelivery
       properties:
         eckId:
           type: string
@@ -387,7 +387,7 @@ components:
     Teacher:
       type: object
       x-tags:
-        - teacher
+        - Teacher
       title: Teacher
       x-examples:
         example-1:
@@ -453,7 +453,7 @@ components:
     TeacherReference:
       type: object
       x-tags:
-        - teacher
+        - Teacher
       title: Teacher reference
       properties:
         eckId:
@@ -484,6 +484,8 @@ components:
               
     Group:
       type: object
+      x-tags:
+        - Group
       x-examples:
         example-1:
           id: ae0119c7780f40b482f27ef7f3edc1e2
@@ -511,8 +513,6 @@ components:
               courseCode: W_HAVO
               courseYear: 2
           schoolYear: 2021-2022
-      x-tags:
-        - group
       description: A group in which students follow a subject taught by teachers.
       title: Group
       properties:
@@ -565,7 +565,8 @@ components:
       type: object
       title: School subject
       x-tags:
-        - schoolsubject
+        - Student
+        - SchoolSubject
       x-examples:
         example-1:
           schoolSubjectId: a50cf922-5bd6-419d-a50b-a39ac5e5b48f
@@ -648,7 +649,10 @@ components:
       title: School period
       type: object
       x-tags:
-        - student
+        - Student
+        - Teacher
+        - Group
+        - SchoolPeriod
       description: |-
         A school period is the timed scope where students, teachers, subjects and groups are exchanged.
         For each school period students and teachers are exchanged. In this way we can exchange information for a next year while the current period is still active. 
@@ -696,7 +700,7 @@ paths:
     post:
       summary: Search Student by ID
       x-tags:
-        - student
+        - Student
       requestBody:
         content:
           application/json:
@@ -738,7 +742,7 @@ paths:
     post:
       summary: Get Student delivery information by ID
       x-tags:
-        - student
+        - StudentDelivery
       requestBody:
         content:
           application/json:
@@ -780,7 +784,7 @@ paths:
     post:
       summary: Search Teacher by ID
       x-tags:
-        - teacher
+        - Teacher
       requestBody:
         content:
           application/json:
@@ -834,7 +838,7 @@ paths:
     get:
       summary: Get group by ID
       x-tags:
-        - group
+        - Group
       responses:
         '200':
           description: OK
@@ -873,7 +877,7 @@ paths:
     get:
       summary: GET SchoolSubjects
       x-tags:
-        - schoolsubject
+        - SchoolSubject
       responses:
         '200':
           description: OK
@@ -912,7 +916,7 @@ paths:
     get:
       summary: GET SchoolSubjects
       x-tags:
-        - schoolsubject
+        - SchoolSubject
       responses:
         '200':
           description: OK
@@ -945,7 +949,7 @@ paths:
     get:
       summary: Get SchoolPeriods
       x-tags:
-        - schoolperiod
+        - SchoolPeriod
       responses:
         '200':
           description: OK
@@ -980,8 +984,9 @@ paths:
         - OAuth2:
             - sis.school
 x-tags:
-  - name: group
-  - name: student
-  - name: teacher
-  - name: schoolsubject
-  - name: schoolperiod
+  - name: Student
+  - name: StudentDelivery
+  - name: Teacher
+  - name: Group
+  - name: SchoolSubject
+  - name: SchoolPeriod
