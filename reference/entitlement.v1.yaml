@@ -253,7 +253,7 @@ components:
             - schoolsubject
             - personal
             - schoolindividual
-        ActivationUntilDate:
+        activationUntilDate:
           type: string
           description: 'Date - time ActivationUntil date, is the date on which the product can no longer be converted to a license. The agreement to activate the product has expired. This does not say anything about being able to use the product after activation before this date.'
           format: date
@@ -276,7 +276,7 @@ components:
         - id
         - startDate
         - entitlementType
-        - ActivationUntilDate
+        - activationUntilDate
         - product
         - entitlee
         - status
@@ -319,7 +319,7 @@ components:
               quantity: 0
           entitlees:
             - id: string
-              display_name: string
+              displayName: string
               email: string
               eckId: string
               userId: string
@@ -361,7 +361,7 @@ components:
       x-tags:
         - entitlements
       properties:
-        display_name:
+        displayName:
           type: string
           description: The name of the person purchasing.
         email:
