@@ -300,7 +300,7 @@ components:
                   - MBO-Niveau-4
               levelYear:
                 type: integer
-                description: 'Learning year (e.g. 1)''
+                description: 'Learning year (e.g. 1)'
             required:
               - level
               - levelYear
