@@ -1,486 +1,77 @@
 openapi: 3.0.0
 info:
   title: Entitlement API
-  version: '1.0'
+  version: '1.3.0'
   description: |
     This is an API that handles the comunication of entitlements between MP, LA and LMS.
 
-    The Entitlements are the core of the SEM ecosystem and are created in the MP as a result of a school selecting learning material for the students. The MP creates entilements and send these to the LA to make sure students have access to the material. The entitlements are also send to the LMS so the LMS can create url/links for each student to the website of the LA.
+    The Entitlements are the core of the SEM ecosystem and are created in the MP as a result of a school or an individual selecting and purchasing learning material for the students. The MP creates entilements and sends these to the LA to make sure students have access to the material. The entitlements are also send to the LMS so the LMS can place access urls for each student on a personalized learning materials list.
 
-    _*Status POC2: Most of the API is synchronious as it is important that all parties share exactly the same view of the entitlements. After POC2 there will be a change to event based flows where the POST endpoints will be replaced by events and confirmation events *_
-
-    The MP is in control, the LA will report when an entitlement is activated and became a license via the usage API. Both LMS and LA can request the latest status of the entitlements by the MP.
-
-    Actual usage of an entitlement can be requested via the Usage API.
-
-    This API is implemented by MP, LA and LMS, but not all parties will implement the same endpoints. 
-
-    Endpoint | provider | client | remark
-    -- | --- | --- | -----
-    POST /entitlements | LA, LMS | MP | Send a new or updated entitlements
-    POST /entitlements/changelicenseestatus | LA, LMS | MP |change status for a specific entitlee/licensee
-    GET /entitlements | MP | LA, LMS | get entilement to check status
-    GET /entitlements/school | MP | LA, LMS | get entilements per school to check status
-
-    When a request is send to an endpoint this party does not provide : a 405 Method not allowed should be returned
+    The MP is in control, the LA will report when an entitlement is activated and became a license via the usage API. Both LMS and LA can request the latest status of the entitlements by the MP. Actual usage of an entitlement can be requested via the Usage API of the LA.
 
     ## Events
-    After POC2: The Entitlements APi will use the event mechanisme. The MP will send the sttaus of the entitlement to LA and LMS. At some moments the LMS and LA need to respond with a confirmation event that the entilement or changes are recieved and process.
+    The Entitlement API uses Events and Confirmation messages to allow the MP to orchestrate and coordinate activities at the LA and LMS roles. All Events are send by the MP. All confirmation messages are send by the LA and/or the LMS. In the confirmation message the LMS or LA replies if a certain activity is succesfully performed. More information is available in the documentation document.
+    
+    The following events are included in the Entitlement API:
+    - `Entitlement`: send by the MP to the LMS and LA to communicate new Entitlements or changes into the state of the Entitlement to trigger specific activities by the LA or the LMS.
+    - `EntitlementConfirmation`: confirmation message send by the LMS or the LA to the MP as a response to an Entilement event.
+    - `ChangeLicenseStatus`: send by the MP to the LMS and LA to communicate that the status of a specific license from a Student or Teacher is (de)blocked.
+    - `ChangeLicenseStatusConfirmation`: confirmation message send by the LMS and the LA to the MP as a response to a ChangeLicenseStatus event.
+    - `ActivationCodeRequest`: send by the MP to the LA to request a specified number of activation codes for a specified product.
+    - `ActivationCodeConfirmation`: confirmation message send by the LA to the MP as a response to an ActivationCodeRequest.
+    - `ActivationCodeRevokeRequest`: send by the MP to the LA including a request to revoke a specific activation code by the LA.
+    - `ActivationCodeRevokeConfirmation`: confirmation message send by the LA to the MP as a response to an ActivationCodeRevokeRequest.
 
     ## Scopes
-     
     Data from in the entitlements can be sensitive, and the APIs available to a requesting service depend on the scopes requested and approved during setup.  The following scopes exist for the Entitlements, and map to the following entities and attributes:
 
-    `mp.entitlement` - scope that allows MP to send entitlements and updates, allows LA,LMS to retrieve entitlements
+    - `mp.entitlement` - scope that allows MP to send Entitlements and ChangeLicenseStatus events. The same scope is used by the LA and LMS to retrieve these events and send back EntitlementConfirmation or ChangeLicenseStatusConfirmation Confirmation messages to the MP.
+    - `mp.activationcode` - scope that allows MP to send ActivationCodeRequest and ActivationCodeRevokeRequest events to a LA. The same scope is used by the LA to retreive these events and send back ActivationCodeConfirmation or ActivationCodeRevokeConfirmation Confirmation messages to the MP.
+    
+    ## Consent
+    This API requires consent of a School for communication between the MP and the LMS.
+    
+    No consent is required for communication between the MP and the LA.
+    
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
-    email: mcginkel@gmail.com
 servers:
   - url: 'https://example.stichtingsem.org/api'
     description: entitlement
-paths:
-  '/entitlements/{id}':
-    parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
-        description: Specific identifier of an entitlement.
-    get:
-      summary: Get a specific entitlement
-      x-tags:
-        - entitlements
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Entitlement'
-        '405':
-          description: Method Not Allowed
-      operationId: get-entitlements-by-id
-      description: |-
-        Retrieve the full specification for an entitlement from a marketplace, always scoped per school
-
-        This API is only implemented by the MP. LMS and LA will give an 405 HTTP status as result when called
-      security:
-        - APIKey:
-            - mp.entitlement
-  '/entitlements/school/{id}':
-    parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
-        description: School identifier.
-    get:
-      summary: Get all entitlements for a specific school
-      x-tags:
-        - entitlements
-        - school
-      parameters:
-        - in: query
-          name: status
-          description: Filter by status
-          schema:
-            type: string
-            example: provisioned
-            enum:
-              - entitled
-              - provisioned
-              - cancelled
-              - blocked
-        - in: query
-          name: start
-          description: 'Start point for pagination of results, defaults to 0,'
-          schema:
-            type: integer
-          examples:
-            default:
-              value: 0
-              summary: The start point for pagination
-        - in: query
-          name: limit
-          description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-          schema:
-            type: integer
-            maximum: 100
-          examples:
-            default:
-              value: 20
-              summary: The default value if none is provided
-            max:
-              value: 100
-              summary: The largest recommended page size
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Entitlements'
-        '405':
-          description: Method Not Allowed
-      operationId: get-entitlements-school-id
-      security:
-        - APIKey:
-            - mp.entitlement
-      description: |-
-        Retrieve all entilements for a specific school, the school will have approved the LMS and LA to have access to its Marketplace during the setup phase.
-
-        This API has pagination, using `start` and `limit`, with an optional `status` filter.
-
-        This API is only implemented by the MP. LMS and LA will give an 405 HTTP status as result when called
-  /entitlements:
-    post:
-      summary: AcceptEntitlement
-      operationId: accept-entitlements
-      responses:
-        '200':
-          description: |-
-            OK, the request is processed 
-
-            status - Message
-            0 - All fine
-            1 - Entitlement already exists
-            x - <to be defined>
-            x - <to be defined>
-
-            99- Other, see statusMessage for details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EntitlementConfirmation'
-              examples: {}
-        '405':
-          description: Method Not Allowed
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EntitlementEvent'
-            examples: {}
-      description: |-
-        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: NewEntitlement, ChangeEntitlement, with corresponding EntitlementConfirmation. The name of the objects in the body and response are already name ..event.. *
-
-         
-        The entitlement endpoint POST request is the request to send a entitlement from the MP to the LA or LMS.
-        This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
-
-        This endpoint is only implemented by the LA and LMS. The MP should give an 405 HTTP status as result when called
-      security:
-        - APIKey:
-            - mp.entitlement
-  /entitlements/changelicenseestatus:
-    post:
-      summary: ChangeLicenseeStatus
-      operationId: post-entitlements-changelicenseestatus
-      responses:
-        '200':
-          description: |
-            OK, the request is processed.
-
-            status - Message
-            0 - All fine
-            1 - Entilement not found for this school
-            2 - Entitlement not in right state for this action
-            3 - This UserId is unknown
-            4 - This EckId is unknown
-            5 - UserId has not activated this entitlement, so status cannot be changed
-            6 - EckId has not activated this entitlement, so status cannot be changed
-            7 - NewStatus value not correct
-            99- Other, see statusMessage for details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ChangeLicenseeConfirmation'
-        '405':
-          description: Method Not Allowed
-      description: |-
-        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by 2 events: ChangeLicenseeStatusEvent, with corresponding ChangeLicenseeStatusConfirmation*
-
-        This call is used to change the status of one individual licensee within an entitlement. When an entitle activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to cancelled or blocked (or back to active). 
-        The LA can return several errors as result of this request. See error table.
-        The LMS will accept any new status and use that to display or remove access links to the course in the LA.
-
-
-        This endpoint is only implemented by the LA and LMS. The MP should give an 405 HTTP status as result when called
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChangeLicenseeEvent'
-        description: ''
-      security:
-        - APIKey:
-            - mp.entitlement
-    parameters: []
 components:
   schemas:
-    Entitlement:
-      title: Entitlement
-      type: object
-      description: 'The core object that expresses information about a product that a school or indivdiual has selected for use - typically via a LML, but not always.'
-      x-tags:
-        - entitlements
-      properties:
-        schemaVersion:
-          type: integer
-        id:
-          type: string
-          example: 24e39454-5360-4ba4-819f-03e59b8dd679
-        contractId:
-          type: string
-          description: An optional unique identifier for the purchase agreement. Mandatory within the communication between MP/SA and LA
-        startDate:
-          type: string
-          format: date
-          example: '2021-08-22'
-        endDate:
-          type: string
-          format: date
-          description: |
-            moment when the entitlement was blocked or cancelled
-        entitlementType:
-          type: string
-          description: 'The type of the entitlement. '
-          enum:
-            - school
-            - schoolsubject
-            - personal
-            - schoolindividual
-        activationUntilDate:
-          type: string
-          description: 'Date - time ActivationUntil date, is the date on which the product can no longer be converted to a license. The agreement to activate the product has expired. This does not say anything about being able to use the product after activation before this date.'
-          format: date
-        product:
-          $ref: '#/components/schemas/Product'
-        entitlee:
-          $ref: '#/components/schemas/Entitlee'
-        status:
-          type: string
-          description: 'The status of the entitlement '
-          enum:
-            - entitled
-            - provisioned
-            - cancelled
-            - blocked
-            - link-ready
-          default: entitled
-          example: entitled
-      required:
-        - id
-        - startDate
-        - entitlementType
-        - activationUntilDate
-        - product
-        - entitlee
-        - status
-    Product:
-      title: Product
-      type: object
-      description: 'A product that can be accessed after being purchased or selected. The product details should be pickedup via the catalogue API. '
-      x-tags:
-        - entitlements
-      properties:
-        productId:
-          type: string
-          description: |
-            Unique identification of a product, like ean.
-      required:
-        - productId
-    School:
-      title: School
-      type: object
-      description: |-
-        The school as entitlee.
-        This can be in 3 forms: 
-        - the school will use this entitlement for the quantity specified. 
-        - when entitlees is filled: the entitlees list specifies which students in the school are entitled
-        - when schoolSubject is filled: each student who has this schoolSubject is entitled to this product. The LA can make this match based on sis data
-      x-tags:
-        - entitlements
-      x-examples:
-        example-1:
-          schoolId: string
-          schoolName: string
-          subjects:
-            - subject:
-                subjectCode: string
-                schoolSubjectCode: string
-                schoolSubjectName: string
-                level: string
-                levelYear: 0
-                schoolLevelCode: string
-              quantity: 0
-          entitlees:
-            - id: string
-              displayName: string
-              email: string
-              eckId: string
-              userId: string
-          quantity: 100
-      properties:
-        schoolId:
-          type: string
-          description: |
-            The Id for the school
-        schoolSubjects:
-          type: array
-          description: 'List of school subjects. when filled: each student who has this school stubject is entitled to this product. The LA can make this match based on sis data'
-          items:
-            type: object
-            properties:
-              schoolSubjectId:
-                type: string
-                description: Meaningless uuid/guid chosen by the SIS
-              quantity:
-                type: integer
-                description: Quantity selected or purchased.
-            required:
-              - schoolSubjectId
-        entitlees:
-          type: array
-          description: List of students in the school who has rigth to this entitlement
-          items:
-            $ref: '#/components/schemas/SchoolEntitlee'
-        quantity:
-          type: integer
-          example: 100
-          description: Quantity available to the school
-      required:
-        - schoolId
-    Individual:
-      title: Individual
-      type: object
-      description: Information about an individual who has an entitlement to use a specific product that they have purchased or selected.
-      x-tags:
-        - entitlements
-      properties:
-        displayName:
-          type: string
-          description: The name of the person purchasing.
-        email:
-          type: string
-          description: 'The email address of the person purchasing, used to notify the individual of fulfilment and provide access.'
-        eckId:
-          type: string
-          description: 'If needed, the ECK-ID of the individual.'
-        userId:
-          type: string
-          description: userid. (nledupersonrealId or nledupersonprofileId)
-    SchoolEntitlee:
-      title: SchoolEntitlee
-      type: object
-      x-tags:
-        - entitlements
-      description: |
-        Student that recieves this entitlement (fixed on name)
-      properties:
-        eckId:
-          type: string
-          description: |-
-            the ECK-ID of the individual.
-            (either eckId or userId is required)
-        userId:
-          type: string
-          description: userid. (nledupersonrealId or nledupersonprofileId)
-    SchoolSubject:
-      title: SchoolSubject
-      type: object
-      description: 'A SchoolSubject within a school that the entitlement is applicable to - typically a subject and level. So every student who has this subject is entitled to the products in this entitlement. (Todo: what is primary key and is this matchable on SIS data?)'
-      x-tags:
-        - entitlements
-      properties:
-        id:
-          type: string
-          description: Meaningless uuid/guid chosen by the SIS
-        subjectCode:
-          type: string
-          description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
-        schoolSubjectAbbr:
-          type: string
-          description: 'Abbriviation that the school gives: like ''en'''
-        schoolSubjectName:
-          type: string
-          description: 'School description of this subject, may differ from standard. like ''queens english'''
-        levels:
-          type: array
-          description: 'List of official levels this study and subject combination. could be multiple in case of schoollevel "Brugklas", "onderbouw", etc'
-          items:
-            type: object
-            description: 'List of official levels this study and subject combination. could be multiple in case of schoollevel "Brugklas", "onderbouw", etc'
-            properties:
-              level:
-                type: string
-                description: |-
-                  Official Level. 
-                  Allowed values are: VO-PRO, VO-VMBO-BB, VO-VMBO-KB, VO-VMBO-GL, VO-VMBO-TL, VO-HAVO, VO-VWO 
-                  As specified here: https://lod.onderwijsregistratie.nl/api/catalogus/v1/klasse?subject=http://lod.onderwijsregistratie.nl/cat/cdm/def/NiveauVO-v03.2'
-              levelYear:
-                type: integer
-                description: Learning year (eg 1)
-            required:
-              - level
-              - levelYear
-        schoolLevel:
-          type: string
-          description: 'School name of the Level. example ''HAVO-2'',''Technasium-1'' This gives schools a way to name how they want it, while we still have a link with the official level'
-      required:
-        - id
-        - schoolSubjectAbbr
-        - schoolSubjectName
-        - schoolLevel
-      x-examples:
-        example-1:
-          id: a50cf922-5bd6-419d-a50b-a39ac5e5b48f
-          subjectCode: '0071'
-          schoolSubjectCode: en
-          schoolSubjectName: Engels
-          levels:
-            - level: VO-VMBO-BB
-              levelYear: 2
-          schoolLevel: onderbouw-2
-    Entitlements:
-      title: Entitlements
-      type: array
-      items:
-        $ref: '#/components/schemas/Entitlement'
-      description: This is a list of entitlements that can be made available or retrieve in bulk.
-      x-tags:
-        - entitlements
-    Entitlee:
-      title: Entitlee
-      x-tags:
-        - entitlements
-      oneOf:
-        - $ref: '#/components/schemas/School'
-        - $ref: '#/components/schemas/Individual'
+  
+    schemaVersion:
+      type: string
+      description: 'Schema version of this event/object using semantic versioning 2.0.0'
+      default: 1.3.0
+    
     EntitlementEvent:
       title: EntitlementEvent
       type: object
+      x-tags:
+        - Entitlement
       description: |-
-        A new or updated entitlement is send from the MP to the LA and LMS. In some cases the LA or LMS will send an EntitlementConfirmationEvent to confirm this event.
+        A new or updated Entitlement is send from the MP to the LA and LMS. In some cases the LA or LMS will send an EntitlementConfirmation to confirm this event.
 
 
-        The entitlement is alwasy send as latest status. Many fields cannot be changed after initial "entitled" status. just the state can change or quantity be lowered.
+        The Entitlement is alwasy send as latest status. Many fields cannot be changed after initial "entitled" status. just the state can change or quantity be lowered.
 
         The event should always be processed once, the entitlementReferenceId is unique.
       properties:
         entitlementReferenceId:
           type: string
-          description: |-
-            ReferenceId for this request.
-            Must be unique for this change. If a party recieves another event with the same ReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+          format: uuid
+          description: |
+            Unique entitlementReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the EntitlementConfirmation conformation message(s) send by the LMS and/or the LA.
+            If a party recieves another event with the same entitlementReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
         entitlement:
           $ref: '#/components/schemas/Entitlement'
       required:
         - entitlementReferenceId
         - entitlement
+    
     EntitlementConfirmation:
       title: EntitlementConfirmation
       type: object
@@ -489,34 +80,38 @@ components:
         The confirmation is not always needed, only in the following situations:
         - Entitlement status is entiled and send to LA: LA will respond back with a confirmation
         - Entitlement status is provided and send to LMS: LMS will respond back with a confirmation
-        - Entitlement status is canceled and send to LA or LMS: LA or LMS will respond back with a confirmation
-        - Entitlement status is blocked and send to LA or LMS: LA or LMS will respond back with a confirmation
+        - Entitlement status is cancelled and send to LA or LMS: LA and LMS will respond back with a confirmation
+        - Entitlement status is blocked and send to LA or LMS: LA and LMS will respond back with a confirmation
 
         The entitlementReferenceId, entitlementId are echoed back to the MP, with a new entitlementReceiveId.
 
-        Events (or Post requests) are only handled ones. If an event with the simular entitlementReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementReceiveId. In this way the MP can validate that the response is processed only once.
+        Events are only handled ones. If an event with a similar entitlementReferenceId is received, the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementReceiveId. In this way the MP can validate that the response is processed only once.
 
-        status - Message
-        0 - All fine
-        1 - Entitlement cannot be found
-        x - <to be defined>
-        x - <to be defined>
-
-        99- Other, see statusMessage for details
+        Functional status codes and messages are described in the Documentation.
       properties:
         entitlementReferenceId:
           type: string
-          description: The ReferenceId that was part of the request should be echo's here
-        productId:
-          type: string
-        entitlementId:
-          type: string
+          description: 'The entitlementReferenceId that was send by the MP as part of the Entitlement event'
         entitlementReceiveId:
           type: string
+          description: 'A reference to this confirmation message send by the LA to the MP.'
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        entitlementId:
+          type: string
+          format: uuid
+          description: 'The entitlementId which was part of the Entitlement Event send by the MP.'
+        productId:
+          type: string
+          description: 'The productId which was part of the Entitlement Event send by the MP'
         processedTimestamp:
           type: string
           format: date-time
-          description: The moment that the change became effective in the LMS or LA
+          description: | 
+            The moment that the Entitlement event was processed by the LA or the LMS and the change became effective. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA or LMS to the MP.
+            
+            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+          example: "2017-07-21T17:32:28Z"
         newEntitlementStatus:
           type: string
           enum:
@@ -527,119 +122,855 @@ components:
             - blocked
           description: |-
             Confirmation of the next proposed status. 
-            Example: after provisioned the LMS can propose link-ready
-        'newEntitlementQuantity ':
+            Example: as a reply to a provisioned status in an Entitlement Event, a LMS can reply with a link-ready status to the MP.
+        newEntitlementQuantity:
           type: integer
-          description: new total quantity for this entitlement
+          description: 'LA can confirm the new quantity, as provided in the Entitlement Event by the MP to the LA.'
         success:
           type: boolean
           description: |
-            Boolen indicating the the entitlement event was processed succesfully.
-            When the LA disagrees with a certain change (example provisioned or cancelled) a false will be returned, along with a status code with the proper error
+            Boolean indicating the Entitlement event was processed succesfully.
+            When the LA disagrees with a certain change (example provisioned or cancelled) a false will be returned, along with a status code and a status message.
         status:
           type: integer
+          description: 'See functional status codes within the Documentation.'
         statusMessage:
           type: string
-          description: Extra description of the status
+          description: 'See functional status messages within the Documentation.'
       required:
         - entitlementReferenceId
-        - productId
-        - entitlementId
         - entitlementReceiveId
+        - schemaVersion
+        - entitlementId
+        - productId
         - processedTimestamp
         - newEntitlementStatus
         - success
         - status
-    ChangeLicenseeConfirmation:
-      title: ChangeLicenseeStatusConfirmation
+    
+    Entitlement:
+      title: Entitlement
       type: object
-      description: |-
-        The confirmation that is send back when the MP sends an changeLicenseeEvent to the LA or LMS.
-
-        The LMS and MP will send a confirmation to the MP that the change is understood and processed
-
-        The entitlementAndLicenseeReferenceId, entitlementId are echoed back to the MP, with a new entitlementAndLicenseeReceiveId.
-
-        Events (or Post requests) are only handled ones. If an event with the simular entitlementAndLicenseeReferenceIdis recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseeReceiveId. In this way the MP can validate that the response is processed only once.
-
-        status - Message
-        0 - All fine
-        1 - Entitlement cannot be found
-        x - <to be defined>
-        x - <to be defined>
-
-        99- Other, see statusMessage for details
+      x-tags:
+        - Entitlement
+      description: |
+        The core object that expresses information about a product that a school or indivdiual has orderd at the MP. The Entitlement can be of different variants, implying different authorization rules for Students or Teachers to activate and use the Product. These include:
+        
+        | Entitlement Type | Authorization rule | Entitlee | Mandatory Entitlee fields |
+        |---|---|---|---|
+        | personal | A single specified Entitlee (Student or Teacher) | Individual | eckId, userId or activationCode |
+        | school | All Students from the School | School | schoolId and quantity |
+        | schoolsubject | All Students following the specified SchoolSubject(s) | School | schoolId, quantity and schoolSubjects |
+        | schoolgroup | All Students that belong to a specified Group | School | schoolId, quantity and groups |
+        | schoolindividual | All specified Students | School | schoolId and entitlees or activationCodes |
+        | schoolteacher | All specified Teachers | School | schoolId and entitlees or activationCodes |
+        
       properties:
-        entitlementAndLicenseeReferenceId:
-          type: string
         entitlementId:
           type: string
+          format: uuid
+          example: 24e39454-5360-4ba4-819f-03e59b8dd679
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        contractId:
+          type: string
+          description: 'An optional unique identifier for a contract between LA and MP where this entitlement belongs to.'
+        startDate:
+          type: string
+          format: date
+          description: |
+            Date from which the product can be activated by the Entitlee(s). The startDate marks the start of the activation period.
+            
+            Format: YYYY-MM-DD (according to RFC3339).
+          example: '2021-08-22'
+        activationUntilDate:
+          type: string
+          format: date
+          description: |
+            Date on which the product can no longer be activated by the Entitlee(s). The activationUntilDate marks the end of the activation period. This does not imply the product can not be used by Licensees who have activated the product during the activation period.
+            
+            Format: YYYY-MM-DD (according to RFC3339).
+          example: '2022-07-31'
+        minExpirationDate:
+          type: string
+          format: date
+          description: |
+            Optional default expirationDate a LMS can use to maintain access links to the Product in the Learning Material Lists of Students or Teachers. The minExpirationDate is calculated by the MP based on info from the Product retreived from the Catalogue API.
+            
+            If the LMS receives an InitialActivation Event regarding this Entitlement from the LA via the Usage API. This InitialActivation Event could include an updated expirationDate. In that case this new expirationDate overwrites the minExpirationDate.
+            
+            Format: YYYY-MM-DD (according to RFC3339).
+          example: '2022-07-31'
+        endDate:
+          type: string
+          format: date
+          description: |
+            Date this Entitlement was blocked or cancelled. Mandatory field when the status changes to Cancelled or Blocked.
+            
+            Format: YYYY-MM-DD (according to RFC3339).
+        entitlementType:
+          type: string
+          description: |
+            The entitlement type specifies the variant of the authorization rule a LA and LMS should apply to determine the Entitlees that have the right to activate and use the Product.
+          enum:
+            - school
+            - schoolsubject
+            - schoolgroup
+            - schoolindividual
+            - schoolteacher
+            - personal
         productId:
           type: string
-        entitlementAndLicenseeReceiveId:
+          description: 'Unique identifier of a Product. The productId can be retreived from the Catalogue API of the LA.'
+        entitlee:
+          $ref: '#/components/schemas/Entitlee'
+        status:
           type: string
-        processedtimestamp:
+          description: 'The status of the entitlement '
+          enum:
+            - entitled
+            - provisioned
+            - link-ready
+            - cancelled
+            - blocked
+          default: entitled
+          example: entitled
+      required:
+        - entitlementId
+        - schemaVersion
+        - startDate
+        - activationUntilDate
+        - entitlementType
+        - productId
+        - entitlee
+        - status
+    
+    Entitlee:
+      title: Entitlee
+      x-tags:
+        - Entitlement
+      oneOf:
+        - $ref: '#/components/schemas/School'
+        - $ref: '#/components/schemas/Individual'
+    
+    School:
+      title: School
+      type: object
+      x-tags:
+        - Entitlement
+      description: |
+        The school as Entitlee.
+        This can be in 5 variants (see examples): 
+        - the school will use this entitlement for the quantity specified. 
+        - when schoolSubjects is filled: each Student who follows one of the schoolSubjects is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
+        - when groups is filled: each Student who is part of one of the groups is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
+        - when entitlees is filled: the entitlees list specifies which Students or Teachers in the school are entitled.
+        - when activationCodes is filled: all individuals who enter one of the specified activationCodes are entitled to the Product. This only applies once per activationCode.
+      x-examples:
+        example-1:
+          schoolId: '22461075-07BB-4A17-AB18-71B8455AA7A3'
+          quantity: 100
+        example-2:
+          schoolId: '22461075-07BB-4A17-AB18-71B8455AA7A3'
+          schoolSubjects:
+            - schoolSubjectId: "e82d9695-5556-427b-9654-8452a4b85f36"
+              quantity: 20
+            - schoolSubjectId: "0b64f2e7-bb20-4fd4-a6ff-6cfc24bf195f"
+              quantity: 80
+          quantity: 100
+        example-3:
+          schoolId: '22461075-07BB-4A17-AB18-71B8455AA7A3'
+          groups:
+            - groupId: "e82d9695-5556-427b-9654-8452a4b85f36"
+              quantity: 30
+            - groupId: "0b64f2e7-bb20-4fd4-a6ff-6cfc24bf195f"
+              quantity: 70
+          quantity: 100
+        example-4:
+          schoolId: '22461075-07BB-4A17-AB18-71B8455AA7A3'
+          entitlees:
+            - eckId: 'https://ketenid.nl/201703/1a5c9c7203901866532c2d72ce056e1d29cacc70836fe2bc3a517f3
+ f9a53eed3d77ef370ad6dcf80b3f34ced1c547c7d2e679e8e47002355f938213b3656b206'
+        example-5:
+          schoolId: '22461075-07BB-4A17-AB18-71B8455AA7A3'
+          activationCodes:
+            - 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXX'
+            - 'XXXXX-XXXXX-XXXXX-XXXXX-XXXXY'
+      properties:
+        schoolId:
           type: string
-          format: date-time
+          description: 'digiDeliveryId of the school. The digiDeliveryId is case sensitive.'
+        schoolSubjects:
+          type: array
+          description: | 
+            List of schoolSubjects. Each Student who follows one of the schoolSubjects is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
+            
+            Mandatory field for entitlementType schoolSubject.
+          items:
+            type: object
+            properties:
+              schoolSubjectId:
+                type: string
+                description: 'Unique identifier for a schoolSubject. Value can be retreived from the SIS API.'
+              quantity:
+                type: integer
+                description: 'Optional quantity selected or purchased for this schoolSubject. The sum of all specified quantities for schoolSubject equals the total quantity for this Entitlement.'
+            required:
+              - schoolSubjectId
+        groups:
+          type: array
+          description: | 
+            List of groups. Each Student who is part of one of the groups is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
+            
+            Mandatory field for entitlementType schoolGroup.
+          items:
+            type: object
+            properties:
+              groupId:
+                type: string
+                description: 'Unique identifier for a group. Value can be retreived from the SIS API.'
+              quantity:
+                type: integer
+                description: 'Optional quantity selected or purchased for this group. The sum of all specified quantities for schoolSubject equals the total quantity for this Entitlement.'
+            required:
+              - groupId
+        entitlees:
+          type: array
+          description: |
+            List of Students or Teachers who are entitled to the Product.
+            
+            Either entitlees or activationCodes is mandatory for entitlementTypes SchoolIndividual and schoolTeacher.
+          items:
+            type: object
+            description: |
+              Student or Teacher who is entitled to activate and use the Product.
+            properties:
+              eckId:
+                type: string
+                description: |-
+                  The ECK-ID of the Student or Teacher who is entitled to activate and use the Product.
+                  (either eckId or userId is required)
+              userId:
+                type: array
+                description: |
+                  The User ID(s) of the Student or Teacher who is entitled to activate and use the Product.
+                  (either eckId, userId is required)
+                items:
+                  type: object
+                  properties:
+                    userId:
+                      type: string
+                    userIdType:
+                      type: string
+                      enum:
+                        - nlPersonProfileId
+                        - nlPersonRealId
+                        - Las-key
+                        - Leerlingnummer
+                        - Medewerkernummer
+                  required:
+                    - userId
+                    - userIdType
+        activationCodes:
+          type: array
+          description: |
+            List of activationCodes which can be used to activate the Product.
+            
+            Either entitlees or activationCodes is mandatory for entitlementTypes SchoolIndividual and schoolTeacher.
+          items:
+            type: string
+            description: 'Activation code as received from the LA.'
+        quantity:
+          type: integer
+          example: 100
+          description: 'Total quantity for this Entitlement.'
+      required:
+        - schoolId
+    
+    Individual:
+      title: Individual
+      type: object
+      x-tags:
+        - Entitlement
+      description: 'Information about an individual who has an entitlement to use a specific product that they have purchased or selected.'
+      properties:
+        displayName:
+          type: string
+          description: 'The name of the Buyer.'
+        email:
+          type: string
+          description: 'The email address of the Buyer.'
+        eckId:
+          type: string
+          description: |
+            The ECK iD of the Student who is entitled to activate and use the Product.
+            (either eckId, userId or activatonCode is required)
+        userId:
+          type: array
+          description: |
+            The User ID(s) of the Student who is entitled to activate and use the Product.
+            (either eckId, userId or activatonCode is required)
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              userIdType:
+                type: string
+                enum:
+                  - nlPersonProfileId
+                  - nlPersonRealId
+                  - Las-key
+                  - Leerlingnummer
+            required:
+              - userId
+              - userIdType
+        activationCode:
+          type: string
+          description: |
+            Activation code as received from the LA.
+            (either eckId, userId or activatonCode is required)
+    
+    ChangeLicenseStatus:
+      title: ChangeLicenseStatus
+      type: object
+      x-tags:
+        - ChangeLicenseStatus
+      description: |
+        Event send by the MP to the LA or LMS to (de)block the accesss to a single License on an Entitlement for a specified Product and User. the User is specified by either the eckId or userId(s) and can be a Student or a Teacher. If the Entitlement contains a single Product, the productId matches the productId of the Entitlement. For Sets of digital Products or combi products with more than one digital (bundled) Products also a single underlying bundled Product can be (de)blocked.
+      properties:
+        entitlementAndLicenseReferenceId:
+          type: string
+          description: |
+            Unique entitlementAndLicenseReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the ChangeLicenseStatusConfirmation conformation message(s) send by the LMS and/or the LA.
+            If a party recieves another event with the same entitlementAndLicenseReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        entitlementId:
+          type: string
+          format: uuid
+          description: 'The Entitlement on which the License is registered.'
+        productId:
+          type: string
+          description: 'The Licensed (bundled) Product. If the status of a complete set of digital products is to be changed, the productId of the set should be provided.'
+        eckId:
+          type: string
+          description: |-
+            The ECK-ID of the Student or Teacher to whom the License belongs.
+            (either eckId or userId is required)
+        userId:
+          type: array
+          description: |
+            The User ID(s) of the Student or Teacher to whom the License belongs.
+            (either eckId, userId is required)
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              userIdType:
+                type: string
+                enum:
+                  - nlPersonProfileId
+                  - nlPersonRealId
+                  - Las-key
+                  - Leerlingnummer
+                  - Medewerkernummer
+            required:
+              - userId
+              - userIdType
         newLicenseStatus:
           type: string
+          description: 'The new status to which the License should be changed.'
+          enum:
+            - activated
+            - blocked
+      required:
+        - entitlementAndLicenseeReferenceId
+        - schemaVersion
+        - entitlementId
+        - productId
+        - newLicenseStatus
+    
+    ChangeLicenseStatusConfirmation:
+      title: ChangeLicenseStatusConfirmation
+      type: object
+      x-tags:
+        - ChangeLicenseStatus
+      description: |-
+        The confirmation that is send back when the MP sends a ChangeLicenseStatus event to the LA or LMS.
+
+        The LMS and LA will send a confirmation message back to the MP that the change is understood and processed.
+
+        The entitlementAndLicenseeReferenceId, entitlementId, productId, eckId/userId are echoed back to the MP, with a new entitlementAndLicenseReceiveId.
+
+        Events are only handled ones. If an event with the simular entitlementAndLicenseReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseReceiveId. In this way the MP can validate that the response is processed only once.
+        
+        Functional status codes and messages are described in the Documentation.
+      properties:
+        entitlementAndLicenseReferenceId:
+          type: string
+          description: 'The entitlementAndLicenseReferenceId that was send by the MP as part of the ChangeLicenseStatus event'
+        entitlementAndLicenseReceiveId:
+          type: string
+          description: 'A reference to this confirmation message send by the LA or LMS to the MP.'
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        entitlementId:
+          type: string
+          format: uuid
+          description: 'The entitlementId which was part of the ChangeLicenseStatus Event send by the MP.'
+        productId:
+          type: string
+          description: 'The productId which was part of the ChangeLicenseStatus Event send by the MP.'
+        eckId:
+          type: string
+          description: |-
+            The ECK-ID which was part of the ChangeLicenseStatus Event send by the MP.
+            (either eckId or userId is required)
+        userId:
+          type: array
+          description: |
+            The User ID(s) which was part of the ChangeLicenseStatus Event send by the MP.
+            (either eckId, userId is required)
+          items:
+            type: object
+            properties:
+              userId:
+                type: string
+              userIdType:
+                type: string
+                enum:
+                  - nlPersonProfileId
+                  - nlPersonRealId
+                  - Las-key
+                  - Leerlingnummer
+                  - Medewerkernummer
+            required:
+              - userId
+              - userIdType
+        processedTimestamp:
+          type: string
+          format: date-time
+          description: | 
+            The moment that the ChangeLicenseStatus event was processed by the LA or the LMS and the change became effective. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA or LMS to the MP.
+            
+            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+          example: "2017-07-21T17:32:28Z"
+        newLicenseStatus:
+          type: string
+          description: 'The new status to which the License is changed.'
           enum:
             - activated
             - blocked
         success:
           type: boolean
-          description: |-
-            Boolen indicating the the changeLicenseeEvent was processed succesfully.
-            When the LA disagrees with a certain change a false will be returned, along with a status code with the proper error. The LMS cannot disagree and should follow
+          description: |
+            Boolean indicating the Entitlement event was processed succesfully.
+            When the LA disagrees with a certain change (example provisioned or cancelled) a false will be returned, along with a status code and a status message.
         status:
           type: integer
+          description: 'See functional status codes within the Documentation.'
         statusMessage:
           type: string
+          description: 'See functional status messages within the Documentation.'
       required:
-        - entitlementAndLicenseeReferenceId
+        - entitlementAndLicenseReferenceId
+        - entitlementAndLicenseReceiveId
+        - schemaVersion
         - entitlementId
         - productId
-        - entitlementAndLicenseeReceiveId
-        - processedtimestamp
+        - processedTimestamp
         - newLicenseStatus
         - success
         - status
-    ChangeLicenseeEvent:
-      title: ChangeLicenseeEvent
+    
+    ActivationCodeRequest:
+      title: ActivationCodeRequest
       type: object
+      x-tags:
+        - ActivationCode
+      description: |
+        Event send by the MP to the LA to request a specified quantity of activation codes for a single Product. These activation codes can be sold by the MP and can be used to specify SchoolIndividual, SchoolTeacher or Personal Entitlements.
       properties:
-        entitlementAndLicenseeReferenceId:
+        requestReferenceId:
           type: string
-        entitlementId:
+          description: |
+            Unique requestReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the ActivationCodeConfirmation conformation message(s) send by the LA.
+            If a party recieves another event with the same requestReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        productId:
           type: string
-        userid:
+          description: 'The Product for which a MP requests (an) activation code(s). The productId can be retreived from the Catalogue API from the LA.'
+        quantity:
+          type: integer
+          example: 1
+          description: 'Total requested activation codes for the Product.'
+        contractId:
           type: string
-          description: userid. (nledupersonrealId or nledupersonprofileId)
-        eckId:
-          type: string
-          description: |-
-            the ECK-ID of the individual.
-            (either eckId or userId is required)
-        newLicenseStatus:
-          type: string
-          enum:
-            - activated
-            - blocked
+          description: 'An optional unique identifier for a contract between LA and MP where this requests belongs to.'
       required:
-        - entitlementAndLicenseeReferenceId
-        - entitlementId
-        - newLicenseStatus
+        - requestReferenceId
+        - schemaVersion
+        - productId
+        - quantity
+    
+    ActivationCodeConfirmation:
+      title: ActivationCodeConfirmation
+      type: object
+      x-tags:
+        - ActivationCode
+      description: |
+        The confirmation that is send back when the MP sends a ActivationCodeRequest event to the LA.
+
+        The LA will send a confirmation message back to the MP including the requested activation codes. In case the LA cannot generate these codes a functional status code and message is replied. 
+
+        Events are only handled ones. If an event with the simular requestReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
+        
+        Functional status codes and messages are described in the Documentation.
+      properties:
+        requestReferenceId:
+          type: string
+          description: 'The requestReferenceId that was send by the MP as part of the ActivationCodeRequest event'
+        responseReferenceId:
+          type: string
+          description: 'A reference to this confirmation message send by the LA to the MP.'
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        productId:
+          type: string
+          description: 'The productId which was part of the ActivationCodeRequest Event send by the MP. The activation codes give Students or Teachers the possiblity to activate this Product.'
+        activationCodes:
+          type: array
+          description: |
+            List of activation codes which can be used to activate the Product.
+          items:
+            type: string
+            description: 'Activation code which can be used to activate the Product'
+        processedTimestamp:
+          type: string
+          format: date-time
+          description: | 
+            The moment that the activation codes were generated by the LA and the request was processed. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA to the MP.
+            
+            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+          example: "2017-07-21T17:32:28Z"
+        success:
+          type: boolean
+          description: |
+            Boolean indicating the ActivationCodeRequest event was processed succesfully.
+            When the LA disagrees with the request a false will be returned, along with a status code and a status message.
+        status:
+          type: integer
+          description: 'See functional status codes within the Documentation.'
+        statusMessage:
+          type: string
+          description: 'See functional status messages within the Documentation.'
+      required:
+        - requestReferenceId
+        - responseReferenceId
+        - schemaVersion
+        - productId
+        - processedTimestamp
+        - success
+        - status
+    
+    ActivationCodeRevokeRequest:
+      title: ActivationCodeRevokeRequest
+      type: object
+      x-tags:
+        - ActivationCode
+      description: |
+        Event send by the MP to the LA with a request to revoke an activation code. After the revoke, the activation code cannot be used to activate a Product.
+      properties:
+        requestReferenceId:
+          type: string
+          description: |
+            Unique requestReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the ActivationCodeRevokeConfirmation conformation message(s) send by the LA.
+            If a party recieves another event with the same requestReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        activationCode:
+          type: string
+          description: 'Activation code which should be revoked by the LA.'
+        responseReferenceId:
+          type: string
+          description: "Optional reference to the responseReferenceID of the confirmation message in which the LA send the activation code to the MP."
+      required:
+        - requestReferenceId
+        - schemaVersion
+        - activationCode
+    
+    ActivationCodeRevokeConfirmation:
+      title: ActivationCodeRevokeConfirmation
+      type: object
+      x-tags:
+        - ActivationCode
+      description: |
+        The confirmation that is send back when the MP sends a ActivationCodeRevokeRequest event to the LA.
+
+        The LA will send a confirmation message back to the MP including a success parameter indicating if the revoke has ben processed sucessfully. In case the revoke was not processed, the LA replies with a functional status code and message. 
+
+        Events are only handled ones. If an event with the simular requestReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
+        
+        Functional status codes and messages are described in the Documentation.
+      properties:
+        requestReferenceId:
+          type: string
+          description: 'The requestReferenceId that was send by the MP as part of the ActivationCodeRequest event'
+        responseReferenceId:
+          type: string
+          description: 'A reference to this confirmation message send by the LA to the MP.'
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        activationCode:
+          type: string
+          description: 'The activation code which was part of the ActivationCodeRevokeRequest Event send by the MP.'
+        processedTimestamp:
+          type: string
+          format: date-time
+          description: | 
+            The moment that the activation codes were generated by the LA and the request was processed. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA to the MP.
+            
+            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+          example: "2017-07-21T17:32:28Z"
+        success:
+          type: boolean
+          description: |
+            Boolean indicating the ActivationCodeRevokeRequest event was processed succesfully.
+            When the LA disagrees with the request a false will be returned, along with a status code and a status message.
+        status:
+          type: integer
+          description: 'See functional status codes within the Documentation.'
+        statusMessage:
+          type: string
+          description: 'See functional status messages within the Documentation.'
+      required:
+        - requestReferenceId
+        - responseReferenceId
+        - schemaVersion
+        - activationCode
+        - processedTimestamp
+        - success
+        - status
+    
   securitySchemes:
-    APIKey:
+    OAuth2:
       type: oauth2
       flows:
         clientCredentials:
           tokenUrl: ''
           refreshUrl: ''
           scopes:
-            mp.entitlement: scope needed to request entitlement from the mp
+            mp.entitlement: 'scope needed to send and receive Entitlement and ChangeLicenseStatus Events and Confirmation messages'
+            mp.activationcode: 'scope needed to send and receive ActivationCode Events and Confirmation messages.'
       description: ''
+
+paths:
+  /entitlements/{id}:
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: 'Specific entitlementId of an Entitlement.'
+      - schema:
+          type: string
+        name: schemaVersion
+        in: query
+        required: false
+        description: 'Optional parameter to request a response in a specific schema version. If none supplied, the server will choose its default schema version. See the Events API for a call to get the default schema version.'
+    get:
+      summary: Get Entitlement by ID
+      x-tags:
+        - Entitlement
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entitlement'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - No valid token presented
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+        '404':
+          description: Not Found
+      operationId: get-entitlement-by-id
+      description: |-
+        Retrieve an entitlement by ID. Consent is required for a LMS.
+      security:
+        - OAuth2:
+            - mp.entitlement
+  
+  /entitlements/school/{id}:
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: 'schoolId (digiDeliveryId, case sensitive) of the School'
+      - schema:
+            type: string
+            example: provisioned
+            enum:
+              - entitled
+              - provisioned
+              - link-ready
+              - cancelled
+              - blocked
+        name: status
+        in: query
+        description: 'Filter by status'
+      - schema:
+          type: integer
+        name: start
+        in: query
+        description: 'Start point for pagination of results, defaults to 0,'
+        examples:
+          default:
+            value: 0
+            summary: The start point for pagination
+      - schema:
+          type: integer
+          maximum: 100
+        in: query
+        name: limit
+        description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
+        examples:
+          default:
+            value: 20
+            summary: The default value if none is provided
+          max:
+            value: 100
+            summary: The largest recommended page size
+      - schema:
+          type: string
+        name: schemaVersion
+        in: query
+        required: false
+        description: 'Optional parameter to request a response in a specific schema version. If none supplied, the server will choose its default schema version. See the Events API for a call to get the default schema version.'
+    get:
+      summary: Get All Entitlements by School ID
+      x-tags:
+        - Entitlement
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Entitlement'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - No valid token presented
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+        '404':
+          description: Not Found
+      operationId: get-all-entitlements-by-school-id
+      security:
+        - OAuth2:
+            - mp.entitlement
+      description: |-
+        Retrieve all entilements for a specific school. Consent is required for a LMS.
+
+        This API has pagination, using `start` and `limit`, with an optional `status` filter.
+        
+  /entitlements:
+    post:
+      summary: AcceptEntitlement
+      operationId: accept-entitlements
+      deprecated: True
+      responses:
+        '200':
+          description: |-
+            OK, the request is processed 
+            
+            Functional status codes and messages are described in the Documentation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitlementConfirmation'
+              examples: {}
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - No valid token presented
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+        '405':
+          description: Method Not Allowed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EntitlementEvent'
+            examples: {}
+      description: |-
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by the EntitlementEvent, with corresponding EntitlementConfirmation. The name of the objects in the body and response are already name ..event.. *
+
+         
+        The entitlement endpoint POST request is the request to send an entitlement from the MP to the LA or LMS.
+        This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
+
+        This endpoint is only implemented by the LA and LMS. The MP should give an 405 HTTP status as result when called
+      security:
+        - OAuth2:
+            - mp.entitlement
+  
+  /entitlements/changelicensestatus:
+    post:
+      summary: ChangeLicenseStatus
+      operationId: post-entitlements-changelicensestatus
+      deprecated: True
+      responses:
+        '200':
+          description: |
+            OK, the request is processed.
+            
+            Functional status codes and messages are described in the Documentation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeLicenseStatusConfirmation'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - No valid token presented
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+        '405':
+          description: Method Not Allowed
+      description: |-
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecated after that phase and the POST request is replaced by the ChangeLicenseStatus event, with corresponding ChangeLicenseStatusConfirmation*
+
+        This call is used to change the status of one individual license within an entitlement. When an entitlee activates the entitlement for the first time the status for this entitlee is activated. after that moment the MP can use this call to change the status to blocked (or back to activated). 
+        The LA can return several errors as result of this request. See Documentation.
+        The LMS will accept any new status and use that to display or remove access links to the Product.
+        
+        This endpoint is only implemented by the LA and LMS. The MP should give an 405 HTTP status as result when called
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeLicenseStatus'
+        description: ''
+      security:
+        - OAuth2:
+            - mp.entitlement
+    parameters: []
+
 x-tags:
-  - name: entitlements
-  - name: provider
-  - name: school
+  - name: Entitlement
+  - name: ChangeLicenseStatus
+  - name: ActivationCode
