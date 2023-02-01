@@ -45,12 +45,10 @@ components:
           status: final
           assessmentDateTime: '2019-08-24T14:15:22Z'
           schoolSubjectId: '63542987645344'
-          additionalInfo: ''
           result: '7.6'
           resultType: 1.0-10.0
           employees:
-            userId: abj@edu.nl
-            eckId: eck-T123
+            - eckId: eck-T123
       description: 'A description of a simple result statement that a LA will send to the SIS or LMS'
       properties:
         id:
