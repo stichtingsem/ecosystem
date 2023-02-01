@@ -304,7 +304,7 @@ components:
           minItems: 0
           description: |-
             Additinal: 
-            A list of used streams in this course. A stream is a extra catagory for the au's to indicate optional material, material voor 'verdieping', etc. It helps teachers to specify individual courses for each student
+            A list of used streams in this course. A stream is an extra metadata field for the au's to indicate optional material, core material or other types of material ('verdieping', etc.). It helps teachers to specify individual courses for each student
           items:
             $ref: '#/components/schemas/CMI5.Stream'
       required:
@@ -315,9 +315,9 @@ components:
     CMI5.Objective:
       title: CMI5.Objective
       type: object
-      description: 'All'
       x-tags:
         - CourseStructure
+      description: 'A learning objective.'
       properties:
         id:
           type: string
@@ -525,6 +525,27 @@ components:
         - title
         - url
     
+    CMI5.Stream:
+      title: CMI5.Stream
+      type: object
+      x-tags:
+        - CourseStructure
+      description: 'A Stream gives a LA to define the type of Assignable unit. This can be for example be core or additional material.'
+      properties:
+        id:
+          type: string
+          description: 'The id to be referenced in an Assignable Unit.'
+          xml:
+            attribute: true
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+        description:
+          type: string
+          description: "Short description of the Stream."
+          xml:
+            prefix: ecs
+            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
+    
     CMI5.TextType:
       title: CMI5.TextType
       type: array
@@ -548,25 +569,7 @@ components:
         example-1:
           - lang: string
             langstring: string
-    
-    CMI5.Stream:
-      title: CMI5.Stream
-      type: object
-      x-tags:
-        - CourseStructure
-      properties:
-        id:
-          type: string
-          xml:
-            attribute: true
-            prefix: ecs
-            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
-        description:
-          type: string
-          xml:
-            prefix: ecs
-            namespace: 'http://www.sanoma.com/cmi5/ExtendedCourseStructureExtension.xsd'
-  
+      
   securitySchemes:
     OAuth2:
       type: oauth2
