@@ -75,6 +75,8 @@ components:
     EntitlementConfirmation:
       title: EntitlementConfirmation
       type: object
+      x-tags:
+        - Entitlement
       description: |-
         The confirmation that is send back when the MP sends an event to the LA or LMS.
         The confirmation is not always needed, only in the following situations:
