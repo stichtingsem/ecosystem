@@ -56,7 +56,7 @@ components:
         A new or updated Entitlement is send from the MP to the LA and LMS. In some cases the LA or LMS will send an EntitlementConfirmation to confirm this event.
 
 
-        The Entitlement is alwasy send as latest status. Many fields cannot be changed after initial "entitled" status. just the state can change or quantity be lowered.
+        The Entitlement is always send as latest status. Many fields cannot be changed after initial "entitled" status. just the state can change or quantity be lowered.
 
         The event should always be processed once, the entitlementReferenceId is unique.
       properties:
@@ -87,7 +87,7 @@ components:
 
         The entitlementReferenceId, entitlementId are echoed back to the MP, with a new entitlementReceiveId.
 
-        Events are only handled ones. If an event with a similar entitlementReferenceId is received, the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementReceiveId. In this way the MP can validate that the response is processed only once.
+        Events are only handled once. If an event with a similar entitlementReferenceId is received, the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementReceiveId. In this way the MP can validate that the response is processed only once.
 
         Functional status codes and messages are described in the Documentation.
       properties:
@@ -506,7 +506,7 @@ components:
 
         The entitlementAndLicenseeReferenceId, entitlementId, productId, eckId/userId are echoed back to the MP, with a new entitlementAndLicenseReceiveId.
 
-        Events are only handled ones. If an event with the simular entitlementAndLicenseReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseReceiveId. In this way the MP can validate that the response is processed only once.
+        Events are only handled once. If an event with the simular entitlementAndLicenseReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseReceiveId. In this way the MP can validate that the response is processed only once.
         
         Functional status codes and messages are described in the Documentation.
       properties:
@@ -919,13 +919,13 @@ paths:
               $ref: '#/components/schemas/EntitlementEvent'
             examples: {}
       description: |-
-        *NOTE:This Endpoint is defined for POC-2. It will be deprecate after that phase and the POST request is replaced by the EntitlementEvent, with corresponding EntitlementConfirmation. The name of the objects in the body and response are already name ..event.. *
+        *NOTE:This Endpoint is defined for POC-2. It will be deprecated after that phase and the POST request is replaced by the EntitlementEvent, with corresponding EntitlementConfirmation. The name of the objects in the body and response are already name ..event.. *
 
          
         The entitlement endpoint POST request is the request to send an entitlement from the MP to the LA or LMS.
         This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
 
-        This endpoint is only implemented by the LA and LMS. The MP should give an 405 HTTP status as result when called
+        This endpoint is only implemented by the LA and LMS. The MP should give a 405 HTTP status as result when called
       security:
         - OAuth2:
             - mp.entitlement
@@ -960,7 +960,7 @@ paths:
         The LA can return several errors as result of this request. See Documentation.
         The LMS will accept any new status and use that to display or remove access links to the Product.
         
-        This endpoint is only implemented by the LA and LMS. The MP should give an 405 HTTP status as result when called
+        This endpoint is only implemented by the LA and LMS. The MP should give a 405 HTTP status as result when called
       requestBody:
         content:
           application/json:
