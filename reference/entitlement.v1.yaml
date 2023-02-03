@@ -3,18 +3,18 @@ info:
   title: Entitlement API
   version: '1.3.0'
   description: |
-    This is an API that handles the comunication of entitlements between MP, LA and LMS.
+    This is an API that handles the communication of entitlements between MP, LA and LMS.
 
-    The Entitlements are the core of the SEM ecosystem and are created in the MP as a result of a school or an individual selecting and purchasing learning material for the students. The MP creates entilements and sends these to the LA to make sure students have access to the material. The entitlements are also send to the LMS so the LMS can place access urls for each student on a personalized learning materials list.
+    The Entitlements are the core of the SEM ecosystem and are created in the MP as a result of a school or an individual selecting and purchasing learning material for the students. The MP creates entitlements and sends these to the LA to make sure students have access to the material. The entitlements are also send to the LMS so the LMS can place access urls for each student on a personalized learning materials list.
 
     The MP is in control, the LA will report when an entitlement is activated and became a license via the usage API. Both LMS and LA can request the latest status of the entitlements by the MP. Actual usage of an entitlement can be requested via the Usage API of the LA.
 
     ## Events
-    The Entitlement API uses Events and Confirmation messages to allow the MP to orchestrate and coordinate activities at the LA and LMS roles. All Events are send by the MP. All confirmation messages are send by the LA and/or the LMS. In the confirmation message the LMS or LA replies if a certain activity is succesfully performed. More information is available in the documentation document.
+    The Entitlement API uses Events and Confirmation messages to allow the MP to orchestrate and coordinate activities at the LA and LMS roles. All Events are send by the MP. All confirmation messages are send by the LA and/or the LMS. In the confirmation message the LMS or LA replies if a certain activity is successfully performed. More information is available in the documentation document.
     
     The following events are included in the Entitlement API:
     - `Entitlement`: send by the MP to the LMS and LA to communicate new Entitlements or changes into the state of the Entitlement to trigger specific activities by the LA or the LMS.
-    - `EntitlementConfirmation`: confirmation message send by the LMS or the LA to the MP as a response to an Entilement event.
+    - `EntitlementConfirmation`: confirmation message send by the LMS or the LA to the MP as a response to an Entitlement event.
     - `ChangeLicenseStatus`: send by the MP to the LMS and LA to communicate that the status of a specific license from a Student or Teacher is (de)blocked.
     - `ChangeLicenseStatusConfirmation`: confirmation message send by the LMS and the LA to the MP as a response to a ChangeLicenseStatus event.
     - `ActivationCodeRequest`: send by the MP to the LA to request a specified number of activation codes for a specified product.
@@ -65,7 +65,7 @@ components:
           format: uuid
           description: |
             Unique entitlementReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the EntitlementConfirmation conformation message(s) send by the LMS and/or the LA.
-            If a party recieves another event with the same entitlementReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+            If a party receives another event with the same entitlementReferenceId value, the receiving party should not process the event again. It should send the confirmation again.
         entitlement:
           $ref: '#/components/schemas/Entitlement'
       required:
@@ -80,7 +80,7 @@ components:
       description: |-
         The confirmation that is send back when the MP sends an event to the LA or LMS.
         The confirmation is not always needed, only in the following situations:
-        - Entitlement status is entiled and send to LA: LA will respond back with a confirmation
+        - Entitlement status is entitled and send to LA: LA will respond back with a confirmation
         - Entitlement status is provided and send to LMS: LMS will respond back with a confirmation
         - Entitlement status is cancelled and send to LA or LMS: LA and LMS will respond back with a confirmation
         - Entitlement status is blocked and send to LA or LMS: LA and LMS will respond back with a confirmation
@@ -112,7 +112,7 @@ components:
           description: | 
             The moment that the Entitlement event was processed by the LA or the LMS and the change became effective. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA or LMS to the MP.
             
-            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+            Format: Conform openapi in ZULU time as specified in RFC 3339, section 5.6
           example: "2017-07-21T17:32:28Z"
         newEntitlementStatus:
           type: string
@@ -131,7 +131,7 @@ components:
         success:
           type: boolean
           description: |
-            Boolean indicating the Entitlement event was processed succesfully.
+            Boolean indicating the Entitlement event was processed successfully.
             When the LA disagrees with a certain change (example provisioned or cancelled) a false will be returned, along with a status code and a status message.
         status:
           type: integer
@@ -156,16 +156,16 @@ components:
       x-tags:
         - Entitlement
       description: |
-        The core object that expresses information about a product that a school or indivdiual has orderd at the MP. The Entitlement can be of different variants, implying different authorization rules for Students or Teachers to activate and use the Product. These include:
+        The core object that expresses information about a product that a school or individual has ordered at the MP. The Entitlement can be of different variants, implying different authorization rules for Students or Teachers to activate and use the Product. These include:
         
-        | Entitlement Type | Authorization rule | Entitlee | Mandatory Entitlee fields |
+        | Entitlement Type | Authorization rule | `Entitlee` | Mandatory `Entitlee` fields |
         |---|---|---|---|
-        | personal | A single specified Entitlee (Student or Teacher) | Individual | eckId, userId or activationCode |
-        | school | All Students from the School | School | schoolId and quantity |
-        | schoolsubject | All Students following the specified SchoolSubject(s) | School | schoolId, quantity and schoolSubjects |
-        | schoolgroup | All Students that belong to a specified Group | School | schoolId, quantity and groups |
-        | schoolindividual | All specified Students | School | schoolId and entitlees or activationCodes |
-        | schoolteacher | All specified Teachers | School | schoolId and entitlees or activationCodes |
+        | personal | A single specified Entitled (Student or Teacher) | Individual | `eckId`, `userId` or `activationCode` |
+        | school | All Students from the School | School | `schoolId` and `quantity` |
+        | schoolsubject | All Students following the specified SchoolSubject(s) | School | `schoolId`, `quantity` and `schoolSubjects` |
+        | schoolgroup | All Students that belong to a specified Group | School | `schoolId`, `quantity` and `groups` |
+        | schoolindividual | All specified Students | School | `schoolId` and `entitlees` or `activationCodes` |
+        | schoolteacher | All specified Teachers | School | `schoolId` and `entitlees` or `activationCodes` |
         
       properties:
         entitlementId:
@@ -439,13 +439,13 @@ components:
       x-tags:
         - ChangeLicenseStatus
       description: |
-        Event send by the MP to the LA or LMS to (de)block the accesss to a single License on an Entitlement for a specified Product and User. the User is specified by either the eckId or userId(s) and can be a Student or a Teacher. If the Entitlement contains a single Product, the productId matches the productId of the Entitlement. For Sets of digital Products or combi products with more than one digital (bundled) Products also a single underlying bundled Product can be (de)blocked.
+        Event send by the MP to the LA or LMS to (de)block the access to a single License on an Entitlement for a specified Product and User. the User is specified by either the eckId or userId(s) and can be a Student or a Teacher. If the Entitlement contains a single Product, the productId matches the productId of the Entitlement. For Sets of digital Products or combi products with more than one digital (bundled) Products also a single underlying bundled Product can be (de)blocked.
       properties:
         entitlementAndLicenseReferenceId:
           type: string
           description: |
             Unique entitlementAndLicenseReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the ChangeLicenseStatusConfirmation conformation message(s) send by the LMS and/or the LA.
-            If a party recieves another event with the same entitlementAndLicenseReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+            If a party receives another event with the same entitlementAndLicenseReferenceId value, the receiving party should not process the event again. It should send the confirmation again.
         schemaVersion:
           $ref: '#/components/schemas/schemaVersion'
         entitlementId:
@@ -506,7 +506,7 @@ components:
 
         The entitlementAndLicenseeReferenceId, entitlementId, productId, eckId/userId are echoed back to the MP, with a new entitlementAndLicenseReceiveId.
 
-        Events are only handled once. If an event with the simular entitlementAndLicenseReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseReceiveId. In this way the MP can validate that the response is processed only once.
+        Events are only handled once. If an event with the similar entitlementAndLicenseReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseReceiveId. In this way the MP can validate that the response is processed only once.
         
         Functional status codes and messages are described in the Documentation.
       properties:
@@ -557,7 +557,7 @@ components:
           description: | 
             The moment that the ChangeLicenseStatus event was processed by the LA or the LMS and the change became effective. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA or LMS to the MP.
             
-            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+            Format: Conform openapi in ZULU time as specified in RFC 3339, section 5.6
           example: "2017-07-21T17:32:28Z"
         newLicenseStatus:
           type: string
@@ -568,7 +568,7 @@ components:
         success:
           type: boolean
           description: |
-            Boolean indicating the Entitlement event was processed succesfully.
+            Boolean indicating the Entitlement event was processed successfully.
             When the LA disagrees with a certain change (example provisioned or cancelled) a false will be returned, along with a status code and a status message.
         status:
           type: integer
@@ -599,7 +599,7 @@ components:
           type: string
           description: |
             Unique requestReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the ActivationCodeConfirmation conformation message(s) send by the LA.
-            If a party recieves another event with the same requestReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+            If a party receives another event with the same requestReferenceId value, the receiving party should not process the event again. It should send the confirmation again.
         schemaVersion:
           $ref: '#/components/schemas/schemaVersion'
         productId:
@@ -642,7 +642,7 @@ components:
           $ref: '#/components/schemas/schemaVersion'
         productId:
           type: string
-          description: 'The productId which was part of the ActivationCodeRequest Event send by the MP. The activation codes give Students or Teachers the possiblity to activate this Product.'
+          description: 'The productId which was part of the ActivationCodeRequest Event send by the MP. The activation codes give Students or Teachers the possibility to activate this Product.'
         activationCodes:
           type: array
           description: |
@@ -656,12 +656,12 @@ components:
           description: | 
             The moment that the activation codes were generated by the LA and the request was processed. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA to the MP.
             
-            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+            Format: Conform openapi in ZULU time as specified in RFC 3339, section 5.6
           example: "2017-07-21T17:32:28Z"
         success:
           type: boolean
           description: |
-            Boolean indicating the ActivationCodeRequest event was processed succesfully.
+            Boolean indicating the ActivationCodeRequest event was processed successfully.
             When the LA disagrees with the request a false will be returned, along with a status code and a status message.
         status:
           type: integer
@@ -690,7 +690,7 @@ components:
           type: string
           description: |
             Unique requestReferenceId for this request. This referenceId is used by the Event Mediator of the MP to match the ActivationCodeRevokeConfirmation conformation message(s) send by the LA.
-            If a party recieves another event with the same requestReferenceId value, the recieving party should not process the event again. It sould send the confirmation again.
+            If a party receives another event with the same requestReferenceId value, the receiving party should not process the event again. It should send the confirmation again.
         schemaVersion:
           $ref: '#/components/schemas/schemaVersion'
         activationCode:
@@ -735,12 +735,12 @@ components:
           description: | 
             The moment that the activation codes were generated by the LA and the request was processed. As Events and confirmation messages are send asynchronous, this is not the moment the confirmation message was send by the LA to the MP.
             
-            Format: Conform openapi in ZULU time zoals gespecificeerd in RFC 3339, section 5.6
+            Format: Conform openapi in ZULU time as specified in RFC 3339, section 5.6
           example: "2017-07-21T17:32:28Z"
         success:
           type: boolean
           description: |
-            Boolean indicating the ActivationCodeRevokeRequest event was processed succesfully.
+            Boolean indicating the ActivationCodeRevokeRequest event was processed successfully.
             When the LA disagrees with the request a false will be returned, along with a status code and a status message.
         status:
           type: integer
@@ -884,7 +884,7 @@ paths:
         - OAuth2:
             - mp.entitlement
       description: |-
-        Retrieve all entilements for a specific school. Consent is required for a LMS.
+        Retrieve all entitlements for a specific school. Consent is required for a LMS.
 
         This API has pagination, using `start` and `limit`, with an optional `status` filter.
         
@@ -923,7 +923,7 @@ paths:
 
          
         The entitlement endpoint POST request is the request to send an entitlement from the MP to the LA or LMS.
-        This is a synchronious call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
+        This is a synchronous call, processing is a legal contract. A response with a processed timestamp and a confirmation id is mandatory as response.
 
         This endpoint is only implemented by the LA and LMS. The MP should give a 405 HTTP status as result when called
       security:
