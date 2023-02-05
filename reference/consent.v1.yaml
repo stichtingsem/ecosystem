@@ -217,11 +217,11 @@ paths:
   
   /consents/school/{id}:
     get:
-      summary: 'Get Consents from School by ID'
+      summary: 'Get Consents by School'
       description: 'Retreive all consents registered for a specified school `id` .'
       x-tags:
         - Consent
-      operationId: get-consents-school-by-id
+      operationId: get-consents-by-school
       responses:
         '200':
           description: 'In the respones all apis are included for which a consent is registered on Produder and/or Consumer side.'
@@ -256,7 +256,7 @@ paths:
   
   /consents/school/{id}/{api}:
     get:
-      summary: 'Get Consents from School for API'
+      summary: 'Get Consent by School and API'
       description: 'Retreive the most recent consent registered for a specified school `id` and `api`. Alternatively a `referenceId` can be included in the query to retreive the status of a specific consent registration. The `referenceId` is always from the requesting party and can therefore be the producerReferenceId or consumerReferenceId.'
       x-tags:
         - Consent
