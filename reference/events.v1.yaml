@@ -2,123 +2,391 @@ openapi: 3.0.0
 servers:
   - url: 'https://example.stichtingsem.org/api'
 info:
-  version: 1.0.0
-  title: Generic Event Stream API
+  version: 1.3.0
+  title: Events API
   description: |-
-    The proposed architecture for the new ecosystem is based on an Event model, where each provider of data to the ecosystem provides a mechanism for other participants to securely subscribe to events that are of interest to them.
+    The SEM Ecosystem is based upon an Event Driven Architecture. All parties are required to implement the Events API to send and receive Events.
 
-    The Event API is the mechanism, in conjunction with the Webhook API, that enables this event based notification mechanism to function reliably.  It enables subscribers to request events from the provider, and paginate through to the last place that it received a message.
+    In the Documentation, chapter `Architectuur en security` more information can be found about the intended use of the Event API including a component diagram of the Consumer and the Provider of the Events architecture.
 
-    The events are posted to the URL that the eventhook registers. The body of the post contains a list of new events to be processed.
+    In the Events API the following mechanisms has been implemented:
+    - Initial seed: endpoint for new Consumers to register as a new subscriber and trigger the initial seed of Events to synchronize the latest state of information. After the seed, this new Consumer is subscribed to future updates.
+    - Receive event(s): endpoint to receive (a single) event(s) as a Consumer.
+    - Get event(s): endpoint to deliver, upon request, events as a Producer. This endpoint is used in case of temporary unavailability of one of the consumers.
 
-    Notes:
+
+    All events will be send to the receive event(s) endpoint of the other party. The events are send as part of the request body.
+
+    Guidelines for sending events:
       - Pagination is essential - using start and limit semantics.
-      - Oldest events first
+      - Oldest events first.
       - Limits should be imposed on page size.
-      - Filtering is available by matching specific event type.
-      - Filtering is available on event time, so only events after a date can be requested to catchup
-      
-    Providers should ensure that this API is cacheable or able to be retrieved at minimal cost, as it may be accessed a lot by consumers who are 'catching up'
-      
-    Note:  The consent API can be used to create events of all entities to enable an initial synchronisation of all data (e.g. a brand new LA that wants to do an initial synchronisation with data from the SIS)
+      - Filtering is available by matching specific event types.
+      - Filtering is available on event date-time, so only events after a specific date-time can be requested to catch up.
+      - All data objects will flow through this API. This implies good scalability and performance measures.
 
-    ## Scopes and security
-    Before you can send an event, a token is needed with the scope and schoolidentity to send the event
+    ## Events, Scopes, and Consent
+    Events are send within a secure scope and in some case only after explicit consent by the School. This requires a sending party to request a valid Token including this scope (and optionally the schoolIdentifier for the Consent check).
+    The authentication and authorization protocol is described in the Documentation.
 
-    Event type | Scope needed | Description
-    -- | -- | --
-    `la.cataloque` | la.catalogue | A product in the cataloque has been created or modified or deleted  
-    `la.course` | la.course | A course has changed
-    `sis.student` | sis.student-teacher-group | A student has been created or modified   
-    `sis.student-delivery` | sis.student-teacher-delivery | A students delivery information has been created or modified     
-    `sis.teacher` | sis.student-teacher-group | A teacher has been created or modified
-    `la.usage.first` | la.usage | A student or teacher used a entitlement for the first time
-    `la.usage.ongoing` | la.usage | A student or teacher used an entitlement
-    `la.simpleprogress` | la.progress | progress event when a student finishes a part of a course
-    `la.simpleresult` | la.result| result event when a student takes a test or exam
+    The following Events can be send or received within the SEM Ecosystem.
 
-    after POC phase 2 we will use the following events as well:
-    Event type | Scope needed | Description
-    -- | -- | --
-    `mp.entitlement` | mp.entitlement | A new entitlement
-    `mp.entitlement.confirmation` | mp.entitlement | A confirmation of an entitlement
-    `mp.entitlement.entitlee.` | mp.entitlement | A request to change status of one school entitlee
-    `mp.entitlement.entitlee.confirmation` | mp.entitlement | A confirmation of an change of an entitlee in a entitlement
+    Event type | Description | Scope required | Consent
+    --|-- |--|---|
+    `la.Product` | A product in the catalogue has been created, modified or deleted. | la.catalogue | n.a.
+    `la.Course` | A summary of the Course including a description, lastPublishedVersion and the Levels and Subjects where this Course applies to. The Event is used to send new, modified or deleted Course summaries. | la.course | n.a.
+    `la.CourseStructure` | The full xAPI cmi5 Course structure, including Blocks and/or Assignable Units. The Event is used to send new, modified or deleted Course structures. | la.course | n.a.
+    `la.InitialActivation` | Event sent by the LA after a Student or Teacher activates a Learning Material. An Entitlement is found and a License is created for the Student or Teacher. The first time a Product is being used. | la.usage.activation | LMS
+    `la.Usage` | Events sent by the LA after a Student or Teacher uses a product. This could also be a periodic event for weekly, monthly active use. | la.usage.usage | LMS
+    `la.SimpleProgress` | Send from the LA to the LMS prefereably near realtime so the LMS can show progress for teachers. | la.progress | LMS
+    `la.SimpleResult` | Sent from the LA to the SIS or LMS prefereably near realtime. | la.result | LMS, SIS
+    `mp.EntitlementEvent` | Send by the MP to the LMS and LA to communicate new Entitlements or changes into the state of the Entitlement to trigger specific activities by the LA or the LMS. | mp.entitlement | LMS
+    `mp.EntitlementConfirmation` | Confirmation message send by the LMS or the LA to the MP as a response to an Entitlement event. | mp.entitlement | LMS
+    `mp.ChangeLicenseStatus` | Send by the MP to the LMS and LA to communicate that the status of a specific license from a Student or Teacher is (de)blocked. | mp.entitlement | LMS
+    `mp.ChangeLicenseStatusConfirmation` | Confirmation message send by the LMS and the LA to the MP as a response to a ChangeLicenseStatus event. | mp.entitlement | LMS
+    `mp.ActivationCodeRequest` | Send by the MP to the LA to request a specified number of activation codes for a specified product. | mp.activationcode | n.a.
+    `mp.ActivationCodeConfirmation` | Confirmation message send by the LA to the MP as a response to an ActivationCodeRequest. | mp.activationcode | n.a.
+    `mp.ActivationCodeRevokeRequest` | Send by the MP to the LA including a request to revoke a specific activation code by the LA. | mp.activationcode | n.a.
+    `mp.ActivationCodeRevokeConfirmation` | Confirmation message send by the LA to the MP as a response to an ActivationCodeRevokeRequest. | mp.activationcode | n.a.
+    `mp.OrderRequest` | Send by the MP to the LA to place an Order for a specified product. | mp.order | n.a.
+    `mp.OrderConfirmation` | Confirmation message send by the LA to the MP as a response to an OrderRequest. | mp.order | n.a.
+    `mp.CreditOrderRequest` | Send by the MP to the LA including a request to credit an order by the LA. | mp.order | n.a.
+    `mp.CreditOrderConfirmation` | Confirmation message send by the LA to the MP as a response to an CreditOrderRequest. | mp.order | n.a.
+    `sis.Student` | A student has been created, modified or deleted. | sis.student-teacher-group | MP, LA, LMS
+    `sis.StudentDelivery` | A students delivery information has been created, modified or deleted. | sis.student-delivery | MP
+    `sis.Teacher` | A teacher has been created, modified or deleted. | sis.student-teacher-group | MP, LA, LMS
+    `sis.Group` | A group has been created, modified or deleted. | sis.student-teacher-group | MP, LA, LMS
+    `sis.SchoolSubject` | A school subject has been created, modified or deleted. | sis.school | MP, LA, LMS
+    `sis.SchoolPeriod` | A school period has been created, modified or deleted. | sis.school | MP, LA, LMS
 
-    events should only be processed once.
+    ## Retry policy
+    Events are send by a Producer to a Consumer. A Consumer accepts all Events, excluding events that does not comply with schema validation or when scope and/or consent requirements are not met.
+
+    Whenever a Consumer is not available (i.e. downtime or overloaded), the Producer follows the following retry mechanism:
+    - Produder sends the Event again after 1 minute, 5 minutes, and 1 hour.
+    - Producer pauses sending Events to the Consumer for a period of 24 hours.
+    - In case new Events are triggered during this offline period, these Events are added to the send queue. All events are send to the Consumer. The Consumer is responsible to process the events and skip older events about the same object. The Consumer is able to do this based on the `created` parameter which is part of each event.
+
+    
   contact:
     name: Stichting SEM
     url: 'https://stichtingsem.org/'
-    email: mcginkel@gmail.com
-  license:
-    name: MIT
-    url: 'https://opensource.org/licenses/MIT'
-x-tags:
-  - name: events
-    description: Operations related to event retrieval
-paths:
-  /events:
-    get:
-      description: Allows a subscriber to retrieve a list of past events. The provider will not keep the events indefinate. This API is intended when a party had downtime and needs to catchup on processing/receiving events. The intended retention is a few days to support catching up.
+
+components:
+  schemas:
+    
+    schemaVersion:
+      type: string
+      description: 'Schema version of this event/object using semantic versioning 2.0.0'
+      default: 1.3.0
+    
+    Event:
+      type: object
       x-tags:
-        - events
-      operationId: listEvents
-      parameters:
-        - in: query
-          name: type
-          description: 'Filter by a specific type of event, e.g. la.usage - specific to the service implementing the API.'
-          schema:
+        - Event
+      description: |-
+        An event is a notification that something of interest has happened within a service. A subscriber receives events within an authorised scope and for certain events in the context of a school (using consent). This enables parties to communicate with each other in a loosely coupled way. The event mediator has no direct connection to any of the subscribing systems.
+
+        Events are send after an activity of a Student or Teacher (e.g. usage, progress or results). Events are also send if an object (e.g. Product, Course, Student, Group) is created, modified or deleted. For the latter category the last version of the object is send as part of the Event `data` field. All previous events about the same object may be ignored.
+        
+        All Events have a unique `id`. Moreover, the event also includes an `objectId`, the identifier of the object they carry. This can be used to make sure events are pocessed in order for that object. The `created` time of the event is the time the action that triggered the event happened. It is not the time the event was send or processed.
+
+        Deleting an object is supported by sending an event with the field `isDeleteEvent` flagged as true. This indicates that this is the last event you will get about this object. The data is empty in this case.
+      title: Event
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+          description: 'Unique identifier for this Event.'
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        type:
+          type: string
+          description: 'The type of Event object send within this Event message.'
+          enum:
+            - la.Product
+            - la.Course
+            - la.CourseStructure
+            - la.InitialActivation
+            - la.Usage
+            - la.SimpleProgress
+            - la.SimpleResult
+            - mp.Entitlement
+            - mp.EntitlementConfirmation
+            - mp.ChangeLicenseStatus
+            - mp.ChangeLicenseStatusConfirmation
+            - mp.ActivationCodeRequest
+            - mp.ActivationCodeConfirmation
+            - mp.ActivationCodeRevokeRequest
+            - mp.ActivationCodeRevokeConfirmation
+            - mp.OrderRequest
+            - mp.OrderConfirmation
+            - mp.CreditOrderRequest
+            - mp.CreditOrderConfirmation
+            - sis.Student
+            - sis.StudentDelivery
+            - sis.Teacher
+            - sis.Group
+            - sis.SchoolSubject
+            - sis.SchoolPeriod
+        objectId:
+          type: string
+          description: 'Unique identifier of the object send within this event.'
+        userIdType:
+          type: string
+          description: 'In case the object is a Student or Teacher, this field shoud be filled with the used userId format in the objectId.'
+          enum:
+            - ECKiD
+            - nlPersonProfileId
+            - nlPersonRealId
+            - Las-key
+            - Leerlingnummer
+            - Medewerkernummer
+        created:
+          type: string
+          format: date-time
+          description: | 
+            The moment that the action happened which triggered this event. As Events are send asynchronous, this is not the moment the Event was send..
+
+            Format: openapi in ZULU time as specified in RFC 3339, section 5.6
+        data:
+          $ref: '#/components/schemas/EventData'
+        isDeleteEvent:
+          type: boolean
+          description: 'Indication that this is the last event you will ever see, as the object is deleted.'
+      required:
+        - id
+        - schemaVersion
+        - type
+        - created
+    
+    EventData:
+      title: EventData
+      description: 'The data object send in the Event. The `type` field in the Event message specifies the type of data object.'
+      x-tags:
+        - Event
+      oneOf:
+        - $ref: ./catalogue.v1.yaml#/components/schemas/Product
+        - $ref: ./course.v1.yaml#/components/schemas/Course
+        - $ref: ./course.v1.yaml#/components/schemas/CourseStructure
+        - $ref: ./usage.v1.yaml#/components/schemas/InitialActivation
+        - $ref: ./usage.v1.yaml#/components/schemas/Usage
+        - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
+        - $ref: ./results.v1.yaml#/components/schemas/SimpleResult
+        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementEvent
+        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementConfirmation
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseStatus
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseConfirmation
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ActivationCodeRequest
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ActivationCodeConfirmation
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ActivationCodeRevokeRequest
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ActivationCodeRevokeConfirmation
+        - $ref: ./order.v1.yaml#/components/schemas/OrderRequest
+        - $ref: ./order.v1.yaml#/components/schemas/OrderConfirmation
+        - $ref: ./order.v1.yaml#/components/schemas/CreditOrderRequest
+        - $ref: ./order.v1.yaml#/components/schemas/CreditOrderConfirmation
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Student
+        - $ref: ./sisdata.v1.yaml#/components/schemas/StudentDelivery
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Teacher
+        - $ref: ./sisdata.v1.yaml#/components/schemas/Group
+        - $ref: ./sisdata.v1.yaml#/components/schemas/SchoolSubject
+        - $ref: ./sisdata.v1.yaml#/components/schemas/SchoolPeriod
+        - nullable: true
+    
+    EventResponse:
+      type: object
+      x-tags:
+        - Event
+      description: 'The response for a single Event given by the Consumer that received the Event.'
+      properties:
+        id:
+          type: string
+          description: 'The identifier of the Event where this response refers to.'
+        status:
+          type: integer
+          description: 'See functional status codes within the Documentation.'
+        statusMessage:
+          type: string
+          description: 'See functional status messages within the Documentation.'
+      required:
+        - id
+        - status    
+  
+    SchemaVersions:
+      type: object
+      x-tags:
+        - SchemaVersion
+      description: 'The supported schema versions of a specific schema in an api.'
+      properties:
+        api:
+          type: string
+          description: 'The api where the schema is part of.'
+          enum:
+            - 'events-api'
+            - 'consent-api'
+            - 'catalogue-api'
+            - 'course-api'
+            - 'usage-api'
+            - 'progress-api'
+            - 'results-api'
+            - 'entitlement-api'
+            - 'order-api'
+            - 'sis-api'
+        schema:
+          type: string
+          description: 'The schema within the api.'
+          enum:
+            # Events API
+            - Event
+            - EventResponse
+            - SchemaVersion
+           
+            # Consent API
+            - ConsentUpdate
+            - ConsentRegistration
+           
+            # Catalogue API
+            - Product
+             
+            # Course API
+            - Course
+            - CourseStructure
+            
+            # Usage API
+            - InitialActivation
+            - Usage
+            - IndividualUsage
+            - EntitlementUsage
+            
+            # Progress API
+            - SimpleProgress
+            
+            # Results API
+            - SimpleResult
+            
+            # Entitlement API
+            - EntitlementEvent
+            - EntitlementConfirmation
+            - ChangeLicenseStatus
+            - ChangeLicenseStatusConfirmation
+            - ActivationCodeRequest
+            - ActivationCodeConfirmation
+            - ActivationCodeRevokeRequest
+            - ActivationCodeRevokeConfirmation
+            
+            # Order API
+            - OrderRequest
+            - OrderConfirmation
+            - CreditOrderRequest
+            - CreditOrderConfirmation
+            
+            # SIS API
+            - SchoolPeriod
+            - SchoolSubject
+            - Student
+            - Teacher
+            - Group
+            - StudentDelivery
+            
+        schemaVersions:
+          type: array
+          description: 'The schema versions supported for this schema.'
+          items:
             type: string
-            example: la.usage
-        - in: query
-          name: start
-          description: 'Start point for pagination of results, defaults to 0,'
-          schema:
-            type: integer
-          examples:
-            default:
-              value: 0
-              summary: The start point for pagination
-        - in: query
-          name: limit
-          description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
-          schema:
-            type: integer
-            maximum: 100
-          examples:
-            default:
-              value: 20
-              summary: The default value if none is provided
-            max:
-              value: 100
-              summary: The largest recommended page size
-        - schema:
-            type: number
-          in: query
-          name: createdAfter
-          description: timestamp to filter on events created after a certain moment (unix epoch, seconds after 1 jan 1970)
+            description: 'Schema version of the schema using semantic versioning 2.0.0'
+            example: 1.3.0
+      required:
+        - api
+        - schema
+        - schemaVersions
+        
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: ''
+          refreshUrl: ''
+          scopes:
+            la.catalogue: 'scope that allows a MP or LMS to receive Products from the Catalogue API.'
+            la.course: 'Scope that allows a LMS to receive Course information from the Course API.'
+            la.usage.activation: 'a scope that allows a MP or LMS to receive InitialActivation information from the Usage API.'
+            la.usage.usage: 'a scope that allows a MP or LMS to receive Usage information from the Usage API.'
+            la.progress: 'a scope that allows a LMS to receive Progress information from the Progress API.'
+            la.results: 'a scope that allows a LMS or SIS to receive Results information from the Results API'
+            sis.school: 'a scope that allows a MP, LA or LMS to receive basic school information: periods and subjects from the SIS API.'
+            sis.student-teacher-group: 'a scope that allows a MP, LA or LMS to receive student, teacher and group data from the SIS API.'
+            sis.student-teacher-delivery: 'a scope that that allows a MP to receive student delivery information including address from the SIS API.'
+            mp.entitlement: 'a scope that allows a LA or LMS to receive entitlement information from the Entitlement API.'
+            mp.activationcode: 'a scope that allows a MP to send activation code requests from the Entitlement API.'
+            mp.order: 'a scope that allows a MP to send order requests from the Order API.'
+
+paths:
+  
+  /event:
+    post:
+      summary: Receive a single Event
+      operationId: post-event
+      x-tags:
+        - Event
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Events'
-      summary: Get Events
+                $ref: '#/components/schemas/EventResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        '401':
+          description: Unauthorized - No valid token presented
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+        description: |
+          The request body contains a single Events.
+          
+          Events are processed asynchronous. In the request body a status code and message is included as a confirmation if the events are received in a correct format. All events are confirmed with a status ok (0), excluding events that have an invalid format or events that were send in an invalid security scope or consent. See Documentation for functional status codes and messages.
+      description: |
+        Endpoint to receive a single Event as a Consumer from different Producers. For example a party in the role of LMS can receive events from all parties offering SIS, MP and LA roles.
       security:
-        - APIKey:
+        - OAuth2:
             - la.catalogue
             - la.course
-            - la.usage
+            - la.usage.activation
+            - la.usage.usage
             - la.progress
-            - sis.student-teacher-group
-            - sis.student-teacher-delivery
+            - la.result
             - mp.entitlement
-            - la.results
+            - mp.activationcode
+            - mp.order
+            - sis.student-teacher-group
+            - sis.student-delivery
+            - sis.school
+  
+  /events:
     post:
       summary: Receive Events
       operationId: post-events
-      x-tags: '-events'
+      x-tags:
+        - Event
       responses:
         '200':
           description: OK
@@ -127,9 +395,33 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PostEventsResponse'
+                  $ref: '#/components/schemas/EventResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponse'
+        '401':
+          description: Unauthorized - No valid token presented
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponse'
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventResponse'
       description: |
-        Endpoint to receive events. These are registered by the webhook api.
+        Endpoint to receive events as a Consumer from different Producers. For example a party in the role of LMS can receive events from all parties offering SIS, MP and LA roles.
       requestBody:
         content:
           application/json:
@@ -138,188 +430,265 @@ paths:
               items:
                 $ref: '#/components/schemas/Event'
         description: |-
-          Body contains a list of events so multiple events can be send in one request. Events can only be grouped in the same request if they are for the same school.
-          Oldest events first.
-
-          Events are processed asynchronisous. The request should a response with status=0 as indication that the events are received in good order, not processed in good order. The only reason to reject events is when there is no consent/authorization to deliver events from that type for a school
+          The request body contains a list of Events, sorted oldest events first. For Events that require Consent to be send and received between parties, Events can only be grouped in the same request if they are from the same school.
+          
+          Events are processed asynchronous. In the request body a status code and message is included as a confirmation if the events are received in a correct format. All events are confirmed with a status ok (0), excluding events that have an invalid format or events that were send in an invalid security scope or consent. See Documentation for functional status codes and messages.
       security:
-        - APIKey:
+        - OAuth2:
             - la.catalogue
             - la.course
-            - la.usage
+            - la.usage.activation
+            - la.usage.usage
             - la.progress
-            - sis.student-teacher-group
-            - sis.student-teacher-delivery
+            - la.result
             - mp.entitlement
-            - la.results
-  /event:
-    post:
-      summary: Receive one event
-      operationId: post-event
-      x-tags: '-events'
+            - mp.activationcode
+            - mp.order
+            - sis.student-teacher-group
+            - sis.student-delivery
+            - sis.school
+            
+    get:
+      summary: Get Events After Created DateTime
+      operationId: get-events-after-created
+      x-tags:
+        - Event
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: createdAfter
+          description: 'Timestamp to filter on events created after a certain moment. Format: openapi in ZULU time as specified in RFC 3339, section 5.6'
+        - schema:
+            type: string
+            example: la.Product
+          in: query
+          name: type
+          description: 'Filter by a specific type of event.'
+        - schema:
+            type: integer
+          in: query
+          name: start
+          description: 'Start point for pagination of results, defaults to 0'
+          examples:
+            default:
+              value: 0
+              summary: 'The start point for pagination'
+        - schema:
+            type: integer
+            maximum: 100
+          in: query
+          name: limit
+          description: 'Limit of number of results returned by page, defaults to 20 with max 100.'
+          examples:
+            default:
+              value: 20
+              summary: 'The default value if none is provided'
+            max:
+              value: 100
+              summary: 'The largest recommended page size'
+        - schema:
+            type: string
+          name: schemaVersion
+          in: query
+          required: false
+          description: 'Optional parameter to request an Event in a specific schema version. If none supplied, the server will choose its default schema version. This schemaVersion refers to the version of the Event format.'
+        - schema:
+            type: string
+          name: schemaVersionObject
+          in: query
+          required: false
+          description: 'Optional parameter to request the object format in a specific schema version. If none supplied, the server will choose its default schema version. This schemaVersion refers to the version of the format of the data object send within the Event.'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PostEventResponse'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Event'
-        description: 'Events are processed asynchronisous. The request should return a 200-OK as indication that the event is received in good order, not processed in good order.'
-      description: Endpoint to receive one event. These are registered by the webhook api.
+                $ref: '#/components/schemas/Events'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - No valid token presented
+        '403':
+          description: Forbidden - No consent given to access the requested resource
       security:
-        - APIKey:
+        - OAuth2:
             - la.catalogue
             - la.course
-            - la.usage
+            - la.usage.activation
+            - la.usage.usage
             - la.progress
-            - sis.student-teacher-group
-            - sis.student-teacher-delivery
+            - la.result
             - mp.entitlement
-            - la.results
-components:
-  schemas:
-    Events:
-      type: array
-      x-tags:
-        - events
-      description: 'A list of events - reverse chronologically ordered, provided to enable subscribers to ''catch up'' on events they may have missed.'
-      title: Events
-      items:
-        $ref: '#/components/schemas/Event'
-    Event:
-      type: object
-      x-tags:
-        - events
-      description: |-
-        An event is a notification that something of interest has happened within a service, that, based on authorised scopes, a subscriber may then process.  This enables systems to communicate with each other in a loosely coupled way, where the event creator has no direct connection to any of the subscribing systems.
-
-        In the SEM context the events either send information on an event that happenened (usage, progress, results) or the latest status of an object that is passed for reference (SIS, Product, Course related  - Student, teacher, group, products, Course)
-        The latest catagorie sends the latest version of the object, previous events may be ignored for these types.
-
-        Events have their own id and an identification of the object they carry. (objectId) This can be used to make sure events are pocessed in order for that object. The create time of the event is the time the action that triggered the event happened, it is not the time the event was send or processed.
-
-        Typically an event will contain a basic data object that indicates what the state of the object is at the point at which the event is raised, but this is optional.  In the case that no data object exists it is intended that the subscribing system would call back to the provided API to retrieve the information. This is defined per event type.
-
-        By calling back at a future point you avoid a number of distributed system related issues:
-        - Ordering doesn't matter, as when you call back you always get the latest version.  The biggest risk is you call back twice and get the same information twice - but you always have correct data.
-        - Security can be checked again at the point of request, so even in the unlikely scenario that a subscriber authorization changes between an event being emitted and the call back occurring, the subscriber can only ever get data they are authorized to retrieve.
-
-        Deleting of object is supported by sending an event with the flag isDeleteEvent to true. This indicates that this is the last event you will get about this object. the data is empty in this case.
-      x-examples: {}
-      title: Event
-      properties:
-        id:
-          type: string
-          format: uuid
-          example: d290f1ee-6c54-4b01-90e6-d701748f0851
-          description: Unique id of an event
-        schemaVersion:
-          type: integer
-          description: 'schema version of this event/object. Start with 0, inclement when we have changes, so we know how to deserialise.'
-        type:
-          type: string
-          example: la.usage.first
-          description: Type of the event
-          enum:
-            - la.cataloque
-            - la.course
-            - sis.student
+            - mp.activationcode
+            - mp.order
+            - sis.student-teacher-group
             - sis.student-delivery
-            - sis.teacher
-            - mp.entitlement.new
-            - mp.entitlement.change
-            - mp.entitlement.confirmation
-            - mp.entitlement.entitlee.change
-            - mp.entitlement.entitlee.confirmation
-            - la.usage.first
-            - la.usage.ongoing
-            - la.simpleprogress
-            - la.simpleresult
-        objectId:
+            - sis.school
+      description: |
+        Allows a subscriber to retrieve a list of past events. The provider will not keep the events indefinite. This API is available to a party that had downtime and needs to catch up on processing or receiving events. The intended retention is a few days to support catching up.
+  
+  /requestseed/{api}:
+    parameters:
+      - schema:
           type: string
-          description: Id of the events data
-        created:
-          type: string
-          description: event creation moment (seconds after 1970?)
-          format: date-time
-        schoolId:
-          type: string
-        data:
-          $ref: '#/components/schemas/EventData'
-        url:
-          type: string
-          description: |
-            The URL that can be called to get the dataobject for this event.
-        isDeleteEvent:
-          type: boolean
-          description: 'indication that this is the last event you will ever see, as the object is deleted.'
-      required:
-        - id
-        - type
-        - created
-    EventData:
-      title: EventData
-      description: Data of event object.  (dependent on type in event).
+          enum:
+            - 'catalogue-api'
+            - 'course-api'
+            - 'usage-api'
+            - 'progress-api'
+            - 'entitlement-api'
+            - 'order-api'
+            - 'sis-api'
+        name: api
+        in: path
+        required: true
+        description: 'API for which an initial seed of Events is requested.'
+    post:
+      summary: 'Request Initial Seed for API'
       x-tags:
-        - events
-      oneOf:
-        - $ref: ./sisdata.v1.yaml#/components/schemas/Student
-        - $ref: ./sisdata.v1.yaml#/components/schemas/StudentDelivery
-        - $ref: ./sisdata.v1.yaml#/components/schemas/Teacher
-        - $ref: ./sisdata.v1.yaml#/components/schemas/Group
-        - $ref: ./catalogue.v1.yaml#/components/schemas/Product
-        - $ref: ./course.v1.yaml#/components/schemas/Course
-        - $ref: ./usage.v1.yaml#/components/schemas/UsageEvent
-        - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
-        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementEvent
-        - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementConfirmation
-        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeEvent
-        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseeConfirmation
-        - $ref: ./results.v1.yaml#/components/schemas/SimpleResult
-        - nullable: true
-    PostEventsResponse:
-      type: object
-      properties:
-        id:
+        - Event
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'See functional status codes within the Documentation.'
+                  statusMessage:
+                    type: string
+                    description: 'See functional status messages within the Documentation.'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'See functional status codes within the Documentation.'
+                  statusMessage:
+                    type: string
+                    description: 'See functional status messages within the Documentation.'
+        '401':
+          description: Unauthorized - No valid token presented
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'See functional status codes within the Documentation.'
+                  statusMessage:
+                    type: string
+                    description: 'See functional status messages within the Documentation.'
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: 'See functional status codes within the Documentation.'
+                  statusMessage:
+                    type: string
+                    description: 'See functional status messages within the Documentation.'
+      operationId: request-seed
+      description: |
+        Endpoint to request an initial seed of Events from a Producer. The combination of the parameter `api` and the chosen `scope` and `consent` gives the Producer all information to send the initial seed of Events.
+        
+        | producer | consumer | `api` | `scope` | `consent` | events | description |
+        |---|---|---|---|---|---|---|
+        | LA | LMS, MP | catalogue-api | la.catalogue | no | la.Product | All Product objects relevant for the requesting Consumer LMS or MP. |
+        | LA | LMS | course-api | la.course | no | la.Course<br>la.CourseStructure | All Course and CourseStructure objects relevant for the requesting Consumer LMS. |
+        | LA | LMS, MP | usage-api | la.usage.activation | yes | la.InitialActivation | All InitialActivation events from all active entitlement of the School. |
+        | LA | LMS, MP | usage-api | la.usage.usage | yes | la.Usage | All Usage events from all active entitlement of the School. |
+        | LA | LMS | progress-api | la.progress | yes | la.SimpleProgress | All SimpleProgress events (including their last status) from the start of the schoolyear. |
+        | MP | LA, LMS | entitlement-api | mp.entitlement | yes (for LMS)<br>no (for LA) | mp.EntitlementEvent<br>mp.ChangeLicenseStatus | All active EntitlementEvents (including their last status) and ChangeLicenseStatus events. This allows a LMS to place links as if they were received as new Entitlements and a LA to provision products. See documentation for specific handling rules of these events. Both LMS and LA respond with a confirmation message. |
+        | MP | LA | entitlement-api | mp.activationcode | no | mp.ActivationCodeRequest<br>mp.ActivationCodeRevokeRequest | All requests which are not processed by the LA yet. This allows a MP to start requesting activation code before the data exchange has been established. The LA can process these events as soon as the connection is made. The LA respond with a confirmation message. |
+        | MP | LA | order-api | mp.order | no | mp.OrderRequest<br>mp.CreditOrderRequest | All requests which are not processed by the LA yet. This allows a MP to start ordering before the data exchange has been established. The LA can process these events as soon as the connection is made. The LA respond with a confirmation message. |
+        | SIS | LA, LMS, MP | sis-api | sis.school | yes | la.SchoolPeriod<br>la.SchoolSubject | All SchoolPeriod and SchoolSubjects objects relevant for the requesting Consumer LA, LMS or MP. |
+        | SIS | LA, LMS, MP | sis-api | sis.student-teacher-group | yes | la.Student<br>la.Teacher<br>la.Group | All Students, Teachers, and Groups objects relevant for the requesting Consumer LA, LMS or MP. |
+        | SIS | MP | sis-api | sis.student-delivery | yes | la.StudentDelivery | All StudentDelivery objects relevant for the requesting Consumer MP. |
+      security:
+        - OAuth2:
+            - la.catalogue
+            - la.course
+            - la.usage.activation
+            - la.usage.usage
+            - la.progress
+            - la.result
+            - mp.entitlement
+            - mp.activationcode
+            - mp.order
+            - sis.student-teacher-group
+            - sis.student-delivery
+            - sis.school
+  
+  /schemaversions/{api}:
+    parameters:
+      - schema:
           type: string
-          description: id of the event
-        status:
-           type: integer
-           description: 'Result status (0=OK, see list with Errors)'
-        statusMessage:
-          type: string
-      required:
-        - id
-        - status
-    PostEventResponse:
-      type: object
-      properties:
-        status:
-          type: integer
-          description: 'Result status (0=OK, see list with Errors)'
-        statusMessage:
-          type: string
-      required:
-        - status
-  securitySchemes:
-    APIKey:
-      type: oauth2
-      flows:
-        clientCredentials:
-          tokenUrl: ''
-          refreshUrl: ''
-          scopes:
-            la.catalogue: ''
-            la.course: ''
-            la.usage: ''
-            la.progress: ''
-            sis.school: ''
-            sis.student-teacher-group: ''
-            sis.student-teacher-delivery: ''
-            mp.entitlement: ''
-            la.results: ''
+          enum:
+            - 'events-api'
+            - 'consent-api'
+            - 'catalogue-api'
+            - 'course-api'
+            - 'usage-api'
+            - 'progress-api'
+            - 'results-api'
+            - 'entitlement-api'
+            - 'order-api'
+            - 'sis-api'
+        name: api
+        in: path
+        required: true
+        description: 'API for which the supported schema versions is requested.'
+    get:
+      summary: Get Schema Version for API
+      operationId: get-schemaversion-api
+      x-tags:
+        - Event
+      responses:
+        '200':
+          description: 'A list of schema versions supported for each Event object or Response body in the API.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SchemaVersions'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized - No valid token presented
+        '403':
+          description: Forbidden - No consent given to access the requested resource
+      security:
+        - OAuth2:
+            - la.catalogue
+            - la.course
+            - la.usage.activation
+            - la.usage.usage
+            - la.progress
+            - la.result
+            - mp.entitlement
+            - mp.activationcode
+            - mp.order
+            - sis.student-teacher-group
+            - sis.student-delivery
+            - sis.school
+      description: |
+        Allows a Producer to check a Consumer's supported schema versions of a specific API. This prevents schema validation errors when sending events to the Consumer.
+x-tags:
+  - name: Event
+  - name: SchemaVersion
