@@ -361,7 +361,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Event'
         description: |
-          The request body contains a single Events.
+          The request body contains a single Event.
           
           Events are processed asynchronous. In the request body a status code and message is included as a confirmation if the events are received in a correct format. All events are confirmed with a status ok (0), excluding events that have an invalid format or events that were send in an invalid security scope or consent. See Documentation for functional status codes and messages.
       description: |
@@ -505,7 +505,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Events'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
         '400':
           description: Bad Request
         '401':
