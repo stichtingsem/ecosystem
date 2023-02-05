@@ -169,7 +169,7 @@ components:
       oneOf:
         - $ref: ./catalogue.v1.yaml#/components/schemas/Product
         - $ref: ./course.v1.yaml#/components/schemas/Course
-        - $ref: ./course.v1.yaml#/components/schemas/CourseStructure
+        - $ref: ./course.v1.yaml#/components/schemas/CMI5.CourseStructure
         - $ref: ./usage.v1.yaml#/components/schemas/InitialActivation
         - $ref: ./usage.v1.yaml#/components/schemas/Usage
         - $ref: ./progress.v1.yaml#/components/schemas/SimpleProgress
@@ -177,7 +177,7 @@ components:
         - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementEvent
         - $ref: ./entitlement.v1.yaml#/components/schemas/EntitlementConfirmation
         - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseStatus
-        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseConfirmation
+        - $ref: ./entitlement.v1.yaml#/components/schemas/ChangeLicenseStatusConfirmation
         - $ref: ./entitlement.v1.yaml#/components/schemas/ActivationCodeRequest
         - $ref: ./entitlement.v1.yaml#/components/schemas/ActivationCodeConfirmation
         - $ref: ./entitlement.v1.yaml#/components/schemas/ActivationCodeRevokeRequest
