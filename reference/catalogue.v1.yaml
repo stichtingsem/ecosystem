@@ -344,8 +344,8 @@ components:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: ''
-          refreshUrl: ''
+          tokenUrl: https://api.example.com/oauth2/token
+          refreshUrl: https://api.example.com/oauth2/token
           scopes:
             la.catalogue: scope that allows a party to retrieve products from the catalogue
 paths:

@@ -439,8 +439,8 @@ components:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: ''
-          refreshUrl: ''
+          tokenUrl: https://api.example.com/oauth2/token
+          refreshUrl: https://api.example.com/oauth2/token
           scopes:
             la.usage.activation: 'a scope that allows a MP or LMS to receive InitialActivation events from the LA.'
             la.usage.usage: 'a scope that allows a MP or LMS to receive Usage events from the LA.'
