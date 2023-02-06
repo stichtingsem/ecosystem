@@ -26,7 +26,7 @@ info:
     Data from in the entitlements can be sensitive, and the APIs available to a requesting service depend on the scopes requested and approved during setup.  The following scopes exist for the Entitlements, and map to the following entities and attributes:
 
     - `mp.entitlement` - scope that allows MP to send Entitlements and ChangeLicenseStatus events. The same scope is used by the LA and LMS to retrieve these events and send back EntitlementConfirmation or ChangeLicenseStatusConfirmation Confirmation messages to the MP.
-    - `mp.activationcode` - scope that allows MP to send ActivationCodeRequest and ActivationCodeRevokeRequest events to a LA. The same scope is used by the LA to retreive these events and send back ActivationCodeConfirmation or ActivationCodeRevokeConfirmation Confirmation messages to the MP.
+    - `mp.activationcode` - scope that allows MP to send ActivationCodeRequest and ActivationCodeRevokeRequest events to a LA. The same scope is used by the LA to retrieve these events and send back ActivationCodeConfirmation or ActivationCodeRevokeConfirmation Confirmation messages to the MP.
     
     ## Consent
     This API requires consent of a School for communication between the MP and the LMS.
@@ -197,7 +197,7 @@ components:
           type: string
           format: date
           description: |
-            Optional default expirationDate a LMS can use to maintain access links to the Product in the Learning Material Lists of Students or Teachers. The minExpirationDate is calculated by the MP based on info from the Product retreived from the Catalogue API.
+            Optional default expirationDate a LMS can use to maintain access links to the Product in the Learning Material Lists of Students or Teachers. The minExpirationDate is calculated by the MP based on info from the Product retrieved from the Catalogue API.
             
             If the LMS receives an InitialActivation Event regarding this Entitlement from the LA via the Usage API. This InitialActivation Event could include an updated expirationDate. In that case this new expirationDate overwrites the minExpirationDate.
             
@@ -223,7 +223,7 @@ components:
             - personal
         productId:
           type: string
-          description: 'Unique identifier of a Product. The productId can be retreived from the Catalogue API of the LA.'
+          description: 'Unique identifier of a Product. The productId can be retrieved from the Catalogue API of the LA.'
         entitlee:
           $ref: '#/components/schemas/Entitlee'
         status:
@@ -264,8 +264,8 @@ components:
         The school as Entitlee.
         This can be in 5 variants (see examples): 
         - the school will use this entitlement for the quantity specified. 
-        - when schoolSubjects is filled: each Student who follows one of the schoolSubjects is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
-        - when groups is filled: each Student who is part of one of the groups is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
+        - when schoolSubjects is filled: each Student who follows one of the schoolSubjects is entitled to the Product. The LA can make this match based on data retrieved from the SIS API.
+        - when groups is filled: each Student who is part of one of the groups is entitled to the Product. The LA can make this match based on data retrieved from the SIS API.
         - when entitlees is filled: the entitlees list specifies which Students or Teachers in the school are entitled.
         - when activationCodes is filled: all individuals who enter one of the specified activationCodes are entitled to the Product. This only applies once per activationCode.
       x-examples:
@@ -291,8 +291,7 @@ components:
         example-4:
           schoolId: '22461075-07BB-4A17-AB18-71B8455AA7A3'
           entitlees:
-            - eckId: 'https://ketenid.nl/201703/1a5c9c7203901866532c2d72ce056e1d29cacc70836fe2bc3a517f3
- f9a53eed3d77ef370ad6dcf80b3f34ced1c547c7d2e679e8e47002355f938213b3656b206'
+            - eckId: 'https://ketenid.nl/201703/1a5c9c7203901866532c2d72ce056e1d29cacc70836fe2bc3a517f3f9a53eed3d77ef370ad6dcf80b3f34ced1c547c7d2e679e8e47002355f938213b3656b206'
         example-5:
           schoolId: '22461075-07BB-4A17-AB18-71B8455AA7A3'
           activationCodes:
@@ -305,7 +304,7 @@ components:
         schoolSubjects:
           type: array
           description: | 
-            List of schoolSubjects. Each Student who follows one of the schoolSubjects is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
+            List of schoolSubjects. Each Student who follows one of the schoolSubjects is entitled to the Product. The LA can make this match based on data retrieved from the SIS API.
             
             Mandatory field for entitlementType schoolSubject.
           items:
@@ -313,7 +312,7 @@ components:
             properties:
               schoolSubjectId:
                 type: string
-                description: 'Unique identifier for a schoolSubject. Value can be retreived from the SIS API.'
+                description: 'Unique identifier for a schoolSubject. Value can be retrieved from the SIS API.'
               quantity:
                 type: integer
                 description: 'Optional quantity selected or purchased for this schoolSubject. The sum of all specified quantities for schoolSubject equals the total quantity for this Entitlement.'
@@ -322,7 +321,7 @@ components:
         groups:
           type: array
           description: | 
-            List of groups. Each Student who is part of one of the groups is entitled to the Product. The LA can make this match based on data retreived from the SIS API.
+            List of groups. Each Student who is part of one of the groups is entitled to the Product. The LA can make this match based on data retrieved from the SIS API.
             
             Mandatory field for entitlementType schoolGroup.
           items:
@@ -330,7 +329,7 @@ components:
             properties:
               groupId:
                 type: string
-                description: 'Unique identifier for a group. Value can be retreived from the SIS API.'
+                description: 'Unique identifier for a group. Value can be retrieved from the SIS API.'
               quantity:
                 type: integer
                 description: 'Optional quantity selected or purchased for this group. The sum of all specified quantities for schoolSubject equals the total quantity for this Entitlement.'
@@ -506,7 +505,7 @@ components:
 
         The entitlementAndLicenseeReferenceId, entitlementId, productId, eckId/userId are echoed back to the MP, with a new entitlementAndLicenseReceiveId.
 
-        Events are only handled once. If an event with the similar entitlementAndLicenseReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseReceiveId. In this way the MP can validate that the response is processed only once.
+        Events are only handled once. If an event with the similar entitlementAndLicenseReferenceId is received the processing is only done the first time. The confirmation may be send multiple times, but always with the same entitlementAndLicenseReceiveId. In this way the MP can validate that the response is processed only once.
         
         Functional status codes and messages are described in the Documentation.
       properties:
@@ -604,7 +603,7 @@ components:
           $ref: '#/components/schemas/schemaVersion'
         productId:
           type: string
-          description: 'The Product for which a MP requests (an) activation code(s). The productId can be retreived from the Catalogue API from the LA.'
+          description: 'The Product for which a MP requests (an) activation code(s). The productId can be retrieved from the Catalogue API from the LA.'
         quantity:
           type: integer
           example: 1
@@ -628,7 +627,7 @@ components:
 
         The LA will send a confirmation message back to the MP including the requested activation codes. In case the LA cannot generate these codes a functional status code and message is replied. 
 
-        Events are only handled ones. If an event with the simular requestReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
+        Events are only handled ones. If an event with the similar requestReferenceId is received the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
         
         Functional status codes and messages are described in the Documentation.
       properties:
@@ -712,9 +711,9 @@ components:
       description: |
         The confirmation that is send back when the MP sends a ActivationCodeRevokeRequest event to the LA.
 
-        The LA will send a confirmation message back to the MP including a success parameter indicating if the revoke has ben processed sucessfully. In case the revoke was not processed, the LA replies with a functional status code and message. 
+        The LA will send a confirmation message back to the MP including a success parameter indicating if the revoke has ben processed successfully. In case the revoke was not processed, the LA replies with a functional status code and message. 
 
-        Events are only handled ones. If an event with the simular requestReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
+        Events are only handled ones. If an event with the similar requestReferenceId is received the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
         
         Functional status codes and messages are described in the Documentation.
       properties:

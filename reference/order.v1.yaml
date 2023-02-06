@@ -7,12 +7,12 @@ info:
 
     Orders can be used by the MP and the LA to communicate orderNumbers and orderLineNumbers from purchase or sales orders.
     Within the Documentation more information can be found how Orders, Entitlements, and Usage information can be used to close the money and goods flow between MP and LA.
-    The contractId can be used to combine both orders and entitlements to one reporting entity. Because usage is linked to entitlements, also this data can be aggregaged on the contractId.
+    The contractId can be used to combine both orders and entitlements to one reporting entity. Because usage is linked to entitlements, also this data can be aggregated on the contractId.
 
     
 
     ## Events
-    The MP is the initator of Orders and sends OrderRequests or CreditOrderRequests to a LA. The LA responds with an OrderConfirmation or a CreditOrderConfirmation.
+    The MP is the initiator of Orders and sends OrderRequests or CreditOrderRequests to a LA. The LA responds with an OrderConfirmation or a CreditOrderConfirmation.
     The LA processes OrderRequests asynchronous. In some cases this can take hours or days, due to mandatory manual or legal processes (e.g. a credit check).
     In the confirmation message the LA replies if a certain activity is successfully performed. More information is available in the documentation document.
     
@@ -67,7 +67,7 @@ components:
           description: 'Optional line number in case of an order with more than one product.'
         productId:
           type: string
-          description: 'The Product the MP orders. The productId can be retreived from the Catalogue API from the LA.'
+          description: 'The Product the MP orders. The productId can be retrieved from the Catalogue API from the LA.'
         quantity:
           type: integer
           example: 1
@@ -116,7 +116,7 @@ components:
 
         The LA will send a confirmation message back to the MP approving or declining the order request. In case the LA declines, a functional status code and message is replied. 
 
-        Events are only handled ones. If an event with the simular requestReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
+        Events are only handled ones. If an event with the similar requestReferenceId is received the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
         
         Functional status codes and messages are described in the Documentation.
       properties:
@@ -227,7 +227,7 @@ components:
 
         The LA will send a confirmation message back to the MP including a success parameter indicating if the LA approves or declines the credit request. In case of a decline, the LA replies with a functional status code and message. 
 
-        Events are only handled ones. If an event with the simular requestReferenceId is recieved the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
+        Events are only handled ones. If an event with the similar requestReferenceId is received the processing is only done the first time. The confirmation may be send multiple times, but always with the same responseReferenceId. In this way the MP can validate that the response is processed only once.
         
         Functional status codes and messages are described in the Documentation.
       properties:

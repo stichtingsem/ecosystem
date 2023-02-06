@@ -131,7 +131,7 @@ components:
       x-tags:
         - Usage
       description: |
-        The Event a LA periodically sends to the MP and optionally LMSs after a Student or Teacher used a Product. The fields in this Event are similar to the InitialActivation Event. This allows Events Processers of the MP and the LMS to process both Event variants in a similar way.
+        The Event a LA periodically sends to the MP and optionally LMSs after a Student or Teacher used a Product. The fields in this Event are similar to the InitialActivation Event. This allows Events Processors of the MP and the LMS to process both Event variants in a similar way.
       properties:
         entitlementId:
           type: string
@@ -506,7 +506,7 @@ paths:
       operationId: get-usage-by-entitlement
       description: |
         Retrieve the full usage based on a entitlement-id, needs to confirm that the caller is able to access either based on their provider information (they can only see their own usage) in the case of the provider scope.
-        Retrieve all Usage information from a single Entitlement. Moreover, information from the Entitlement is added to create a reporting overview of quantities provisioned, licenses activated and active usage. This information was already send to the MP or LMS within InitialActivation and Usage events. This endpoint is avilable for support reasons and allows the MP and LMS to gather status information on an Entitlement from the LA.
+        Retrieve all Usage information from a single Entitlement. Moreover, information from the Entitlement is added to create a reporting overview of quantities provisioned, licenses activated and active usage. This information was already send to the MP or LMS within InitialActivation and Usage events. This endpoint is available for support reasons and allows the MP and LMS to gather status information on an Entitlement from the LA.
         
         This API has pagination, using `start` and `limit`.
       security:
