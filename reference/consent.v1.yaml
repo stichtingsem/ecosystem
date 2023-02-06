@@ -15,7 +15,7 @@ info:
 
     Consent can be pending, accepted, denied or revoked. This status change is send to the other party to stop sending data and show in the UI that the other party has no longer consent and that data exchange halted.
 
-    When both parties have given consent, or re-given consent, the Consumer can request the producer to handle the inital seed: send all relevant events needed to get up-to-date. For a LA that could mean sending all products, for a SIS sending all students and teachers of the current schoolyear once as event. The initial seed endpoint is part of the Events API.
+    When both parties have given consent, or re-given consent, the Consumer can request the producer to handle the initial seed: send all relevant events needed to get up-to-date. For a LA that could mean sending all products, for a SIS sending all students and teachers of the current schoolyear once as event. The initial seed endpoint is part of the Events API.
     
     After the initial seed has been triggered, the Consumer can be subscribed to future updates on the API and can receive Events when objects are created, modified or deleted.
 
@@ -45,7 +45,7 @@ components:
       x-tags:
         - Consent
       description: |
-        A model that describes the consent between 2 parties. It contains 2 id's and 2 statusses and is valid for an API for a school.
+        A model that describes the consent between 2 parties. It contains 2 id's and 2 statuses and is valid for an API for a school.
 
         In the consent a Producer and Consumer are referenced. These are the Producer and Consumer of the API. For example for the SIS API, a party in the role of SIS providing the SIS API is the Producer and a party in the role of MP, LA or LMS is the Consumer.
       title: Consent
@@ -170,9 +170,9 @@ paths:
       x-tags:
         - Consent
       description: |
-        Allows a party to inform another party of a new (or status change) of a consent for a (new) school (digideliveryid) and a specified api.
+        Allows a party to inform another party of a new (or status change) of a consent for a (new) school (digiDeliveryID) and a specified api.
 
-        Example: An Administrator udated the consent at a party in the role of MP for the SIS API. The party in the MP role calls this endpoint at the party in the SIS role and includes a ConsentUpdate. The party in the SIS role replies with a ConsentRegistration.
+        Example: An Administrator updated the consent at a party in the role of MP for the SIS API. The party in the MP role calls this endpoint at the party in the SIS role and includes a ConsentUpdate. The party in the SIS role replies with a ConsentRegistration.
         
         This does not imply that Consent is active between both parties. First the Administrator also has to update consent at the party in the role of SIS. The party in the role of SIS calls this endpoint at the party in the MP role and includes a ConsentUpdate. The party in the MP role replies with a ConsentRegistration.
       
@@ -218,13 +218,13 @@ paths:
   /consents/school/{id}:
     get:
       summary: 'Get Consents by School'
-      description: 'Retreive all consents registered for a specified school `id` .'
+      description: 'Retrieve all consents registered for a specified school `id` .'
       x-tags:
         - Consent
       operationId: get-consents-by-school
       responses:
         '200':
-          description: 'In the respones all apis are included for which a consent is registered on Produder and/or Consumer side.'
+          description: 'In the responses all apis are included for which a consent is registered on Producer and/or Consumer side.'
           content:
             application/json:
               schema:
@@ -257,13 +257,13 @@ paths:
   /consents/school/{id}/{api}:
     get:
       summary: 'Get Consent by School and API'
-      description: 'Retreive the most recent consent registered for a specified school `id` and `api`. Alternatively a `referenceId` can be included in the query to retreive the status of a specific consent registration. The `referenceId` is always from the requesting party and can therefore be the producerReferenceId or consumerReferenceId.'
+      description: 'Retrieve the most recent consent registered for a specified school `id` and `api`. Alternatively a `referenceId` can be included in the query to retrieve the status of a specific consent registration. The `referenceId` is always from the requesting party and can therefore be the producerReferenceId or consumerReferenceId.'
       x-tags:
         - Consent
       operationId: get-consent-by-school-and-api
       responses:
         '200':
-          description: 'In the respones the most recent consent is included for which a consent is registered on Produder and/or Consumer side.'
+          description: 'In the responses the most recent consent is included for which a consent is registered on Producer and/or Consumer side.'
           content:
             application/json:
               schema:
@@ -295,7 +295,7 @@ paths:
         name: api
         in: path
         required: true
-        description: 'The API for which a party wants to retreive the Consent status.'
+        description: 'The API for which a party wants to retrieve the Consent status.'
       - schema:
           type: string
         name: referenceId

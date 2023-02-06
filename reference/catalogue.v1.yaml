@@ -310,7 +310,7 @@ components:
               - levelYear
         subjectCode:
           type: string
-          description: 'Government standard subject code. bron: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
+          description: 'Government standard subject code. Source: Ministerie van OCW, like https://zoek.officielebekendmakingen.nl/stcrt-2019-35044'
   
     Media:
       title: Media
@@ -347,7 +347,7 @@ components:
           tokenUrl: ''
           refreshUrl: ''
           scopes:
-            la.cataloque: scope that allows a party to retrieve products from the catalogue
+            la.catalogue: scope that allows a party to retrieve products from the catalogue
 paths:
   /products/{id}:
     parameters:
@@ -382,7 +382,7 @@ paths:
       operationId: get-product-by-id
       security:
         - OAuth2:
-            - la.cataloque
+            - la.catalogue
       description: Get a specific product by productid
 x-tags:
   - name: Product
