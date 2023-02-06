@@ -684,8 +684,8 @@ components:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: ''
-          refreshUrl: ''
+          tokenUrl: https://api.example.com/oauth2/token
+          refreshUrl: https://api.example.com/oauth2/token
           scopes:
             sis.student-delivery: 'a scope that gives access to student delivery information including address'
             sis.student-teacher-group: 'a scope that gives access to student, teacher and group data'
