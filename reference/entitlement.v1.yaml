@@ -160,7 +160,7 @@ components:
         
         | Entitlement Type | Authorization rule | `Entitlee` | Mandatory `Entitlee` fields |
         |---|---|---|---|
-        | personal | A single specified Entitled (Student or Teacher) | Individual | `eckId`, `userId` or `activationCode` |
+        | personal | A single specified person (Student or Teacher) | Individual | `eckId`, `userId` or `activationCode` |
         | school | All Students from the School | School | `schoolId` and `quantity` |
         | schoolsubject | All Students following the specified SchoolSubject(s) | School | `schoolId`, `quantity` and `schoolSubjects` |
         | schoolgroup | All Students that belong to a specified Group | School | `schoolId`, `quantity` and `groups` |
