@@ -339,22 +339,10 @@ paths:
                 $ref: '#/components/schemas/EventResponse'
         '400':
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventResponse'
         '401':
           description: Unauthorized - No valid token presented
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventResponse'
         '403':
           description: Forbidden - No consent given to access the requested resource
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EventResponse'
       requestBody:
         content:
           application/json:
@@ -398,28 +386,10 @@ paths:
                   $ref: '#/components/schemas/EventResponse'
         '400':
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventResponse'
         '401':
           description: Unauthorized - No valid token presented
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventResponse'
         '403':
           description: Forbidden - No consent given to access the requested resource
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/EventResponse'
       description: |
         Endpoint to receive events as a Consumer from different Producers. For example a party in the role of LMS can receive events from all parties offering SIS, MP and LA roles.
       requestBody:
@@ -567,43 +537,10 @@ paths:
                     description: 'See functional status messages within the Documentation.'
         '400':
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'See functional status codes within the Documentation.'
-                  statusMessage:
-                    type: string
-                    description: 'See functional status messages within the Documentation.'
         '401':
           description: Unauthorized - No valid token presented
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'See functional status codes within the Documentation.'
-                  statusMessage:
-                    type: string
-                    description: 'See functional status messages within the Documentation.'
         '403':
           description: Forbidden - No consent given to access the requested resource
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: integer
-                    description: 'See functional status codes within the Documentation.'
-                  statusMessage:
-                    type: string
-                    description: 'See functional status messages within the Documentation.'
       operationId: request-seed
       description: |
         Endpoint to request an initial seed of Events from a Producer. The combination of the parameter `api` and the chosen `scope` and `consent` gives the Producer all information to send the initial seed of Events.
