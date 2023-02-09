@@ -45,7 +45,7 @@ components:
       x-tags:
         - Consent
       description: |
-        A model that describes the consent between 2 parties. It contains 2 id's and 2 statuses and is valid for an API for a school.
+        A model that describes the consent between 2 parties. It contains 2 ids and 2 statuses and is valid for an API for a school.
 
         In the consent a Producer and Consumer are referenced. These are the Producer and Consumer of the API. For example for the SIS API, a party in the role of SIS providing the SIS API is the Producer and a party in the role of MP, LA or LMS is the Consumer.
       title: Consent
@@ -191,8 +191,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ConsentRegistration'
         '400':
-          description: Bad Request
-          
+          description: Bad Request - See message body for details
           content:
             application/json:
               schema:

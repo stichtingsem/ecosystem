@@ -54,7 +54,7 @@ components:
       x-tags:
         - InitialActivation
       description: |
-        The Event a LA sends to the MP and optionally LMSs after a Student or Teacher activates (and first uses) a Product. The Student or Teacher executes its right to activate the Product and gets a License on the Product.
+        The Event a LA sends to the MP and optionally LMSs after a Student or Teacher activates (and first uses) a Product. The Student or Teacher exercises his right to activate the Product and gets a License on the Product.
       properties:
         entitlementId:
           type: string

@@ -15,7 +15,7 @@ info:
     - Get event(s): endpoint to deliver, upon request, events as a Producer. This endpoint is used in case of temporary unavailability of one of the consumers.
 
 
-    All events will be send to the receive event(s) endpoint of the other party. The events are send as part of the request body.
+    All events will be sent to the receive event(s) endpoint of the other party. The events are sent as part of the request body.
 
     Guidelines for sending events:
       - Pagination is essential - using start and limit semantics.
@@ -26,10 +26,10 @@ info:
       - All data objects will flow through this API. This implies good scalability and performance measures.
 
     ## Events, Scopes, and Consent
-    Events are send within a secure scope and in some case only after explicit consent by the School. This requires a sending party to request a valid Token including this scope (and optionally the schoolIdentifier for the Consent check).
+    Events are sent within a secure scope and in some case only after explicit consent by the School. This requires a sending party to request a valid Token including this scope (and optionally the schoolIdentifier for the Consent check).
     The authentication and authorization protocol is described in the Documentation.
 
-    The following Events can be send or received within the SEM Ecosystem.
+    The following Events can be sent or received within the SEM Ecosystem.
 
     Event type | Description | Scope required | Consent
     --|-- |--|---|
@@ -38,20 +38,20 @@ info:
     `la.CourseStructure` | The full xAPI cmi5 Course structure, including Blocks and/or Assignable Units. The Event is used to send new, modified or deleted Course structures. | la.course | n.a.
     `la.InitialActivation` | Event sent by the LA after a Student or Teacher activates a Learning Material. An Entitlement is found and a License is created for the Student or Teacher. The first time a Product is being used. | la.usage.activation | LMS
     `la.Usage` | Events sent by the LA after a Student or Teacher uses a product. This could also be a periodic event for weekly, monthly active use. | la.usage.usage | LMS
-    `la.SimpleProgress` | Send from the LA to the LMS preferably near realtime so the LMS can show progress for teachers. | la.progress | LMS
+    `la.SimpleProgress` | Sent from the LA to the LMS preferably near realtime so the LMS can show progress for teachers. | la.progress | LMS
     `la.SimpleResult` | Sent from the LA to the SIS or LMS preferably near realtime. | la.result | LMS, SIS
-    `mp.EntitlementEvent` | Send by the MP to the LMS and LA to communicate new Entitlements or changes into the state of the Entitlement to trigger specific activities by the LA or the LMS. | mp.entitlement | LMS
-    `mp.EntitlementConfirmation` | Confirmation message send by the LMS or the LA to the MP as a response to an Entitlement event. | mp.entitlement | LMS
-    `mp.ChangeLicenseStatus` | Send by the MP to the LMS and LA to communicate that the status of a specific license from a Student or Teacher is (de)blocked. | mp.entitlement | LMS
-    `mp.ChangeLicenseStatusConfirmation` | Confirmation message send by the LMS and the LA to the MP as a response to a ChangeLicenseStatus event. | mp.entitlement | LMS
-    `mp.ActivationCodeRequest` | Send by the MP to the LA to request a specified number of activation codes for a specified product. | mp.activationcode | n.a.
-    `mp.ActivationCodeConfirmation` | Confirmation message send by the LA to the MP as a response to an ActivationCodeRequest. | mp.activationcode | n.a.
-    `mp.ActivationCodeRevokeRequest` | Send by the MP to the LA including a request to revoke a specific activation code by the LA. | mp.activationcode | n.a.
-    `mp.ActivationCodeRevokeConfirmation` | Confirmation message send by the LA to the MP as a response to an ActivationCodeRevokeRequest. | mp.activationcode | n.a.
-    `mp.OrderRequest` | Send by the MP to the LA to place an Order for a specified product. | mp.order | n.a.
-    `mp.OrderConfirmation` | Confirmation message send by the LA to the MP as a response to an OrderRequest. | mp.order | n.a.
-    `mp.CreditOrderRequest` | Send by the MP to the LA including a request to credit an order by the LA. | mp.order | n.a.
-    `mp.CreditOrderConfirmation` | Confirmation message send by the LA to the MP as a response to an CreditOrderRequest. | mp.order | n.a.
+    `mp.EntitlementEvent` | Sent by the MP to the LMS and LA to communicate new Entitlements or changes into the state of the Entitlement to trigger specific activities by the LA or the LMS. | mp.entitlement | LMS
+    `mp.EntitlementConfirmation` | Confirmation message sent by the LMS or the LA to the MP as a response to an Entitlement event. | mp.entitlement | LMS
+    `mp.ChangeLicenseStatus` | Sent by the MP to the LMS and LA to communicate that the status of a specific license from a Student or Teacher is (de)blocked. | mp.entitlement | LMS
+    `mp.ChangeLicenseStatusConfirmation` | Confirmation message sent by the LMS and the LA to the MP as a response to a ChangeLicenseStatus event. | mp.entitlement | LMS
+    `mp.ActivationCodeRequest` | Sent by the MP to the LA to request a specified number of activation codes for a specified product. | mp.activationcode | n.a.
+    `mp.ActivationCodeConfirmation` | Confirmation message sent by the LA to the MP as a response to an ActivationCodeRequest. | mp.activationcode | n.a.
+    `mp.ActivationCodeRevokeRequest` | Sent by the MP to the LA including a request to revoke a specific activation code by the LA. | mp.activationcode | n.a.
+    `mp.ActivationCodeRevokeConfirmation` | Confirmation message sent by the LA to the MP as a response to an ActivationCodeRevokeRequest. | mp.activationcode | n.a.
+    `mp.OrderRequest` | Sent by the MP to the LA to place an Order for a specified product. | mp.order | n.a.
+    `mp.OrderConfirmation` | Confirmation message sent by the LA to the MP as a response to an OrderRequest. | mp.order | n.a.
+    `mp.CreditOrderRequest` | Sent by the MP to the LA including a request to credit an order by the LA. | mp.order | n.a.
+    `mp.CreditOrderConfirmation` | Confirmation message sent by the LA to the MP as a response to an CreditOrderRequest. | mp.order | n.a.
     `sis.Student` | A student has been created, modified or deleted. | sis.student-teacher-group | MP, LA, LMS
     `sis.StudentDelivery` | A students delivery information has been created, modified or deleted. | sis.student-delivery | MP
     `sis.Teacher` | A teacher has been created, modified or deleted. | sis.student-teacher-group | MP, LA, LMS
@@ -60,12 +60,12 @@ info:
     `sis.SchoolPeriod` | A school period has been created, modified or deleted. | sis.school | MP, LA, LMS
 
     ## Retry policy
-    Events are send by a Producer to a Consumer. A Consumer accepts all Events, excluding events that does not comply with schema validation or when scope and/or consent requirements are not met.
+    Events are sent by a Producer to a Consumer. A Consumer accepts all Events, excluding events that does not comply with schema validation or when scope and/or consent requirements are not met.
 
     Whenever a Consumer is not available (i.e. downtime or overloaded), the Producer follows the following retry mechanism:
     - Producer sends the Event again after 1 minute, 5 minutes, and 1 hour.
     - Producer pauses sending Events to the Consumer for a period of 24 hours.
-    - In case new Events are triggered during this offline period, these Events are added to the send queue. All events are send to the Consumer. The Consumer is responsible to process the events and skip older events about the same object. The Consumer is able to do this based on the `created` parameter which is part of each event.
+    - In case new Events are triggered during this offline period, these Events are added to the send queue. All events are sent to the Consumer. The Consumer is responsible to process the events and skip older events about the same object. The Consumer is able to do this based on the `created` parameter which is part of each event.
 
     
   contact:
@@ -87,9 +87,9 @@ components:
       description: |-
         An event is a notification that something of interest has happened within a service. A subscriber receives events within an authorized scope and for certain events in the context of a school (using consent). This enables parties to communicate with each other in a loosely coupled way. The event mediator has no direct connection to any of the subscribing systems.
 
-        Events are send after an activity of a Student or Teacher (e.g. usage, progress or results). Events are also send if an object (e.g. Product, Course, Student, Group) is created, modified or deleted. For the latter category the last version of the object is send as part of the Event `data` field. All previous events about the same object may be ignored.
+        Events are sent after an activity of a Student or Teacher (e.g. usage, progress or results). Events are also sent if an object (e.g. Product, Course, Student, Group) is created, modified or deleted. For the latter category the last version of the object is sent as part of the Event `data` field. All previous events about the same object may be ignored.
         
-        All Events have a unique `id`. Moreover, the event also includes an `objectId`, the identifier of the object they carry. This can be used to make sure events are processed in order for that object. The `created` time of the event is the time the action that triggered the event happened. It is not the time the event was send or processed.
+        All Events have a unique `id`. Moreover, the event also includes an `objectId`, the identifier of the object they carry. This can be used to make sure events are processed in order for that object. The `created` time of the event is the time the action that triggered the event happened. It is not the time the event was sent or processed.
 
         Deleting an object is supported by sending an event with the field `isDeleteEvent` flagged as true. This indicates that this is the last event you will get about this object. The data is empty in this case.
       title: Event
@@ -103,7 +103,7 @@ components:
           $ref: '#/components/schemas/schemaVersion'
         type:
           type: string
-          description: 'The type of Event object send within this Event message.'
+          description: 'The type of Event object sent within this Event message.'
           enum:
             - la.Product
             - la.Course
@@ -132,7 +132,7 @@ components:
             - sis.SchoolPeriod
         objectId:
           type: string
-          description: 'Unique identifier of the object send within this event.'
+          description: 'Unique identifier of the object sent within this event.'
         userIdType:
           type: string
           description: 'In case the object is a Student or Teacher, this field should be filled with the used userId format in the objectId.'
@@ -147,7 +147,7 @@ components:
           type: string
           format: date-time
           description: | 
-            The moment that the action happened which triggered this event. As Events are send asynchronous, this is not the moment the Event was send..
+            The moment that the action happened which triggered this event. As Events are sent asynchronous, this is not the moment the Event was sent.
 
             Format: openapi in ZULU time as specified in RFC 3339, section 5.6
         data:
@@ -163,7 +163,7 @@ components:
     
     EventData:
       title: EventData
-      description: 'The data object send in the Event. The `type` field in the Event message specifies the type of data object.'
+      description: 'The data object sent in the Event. The `type` field in the Event message specifies the type of data object.'
       x-tags:
         - Event
       oneOf:
@@ -192,7 +192,7 @@ components:
         - $ref: ./sisdata.v1.yaml#/components/schemas/Group
         - $ref: ./sisdata.v1.yaml#/components/schemas/SchoolSubject
         - $ref: ./sisdata.v1.yaml#/components/schemas/SchoolPeriod
-        - nullable: true
+      nullable: true
     
     EventResponse:
       type: object
@@ -363,7 +363,7 @@ paths:
         description: |
           The request body contains a single Event.
           
-          Events are processed asynchronous. In the request body a status code and message is included as a confirmation if the events are received in a correct format. All events are confirmed with a status ok (0), excluding events that have an invalid format or events that were send in an invalid security scope or consent. See Documentation for functional status codes and messages.
+          Events are processed asynchronous. In the request body a status code and message is included as a confirmation if the events are received in a correct format. All events are confirmed with a status ok (0), excluding events that have an invalid format or events that were sent in an invalid security scope or consent. See Documentation for functional status codes and messages.
       description: |
         Endpoint to receive a single Event as a Consumer from different Producers. For example a party in the role of LMS can receive events from all parties offering SIS, MP and LA roles.
       security:
@@ -430,9 +430,9 @@ paths:
               items:
                 $ref: '#/components/schemas/Event'
         description: |-
-          The request body contains a list of Events, sorted oldest events first. For Events that require Consent to be send and received between parties, Events can only be grouped in the same request if they are from the same school.
+          The request body contains a list of Events, sorted oldest events first. For Events that require Consent to be sent and received between parties, Events can only be grouped in the same request if they are from the same school.
           
-          Events are processed asynchronous. In the request body a status code and message is included as a confirmation if the events are received in a correct format. All events are confirmed with a status ok (0), excluding events that have an invalid format or events that were send in an invalid security scope or consent. See Documentation for functional status codes and messages.
+          Events are processed asynchronous. In the request body a status code and message is included as a confirmation if the events are received in a correct format. All events are confirmed with a status ok (0), excluding events that have an invalid format or events that were sent in an invalid security scope or consent. See Documentation for functional status codes and messages.
       security:
         - OAuth2:
             - la.catalogue
@@ -498,7 +498,7 @@ paths:
           name: schemaVersionObject
           in: query
           required: false
-          description: 'Optional parameter to request the object format in a specific schema version. If none supplied, the server will choose its default schema version. This schemaVersion refers to the version of the format of the data object send within the Event.'
+          description: 'Optional parameter to request the object format in a specific schema version. If none supplied, the server will choose its default schema version. This schemaVersion refers to the version of the format of the data object sent within the Event.'
       responses:
         '200':
           description: OK
