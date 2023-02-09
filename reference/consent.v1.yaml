@@ -201,8 +201,6 @@ paths:
                 statusMessage: 'schema incorrect'
         '401':
           description: Unauthorized - No valid token presented
-        '403':
-          description: Forbidden - See message body for details
           content:
             application/json:
               schema:
