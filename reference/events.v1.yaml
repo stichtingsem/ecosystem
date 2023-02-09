@@ -192,7 +192,7 @@ components:
         - $ref: ./sisdata.v1.yaml#/components/schemas/Group
         - $ref: ./sisdata.v1.yaml#/components/schemas/SchoolSubject
         - $ref: ./sisdata.v1.yaml#/components/schemas/SchoolPeriod
-        - nullable: true
+      nullable: true
     
     EventResponse:
       type: object
