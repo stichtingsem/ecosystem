@@ -4,7 +4,7 @@ A typical school uses a broad range of learning materials from several education
 
 ## Functional and Technical documentation
 
-The SEM Ecosystem is documented in a separate PDF file including functional and technical documentation. The [document](https://github.com/stichtingsem/ecosystem/docs/Documentatie%20SEM%20Ecosysteem.pdf) is a complete manual (in Dutch) for all parties that have interest in implementing one or more roles in the SEM Ecosystem. The document includes the following chapters:
+The SEM Ecosystem is documented in a separate PDF file including functional and technical documentation. The [document](https://github.com/stichtingsem/ecosystem/blob/master/docs/Documentatie%20SEM%20Ecosysteem.pdf) is a complete manual (in Dutch) for all parties that have interest in implementing one or more roles in the SEM Ecosystem. The document includes the following chapters:
 1. **Introduction**: background information and design principles of the SEM Ecosystem.
 2. **Scenario's**: description of the use cases supported by the SEM Ecosystem.
 3. **Functional documentation**: description of domains, roles, definitions (including an Entity Relationship Diagram), interaction diagrams, transaction variants.
@@ -12,8 +12,8 @@ The SEM Ecosystem is documented in a separate PDF file including functional and 
 5. **Technical API documentation**: The definition of all APIs and schemas. Within this chapter also rules can be found for filling of fields.
 6. **Appendix A**: Scenario's for a closed money and goods flow (gesloten geld-goederenstroom)
 
-## API Reference Files on [Github](https://github.com/stichtingsem/ecosystem/reference)
-The API reference files are available on our [Public Github Repository](https://github.com/stichtingsem/ecosystem/reference). This Stoplight page is linked to the repository and is a representation of the reference files.
+## API Reference Files on [Github](https://github.com/stichtingsem/ecosystem)
+The API reference files are available on our [Public Github Repository](https://github.com/stichtingsem/ecosystem) in the [reference folder](https://github.com/stichtingsem/ecosystem/tree/master/reference). This Stoplight page is linked to the repository and is a representation of the reference files.
 
 ## API Documentation
 
