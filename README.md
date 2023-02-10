@@ -10,8 +10,8 @@ A typical school uses a broad range of learning materials from several education
 ## Structure of this repository
 
 This repository consists of the following elements:
-- [Functional and technical documentation](https://github.com/stichtingsem/ecosystem/blob/V1.3/docs/Documentatie%20SEM%20Ecosysteem.pdf) is described within a PDF file.
-- [API files](https://github.com/stichtingsem/ecosystem/tree/V1.3/reference) can be found in the reference folder.
+- [Functional and technical documentation](https://github.com/stichtingsem/ecosystem/blob/master/docs/Documentatie%20SEM%20Ecosysteem.pdf) is described within a PDF file.
+- [API files](https://github.com/stichtingsem/ecosystem/tree/master/reference) can be found in the Github repository in the reference folder.
 - [API documentation](https://stichtingsem.stoplight.io/docs/ecosystem) can be found on stoplight.
 
 This repository is an initiative of the Stichting Samenwerkende Educatieve Marktpartijen (SEM).
